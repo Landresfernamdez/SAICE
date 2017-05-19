@@ -1,0 +1,297 @@
+
+<div class="container-fluid" >
+	<div class="row">
+        <div class="col-md-12">
+        <h4>Estudiantes</h4>
+        <div class="table-responsive">
+                
+              <table id="mytable" class="table table-striped table-hover table-bordered">
+                   
+                   <thead>
+                   <th id="cedula"><b>cedula</b></th>
+                   <th id="nombre"><b>nombre</b></th>
+                   <th id="apellido1"><b>apellido 1</b></th>
+                   <th id="apellido2"><b>apellido 2</b></th>
+                  
+                   
+                   </thead>
+    <tbody ng-repeat="estudiante in listaStudents">
+        <!--ng-repeat  Se encarga de recorrer la lista de estudiantes que esta en el controller de estudiantes-->
+            <div >
+              <tr >
+
+              <td >{{estudiante.cedula}}</td>
+              <td>{{estudiante.nombre}}</td>
+              <td>{{estudiante.apellido2}}</td>
+              <td>{{estudiante.apellido1}}</td>
+
+              </tr>
+
+              <tr>
+
+                   <td id="provincia"><b>provincia</b></td>
+                   <td id="canton"><b>canton</b></td>
+                   <td id="distrito"><b>distrito</b></td>
+                   <td id="detalle"><b>detalle</b></td>
+
+              </tr>
+              <tr >
+
+                <td>{{estudiante.provincia}}</td> 
+                <td>{{estudiante.canton}}</td> 
+                <td>{{estudiante.distrito}}</td>
+                <td>{{estudiante.detalle}}</td>
+
+
+              </tr>
+              <tr >
+
+                     <td id="carnet"><b>carnet</b></td>
+                     <td id="id_poliza"><b>id_poliza</b></td>
+                     <td id="correo"><b>correo</b></td>
+                     <td id="telefono"><b>telefono</b></td>
+
+              </tr>
+              <tr >
+
+               <td>{{estudiante.carnet}}</td>
+               <td>{{estudiante.id_poliza}}</td>
+               <td>{{estudiante.correo}}</td>
+               <td>{{estudiante.telefono}}</td>
+
+              </tr>
+              <tr >
+
+              <td>
+                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil" ng-click=""></span></button></td>
+                
+              <td>
+                <button class="btn btn-danger btn-xs" data-target="#delete"data-title="Delete" data-toggle="modal"  ><span class="glyphicon glyphicon-trash"></span></button></td>
+                <td>
+                   <button  type="button" class="btn btn-success btn-circle btn-lg" ><span class="glyphicon glyphicon-plus" data-title="Add" data-toggle="modal" data-target="#add"></span></button>
+                </td> 
+              
+              </tr>
+<!--Vista de eliminar-->
+              <td>
+                <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+                  <div class="modal-dialog">
+                <div class="modal-content">
+                      <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                    <h4 class="modal-title custom_align" id="Heading">Delete this entry</h4>
+                  </div>
+                      <div class="modal-body">
+                   
+                   <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Record?</div>
+                   
+                  </div>
+                    <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary"  data-dismiss="modal"ng-click="delete(estudiante.cedula)"><span class="glyphicon glyphicon-ok-sign"data-dismiss="modal"></span> Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span> No</button>
+                  </div>
+                    </div>
+                <!-- /.modal-content --> 
+                </div>
+                  <!-- /.modal-dialog --> 
+                </div>
+
+
+              </td>
+
+              <td>             <!--Vista de editar-->        
+                  <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+                        <div class="modal-dialog">
+                              <div class="modal-content">
+                                  <div class="modal-header" >
+                                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                      
+                                      <table>
+                                        <thead>
+                                            <h4 class="modal-title custom_align" id="Heading">Editar estudiante</h4>
+                                        </thead>
+                                        <tbody>
+                                          <tr>
+                                            <td>
+                                              <div class="form-group">
+                                              <input class="form-control " type="text" placeholder="estudiante.carnet" ng-model="estudiante.carnet">
+                                               </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                  <input class="form-control " type="text" placeholder="estudiante.telefono" ng-model="estudiante.telefono">
+                                                </div>
+                                            </td>
+                                            <td>
+                                               <div class="form-group">
+                                                <input class="form-control " type="text" placeholder="estudiante.cedula" ng-model="estudiante.cedula">
+                                              </div>
+                                            </td>
+                                          </tr>
+
+                                        
+                                        
+                                          <tr>
+                                            <td>
+                                              <div class="form-group">
+                                                <input class="form-control " type="text" placeholder="estudiante.correo" ng-model="estudiante.correo">
+                                              </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                  <input class="form-control " type="text" placeholder="estudiante.nombre" ng-model="estudiante.nombre">
+                                                </div>
+                                            </td>
+                                            <td>
+                                              <div class="form-group">
+                                              <input class="form-control " type="text" placeholder="estudiante.apellido1"ng-model="estudiante.apellido1">
+                                              </div>
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                            <td>
+                                              <div class="form-group">
+                                              <input class="form-control " type="text" placeholder="estudiante.apellido2"ng-model="estudiante.apellido2">
+                                              </div>
+                                            </td>
+                                            <td>
+                                              <div class="form-group">
+                                                <input class="form-control " type="text" placeholder="estudiante.provincia"ng-model="estudiante.provincia">
+                                              </div>
+                                            </td>
+                                            <td>
+                                              <div class="form-group">
+                                                <input class="form-control " type="text" placeholder="estudiante.canton"ng-model="estudiante.canton">
+                                              </div>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                          <td><div class="form-group">
+                                            <input class="form-control " type="text" placeholder="estudiante.distrito"ng-model="estudiante.distrito">
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                            <input class="form-control " type="text" placeholder="estudiante.detalle"ng-model="estudiante.detalle">
+                                            </div>
+                                          </td>
+                                          <td>
+                                              <div class="form-group">
+                                            <input class="form-control " type="text" placeholder="estudiante.id_poliza"ng-model="estudiante.id_poliza"></div>
+                                          </td>
+
+                                          </tr>
+                                        </tbody>  
+                                      </table>
+                                        <div class="modal-footer " >
+                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postEstudiante(estudiante);"data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"  ></span>edit</button>
+                                        </div>
+                                  </div>
+
+                      <!-- /.modal-content --> 
+                          </div>
+                        <!-- /.modal-dialog --> 
+                      </div>
+                  </div>
+              </td>
+            </div>
+    </tbody>
+
+       
+</table>
+
+    <!--Vista de añadir-->        
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add" aria-hidden="true">
+      <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" ng-controller="estudiantesController">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                    
+                    <table>
+                      <thead>
+                          <h4 class="modal-title custom_align" id="Heading">Ingresar estudiante</h4>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <div class="form-group">
+                            <input class="form-control " type="text" placeholder="carnet ####-######" ng-model="estudiante.carnet">
+                             </div>
+                          </td>
+                          <td>
+                              <div class="form-group">
+                                <input class="form-control " type="text" placeholder="numero ####-####" ng-model="estudiante.numero">
+                              </div>
+                          </td>
+                          <td>
+                             <div class="form-group">
+                              <input class="form-control " type="text" placeholder="cedula #-###-###" ng-model="estudiante.cedula">
+                            </div>
+                          </td>
+                        </tr>
+
+                      
+                      
+                        <tr>
+                          <td>
+                            <div class="form-group">
+                              <input class="form-control " type="text" placeholder="correo loquesea@loquesea.loquesea" ng-model="estudiante.correo">
+                            </div>
+                          </td>
+                          <td>
+                              <div class="form-group">
+                                <input class="form-control " type="text" placeholder="nombre" ng-model="estudiante.nombre">
+                              </div>
+                          </td>
+                          <td>
+                            <div class="form-group">
+                            <input class="form-control " type="text" placeholder="primer apellido"ng-model="estudiante.apellido1">
+                            </div>
+                            </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="form-group">
+                            <input class="form-control " type="text" placeholder="segundo apellido"ng-model="estudiante.apellido2">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group">
+                              <input class="form-control " type="text" placeholder="provincia"ng-model="estudiante.provincia">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group">
+                              <input class="form-control " type="text" placeholder="canton"ng-model="estudiante.canton">
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                        <td><div class="form-group">
+                          <input class="form-control " type="text" placeholder="distrito"ng-model="estudiante.distrito">
+                          </div>
+                        </td>
+                        <td>
+                          <div class="form-group">
+                          <input class="form-control " type="text" placeholder="detalle"ng-model="estudiante.detalle">
+                          </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                          <input class="form-control " type="text" placeholder="tipo de poliza"ng-model="estudiante.id_poliza"></div>
+                        </td>
+
+                        </tr>
+                      </tbody>  
+                    </table>
+                      <div class="modal-footer " >
+                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putEstudiante(estudiante);"data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"  ></span>add</button>
+                      </div>
+                </div>
+
+    <!-- /.modal-content --> 
+        </div>
+      <!-- /.modal-dialog --> 
+    </div>
+</div>
+  
