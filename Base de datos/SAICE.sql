@@ -309,9 +309,38 @@ CREATE OR REPLACE FUNCTION actualizarEstudiante
 		$BODY$ 
 		LANGUAGE plpgsql;
 
+--- insertar practicas-------------
 
+create or replace function insertar_Practica(
+	p_id_practica varchar(7),
+	p_fecha_inicio date,
+	p_fecha_final date,
+	/*p_nota integer,
+	p_estado char(1), se omiten, se le asignan datos 0,0 y solo se cambian por una funcion NotaPractica*/
+	p_cedula a_cedula,
+	p_id_empresa varchar(7)
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	insert into practicas values (p_id_practica,p_fecha_inicio,p_fecha_final,100,'r',p_cedula,p_id_empresa);	
+	raise notice 'Se inserto Estudiante';
+end $BODY$
+language plpgsql;
 
+---------- borrar practica---------------------
+create or replace function borrar_practica( 
+	p_id_practica varchar(7)
+) returns void as
+$BODY$
+begin
+	delete from practicas where id_practicas=p_id_practica;
+	raise notice 'practica borrada';
+end
+$BODY$
+language plpgsql;
 
+-----
 
 select * from polizas
 select * from Estudiantes
