@@ -332,6 +332,18 @@ Begin
 end $BODY$
 language plpgsql;
 
+---------- borrar practica---------------------
+create or replace function borrar_practica( 
+	p_id_practica varchar(7)
+) returns void as
+$BODY$
+begin
+	delete from practicas where id_practicas=p_id_practica;
+	raise notice 'practica borrada';
+end
+$BODY$
+language plpgsql;
+
 -----
 
 select * from polizas
