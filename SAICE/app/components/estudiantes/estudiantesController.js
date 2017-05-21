@@ -18,7 +18,6 @@ angular.module('userModule')
 		id_poliza:""
 	};
 	console.log("entro a comprobacion");
-	
 	$scope.getEstudiantes = function getEstudiantes() {
 
 		OperationsStudents.getStudents( function(res) {
@@ -26,8 +25,8 @@ angular.module('userModule')
 		});
 
 	};
+	
 	$scope.getEstudiantes();
-
 	$scope.putEstudiante = function putEstudiante(estudiante) {
 
 		OperationsStudents.putStudents($scope.estudiante, function(response) {
@@ -52,8 +51,7 @@ angular.module('userModule')
 
 	};
 	$scope.postEstudiante = function postEstudiante(estudiante) {
-		console.log(estudiante);
-		OperationsStudents.updateStudents($scope.estudiante, function(response) {
+		OperationsStudents.updateStudents(estudiante, function(response) {
 
 			if (response.success) {
 				console.log("exito");
@@ -64,5 +62,13 @@ angular.module('userModule')
 
 		});
 	};
+	$scope.refresh=function refresh(){
+
+				$scope.getEstudiantes();
+				console.log($scope.listaStudents);
+			    $location.path('estudiantes');
+			    $route.reload();
+			    console.log("refresco");
+	}
 
 });

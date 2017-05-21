@@ -22,8 +22,9 @@ angular.module('userModule')
 
                 })// si la insercion fue exitosa entra al succes de lo contrario retorna un error departe del servidor
                     .success(function(data){
-
                             alert("insercion exitosa");
+                            console.log("service:");
+                            console.log(estudiante);
                             callback({success: true});
                     }).error(function(data) {
                     //En caso de fallo en la peticion entra en esta funcion
@@ -59,7 +60,9 @@ angular.module('userModule')
 
                 })// si la insercion fue exitosa entra al succes de lo contrario retorna un error departe del servidor
                     .success(function(data){
-                            alert("se actualizo exitosamente ");
+                            console.log("service:");
+                            console.log(estudiante);
+                            alert("se actualizo exitosamente "+data);
                             callback({success: true});
                     }).error(function(data) {
                     //En caso de fallo en la peticion entra en esta funcion

@@ -32,7 +32,7 @@ function putEstudiantes(){
 	    $obj = json_decode(file_get_contents("php://input"));
 	    //query de la consulta a la base de datos
 	    $query = "select insertar_Estudiante('$obj->carnet','$obj->cedula',"
-	            . "'$obj->numero','$obj->correo','$obj->nombre',"
+	            . "'$obj->telefono','$obj->correo','$obj->nombre',"
 	            . "'$obj->apellido1','$obj->apellido2','$obj->provincia',"
 	            . "'$obj->canton','$obj->distrito','$obj->detalle','$obj->id_poliza');";
 	    //pg_query se encarga de ejecutar el query mediante la conexion y el query y  se encarga de realizar la consulta a la base y generar una tabla
@@ -70,7 +70,7 @@ function updateEstudiantes(){
 	    $obj = json_decode(file_get_contents("php://input"));
 	    //query de la consulta a la base de datos
 	    $query = "select actualizarEstudiante('$obj->carnet','$obj->cedula',"
-	            . "'$obj->numero','$obj->correo','$obj->nombre',"
+	            . "'$obj->telefono','$obj->correo','$obj->nombre',"
 	            . "'$obj->apellido1','$obj->apellido2','$obj->provincia',"
 	            . "'$obj->canton','$obj->distrito','$obj->detalle','$obj->id_poliza');";
 	    //pg_query se encarga de ejecutar el query mediante la conexion y el query y  se encarga de realizar la consulta a la base y generar una tabla

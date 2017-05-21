@@ -84,7 +84,6 @@ CREATE  Estudiantes(
 	cedula a_cedula PRIMARY KEY,
 	carnet a_carnet,
 	ID_Poliza serial NOT NULL,
-	ID_Poliza CHAR(7) NOT NULL,
 	CONSTRAINT FK_polizas_estudiantes FOREIGN KEY(ID_Poliza) REFERENCES Polizas 	
                         );       
 --Tabla contactos
@@ -176,11 +175,8 @@ CREATE TABLE  GE(
 
 --Agregar eventos
 create or replace Function insertar_eventos(
-<<<<<<< HEAD:Base de datos/SAICE.sql
 	E_ID_Evento Serial NOT NULL,
-=======
 	E_ID_Evento CHAR(7),
->>>>>>> 2af9f0ab5ef60d84b9d00174aba7b779260ad34e:SAICE.sql
 	E_Nombre VARCHAR(30),
 	E_Descripcion VARCHAR(100),
 	E_FechaInicio DATE,
@@ -291,7 +287,7 @@ CREATE OR REPLACE FUNCTION actualizarEstudiante
 			p_canton VARCHAR(30),
 			p_distrito VARCHAR(30),
 			p_detalle VARCHAR(100),
-			p_poliza int
+			p_poliza VARCHAR(20)
 		) RETURNS VOID
 		AS
 		$BODY$
@@ -304,11 +300,11 @@ CREATE OR REPLACE FUNCTION actualizarEstudiante
 				canton=p_canton,
 				distrito=p_distrito,
 				detalle=p_detalle
-				where cedula=p_cedula;
-			
-			update correos_p set correo=p_correos where cedula=p_cedula;
+				where cedula=p_cedula ;
+			p_poliza=cast(p_poliza as int);
+			update correos_p set correo=p_correos where cedula=p_cedula ;
 			update telefonos_p  set telefono=p_telefono where cedula=p_cedula;
-			update Estudiantes set id_poliza=p_poliza where cedula=p_cedula;
+			update Estudiantes set id_poliza=cast(p_poliza as int) where cedula=p_cedula and carnet=p_carnet;
 		END;
 		$BODY$ 
 		LANGUAGE plpgsql;
@@ -321,7 +317,7 @@ select * from polizas
 select * from Estudiantes
 select * from personas 
 select * from correos_p 
-
+select * from telefonos_p 
 select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza from personas p inner join estudiantes e on e.cedula=p.cedula
 insert into polizas(descripcion,monto,fecha_vencimiento,aseguradora)values('awdadw','5000','08-08-2018','INS'),
 									('awdadw','10000','08-08-2018','INS'),
@@ -333,7 +329,8 @@ select insertar_Estudiante('2015-121212','2-745-217','8637-4846','landresf12@hot
 select eliminarEstudiante('2-122-193');
 
 drop function actualizarEstudiante()
-select actualizarEstudiante('2015-110180','1-111-111',
-			'8637-4844','landresf3638@hotmail.com',
-			'Andres','adawda','Calderon','Alajuela',
-			'San Ramon','Piedades Sur','Estudiante','1');
+
+select actualizarEstudiante('2222-222222','2-222-222',
+			'8533-4444','l5@hotmail.com',
+			'c','c','c','c',
+			'c','c','c','2');
