@@ -13,6 +13,11 @@ angular.module('userModule',['ngRoute'])
                         controller: 'estudiantesController'
                                              })
 
+                    .when("/funcionarios",{
+                        templateUrl:'app/components/funcionarios/funcionarios.html',
+                        controller: 'funcionariosController'
+                                             })
+
 			        .otherwise({
 			            redirectTo: '/'
 			        });

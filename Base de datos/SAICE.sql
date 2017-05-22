@@ -192,31 +192,6 @@ language plpgsql;
 
 
 
---Agregar funcionarios
-create or replace function insertar_funcionario(
-	p_carnet a_carnet,
-	p_cedula a_cedula,
-	p_telefono a_telefono,
-	p_correos a_correos,
-	p_Nombre CHAR(30),
-	p_Apellido1 CHAR(30),
-	p_Apellido2 CHAR(30),
-	p_provincia VARCHAR(30),
-	p_canton VARCHAR(30),
-	p_distrito VARCHAR(30),
-	p_detalle VARCHAR(100)
-)returns void as
-$BODY$
-Begin
-	raise notice 'Insertando';
-	insert into telefonos_p values(p_cedula,p_telefono);
-	insert into correos_p values(p_cedula,p_correos);
-	insert into personas values (p_cedula,p_Nombre,p_Apellido1,p_Apellido2,p_provincia,p_canton,p_distrito,p_detalle);
-	insert into funcionarios values (p_cedula,p_carnet);
-	raise notice 'Se inserto Funcionario';
-end $BODY$
-language plpgsql;
-
 --------------------------CRUD de estudiantes-----------------------------------------------
 --Agregar Estudiantes falta al insertar que lleve conexion de polizas
 create or replace function insertar_Estudiante(
@@ -309,44 +284,140 @@ CREATE OR REPLACE FUNCTION actualizarEstudiante
 		$BODY$ 
 		LANGUAGE plpgsql;
 
---- insertar practicas-------------
+		
+--------------------------------------------CRUD de funcionarios------------------------------------------------------------------
 
-create or replace function insertar_Practica(
-	p_id_practica varchar(7),
-	p_fecha_inicio date,
-	p_fecha_final date,
-	/*p_nota integer,
-	p_estado char(1), se omiten, se le asignan datos 0,0 y solo se cambian por una funcion NotaPractica*/
-	p_cedula a_cedula,
-	p_id_empresa varchar(7)
+---Obtener funcionario
+select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
+				p.canton,p.distrito,p.detalle,f.carnet,t.telefono,cp.correo from personas
+				p inner join funcionarios f on f.cedula=p.cedula inner join 
+				correos_p cp on cp.cedula=p.cedula inner join telefonos_p t on t.cedula=p.cedula;
+--Agregar funcionarios
+create or replace function insertar_funcionario(
+			p_carnet CHAR(10),
+			p_cedula a_cedula,
+			p_telefono a_telefono,
+			p_correos a_correos,
+			p_Nombre CHAR(30),
+			p_Apellido1 CHAR(30),
+			p_Apellido2 CHAR(30),
+			p_provincia VARCHAR(30),
+			p_canton VARCHAR(30),
+			p_distrito VARCHAR(30),
+			p_detalle VARCHAR(100)
 )returns void as
 $BODY$
 Begin
 	raise notice 'Insertando';
-	insert into practicas values (p_id_practica,p_fecha_inicio,p_fecha_final,100,'r',p_cedula,p_id_empresa);	
-	raise notice 'Se inserto Estudiante';
+	insert into personas values (p_cedula,p_Nombre,p_Apellido1,p_Apellido2,p_provincia,p_canton,p_distrito,p_detalle);
+	insert into telefonos_p values(p_cedula,p_telefono);
+	insert into correos_p values(p_cedula,p_correos);
+	insert into funcionarios values (p_cedula,p_carnet);
+	raise notice 'Se inserto Funcionario';
 end $BODY$
 language plpgsql;
 
----------- borrar practica---------------------
-create or replace function borrar_practica( 
-	p_id_practica varchar(7)
-) returns void as
-$BODY$
-begin
-	delete from practicas where id_practicas=p_id_practica;
-	raise notice 'practica borrada';
-end
-$BODY$
-language plpgsql;
+---actualizar funcionario
+CREATE OR REPLACE FUNCTION actualizarFuncionario
+		( 
+			p_carnet VARCHAR(10),
+			p_cedula a_cedula,
+			p_telefono a_telefono,
+			p_correos a_correos,
+			p_Nombre CHAR(30),
+			p_Apellido1 CHAR(30),
+			p_Apellido2 CHAR(30),
+			p_provincia VARCHAR(30),
+			p_canton VARCHAR(30),
+			p_distrito VARCHAR(30),
+			p_detalle VARCHAR(100)
+		) RETURNS VOID
+		AS
+		$BODY$
+		BEGIN
+			update  Personas  set 
+				nombre=p_nombre,
+				apellido1=p_Apellido1,
+				apellido2=p_Apellido2,
+				provincia=p_provincia,
+				canton=p_canton,
+				distrito=p_distrito,
+				detalle=p_detalle
+				where cedula=p_cedula ;
+			update correos_p set correo=p_correos where cedula=p_cedula ;
+			update telefonos_p  set telefono=p_telefono where cedula=p_cedula;
+		END;
+		$BODY$ 
+		LANGUAGE plpgsql;
 
------
+----eliminar funcionario
+CREATE OR REPLACE FUNCTION eliminarFuncionario
+		( 
+			p_cedula a_cedula
+		) RETURNS VOID
+		AS
+		$BODY$
+		BEGIN
+			delete  from Funcionarios where cedula=p_cedula;
+			delete  from correos_p where cedula=p_cedula;
+			delete  from telefonos_p where cedula=p_cedula;
+			delete  from personas where cedula=p_cedula;
+		END;
+		$BODY$ 
+		LANGUAGE plpgsql;
+
+-------------------------------------------------------CRUD empresas----------------------------------------------------------------------
+--Agregar empresa
+select insertar_empresa('Avantica','Alajuela','San Carlos','Quesada','lol','8888-9999','lo@lo.lo','4-000-000')
+create or replace function insertar_empresa(
+			e_nombre CHAR(30),
+			e_provincia VARCHAR(30),
+			e_canton VARCHAR(30),
+			e_distrito VARCHAR(30),
+			e_detalle VARCHAR(100),
+			e_telefono a_telefono,
+			e_correos a_correos,
+			e_cedula a_cedula
+			
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	declare ide int=insert into Empresas(Nombre,provincia,canton,distrito,detalle) values (e_nombre,e_provincia,e_canton,e_distrito,e_detalle)returning ID_Empresa;
+	insert into Telefonos_E values(e_id,e_telefono);
+	insert into Correos_E values(p_id,e_correos);
+	insert into CE values (e_cedula,cast(ide as int));
+	raise notice 'Se inserto empresa';
+end $BODY$
+language plpgsql;
+-----------------------------------CRUD Contactos---------------------------------
+
+
 
 select * from polizas
 select * from Estudiantes
 select * from personas 
 select * from correos_p 
 select * from telefonos_p 
+select * from funcionarios
+
+select actualizarFuncionario('2015107073','0-000-000',
+			'8533-4444','l5@hotmail.com',
+			'c','c','c','c',
+			'c','c','c');
+			
+select insertar_funcionario('2015107073','0-000-000','0000-0000',
+                    'landresf12@hotmail.com','Andres ','Hernandez',
+                    'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor');
+                    
+
+select insertar_funcionario('2015107074','4-000-000','4000-0000',
+                    'landresf3638@hotmail.com','Andres ','Hernandez',
+                    'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor');
+
+select eliminarFuncionario('4-000-000');
+
+
 select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza from personas p inner join estudiantes e on e.cedula=p.cedula
 insert into polizas(descripcion,monto,fecha_vencimiento,aseguradora)values('awdadw','5000','08-08-2018','INS'),
 									('awdadw','10000','08-08-2018','INS'),
@@ -362,4 +433,4 @@ drop function actualizarEstudiante()
 select actualizarEstudiante('2222-222222','2-222-222',
 			'8533-4444','l5@hotmail.com',
 			'c','c','c','c',
-			'c','c','c','2');
+			'c','c','c','1');

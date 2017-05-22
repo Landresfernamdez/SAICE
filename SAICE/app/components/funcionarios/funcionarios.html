@@ -2,7 +2,7 @@
 <div class="container-fluid" >
 	<div class="row">
         <div class="col-md-12">
-        <h4>Estudiantes</h4>
+        <h4>Funcionarios</h4>
         <div class="table-responsive">
                 
               <table id="mytable" class="table table-striped table-hover table-bordered">
@@ -13,7 +13,7 @@
                    
                    </thead>
 
-    <tbody ng-repeat="estudiante in listaStudents">
+    <tbody ng-repeat="funcionario in listaFuncionarios">
         <!--ng-repeat  Se encarga de recorrer la lista de estudiantes que esta en el controller de estudiantes-->
             <tr>
               <th id="cedula"><b>cedula</b></th>
@@ -25,10 +25,10 @@
             </tr>
               <tr >
 
-              <td >{{estudiante.cedula}}</td>
-              <td>{{estudiante.nombre}}</td>
-              <td>{{estudiante.apellido2}}</td>
-              <td>{{estudiante.apellido1}}</td>
+              <td >{{funcionario.cedula}}</td>
+              <td>{{funcionario.nombre}}</td>
+              <td>{{funcionario.apellido2}}</td>
+              <td>{{funcionario.apellido1}}</td>
 
               </tr>
 
@@ -42,34 +42,32 @@
               </tr>
               <tr >
 
-                <td>{{estudiante.provincia}}</td> 
-                <td>{{estudiante.canton}}</td> 
-                <td>{{estudiante.distrito}}</td>
-                <td>{{estudiante.detalle}}</td>
+                <td>{{funcionario.provincia}}</td> 
+                <td>{{funcionario.canton}}</td> 
+                <td>{{funcionario.distrito}}</td>
+                <td>{{funcionario.detalle}}</td>
 
 
               </tr>
               <tr>
 
                      <td id="carnet"><b>carnet</b></td>
-                     <td id="id_poliza"><b>id_poliza</b></td>
                      <td id="correo"><b>correo</b></td>
                      <td id="telefono"><b>telefono</b></td>
 
               </tr>
               <tr >
 
-               <td>{{estudiante.carnet}}</td>
-               <td>{{estudiante.id_poliza}}</td>
-               <td>{{estudiante.correo}}</td>
-               <td>{{estudiante.telefono}}</td>
+               <td>{{funcionario.carnet}}</td>
+               <td>{{funcionario.correo}}</td>
+               <td>{{funcionario.telefono}}</td>
 
               </tr>
 
               <tr >
 
               <td>
-                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ng-click="actualizarPersona(estudiante)"><span class="glyphicon glyphicon-pencil" ></span></button></td>
+                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ng-click="actualizarFuncionario(funcionario)"><span class="glyphicon glyphicon-pencil" ></span></button></td>
                 
               <td>
                 <button class="btn btn-danger btn-xs" data-target="#delete"data-title="Delete" data-toggle="modal"  ><span class="glyphicon glyphicon-trash"></span></button></td>
@@ -89,32 +87,32 @@
 
 
 
-    <!--Vista de añadir-->        
+    <!--Vista de aÃ±adir-->        
 <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add" aria-hidden="true">
       <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header" ng-controller="estudiantesController">
+                <div class="modal-header" ng-controller="funcionariosController">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                     
                     <table>
                       <thead>
-                          <h4 class="modal-title custom_align" id="Heading">Ingresar estudiante</h4>
+                          <h4 class="modal-title custom_align" id="Heading">Ingresar funcionario</h4>
                       </thead>
                       <tbody>
                         <tr>
                           <td>
                             <div class="form-group">
-                            <input class="form-control " type="text" placeholder="carnet ####-######" ng-model="estudiante.carnet">
+                            <input class="form-control " type="text" placeholder="carnet ####-######" ng-model="funcionario.carnet">
                              </div>
                           </td>
                           <td>
                               <div class="form-group">
-                                <input class="form-control " type="text" placeholder="telefono ####-####" ng-model="estudiante.telefono">
+                                <input class="form-control " type="text" placeholder="telefono ####-####" ng-model="funcionario.telefono">
                               </div>
                           </td>
                           <td>
                              <div class="form-group">
-                              <input class="form-control " type="text" placeholder="cedula #-###-###" ng-model="estudiante.cedula">
+                              <input class="form-control " type="text" placeholder="cedula #-###-###" ng-model="funcionario.cedula">
                             </div>
                           </td>
                         </tr>
@@ -124,57 +122,53 @@
                         <tr>
                           <td>
                             <div class="form-group">
-                              <input class="form-control " type="text" placeholder="correo loquesea@loquesea.loquesea" ng-model="estudiante.correo">
+                              <input class="form-control " type="text" placeholder="correo loquesea@loquesea.loquesea" ng-model="funcionario.correo">
                             </div>
                           </td>
                           <td>
                               <div class="form-group">
-                                <input class="form-control " type="text" placeholder="nombre" ng-model="estudiante.nombre">
+                                <input class="form-control " type="text" placeholder="nombre" ng-model="funcionario.nombre">
                               </div>
                           </td>
                           <td>
                             <div class="form-group">
-                            <input class="form-control " type="text" placeholder="primer apellido"ng-model="estudiante.apellido1">
+                            <input class="form-control " type="text" placeholder="primer apellido"ng-model="funcionario.apellido1">
                             </div>
                             </td>
                         </tr>
                         <tr>
                           <td>
                             <div class="form-group">
-                            <input class="form-control " type="text" placeholder="segundo apellido"ng-model="estudiante.apellido2">
+                            <input class="form-control " type="text" placeholder="segundo apellido"ng-model="funcionario.apellido2">
                             </div>
                           </td>
                           <td>
                             <div class="form-group">
-                              <input class="form-control " type="text" placeholder="provincia"ng-model="estudiante.provincia">
+                              <input class="form-control " type="text" placeholder="provincia"ng-model="funcionario.provincia">
                             </div>
                           </td>
                           <td>
                             <div class="form-group">
-                              <input class="form-control " type="text" placeholder="canton"ng-model="estudiante.canton">
+                              <input class="form-control " type="text" placeholder="canton"ng-model="funcionario.canton">
                             </div>
                           </td>
                         </tr>
                         <tr>
                         <td><div class="form-group">
-                          <input class="form-control " type="text" placeholder="distrito"ng-model="estudiante.distrito">
+                          <input class="form-control " type="text" placeholder="distrito"ng-model="funcionario.distrito">
                           </div>
                         </td>
                         <td>
                           <div class="form-group">
-                          <input class="form-control " type="text" placeholder="detalle"ng-model="estudiante.detalle">
+                          <input class="form-control " type="text" placeholder="detalle"ng-model="funcionario.detalle">
                           </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                          <input class="form-control " type="text" placeholder="tipo de poliza"ng-model="estudiante.id_poliza"></div>
                         </td>
 
                         </tr>
                       </tbody>  
                     </table>
                       <div class="modal-footer " >
-                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putEstudiante(estudiante);"data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"  ></span>add</button>
+                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putFuncionarios(funcionario);"data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"  ></span>add</button>
                       </div>
                 </div>
 
@@ -197,8 +191,8 @@
                    
                   </div>
                     <div class="modal-footer ">
-                    <button type="button" class="btn btn-primary"  data-dismiss="modal"ng-click="delete(estudiante.cedula)"><span class="glyphicon glyphicon-ok-sign"data-dismiss="modal"></span> Yes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span> No</button>
+                    <button type="button" class="btn btn-primary"  data-dismiss="modal"ng-click="delete(funcionario.cedula)"><span class="glyphicon glyphicon-ok-sign"data-dismiss="modal"></span>Â Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span>Â No</button>
                   </div>
                     </div>
                 <!-- /.modal-content --> 
@@ -216,23 +210,23 @@
                                       
                                       <table>
                                         <thead>
-                                            <h4 class="modal-title custom_align" id="Heading">Editar estudiante</h4>
+                                            <h4 class="modal-title custom_align" id="Heading">Editar funcionario</h4>
                                         </thead>
                                         <tbody>
                                           <tr>
                                             <td>
                                                 <div class="form-group">
-                                                  <input class="form-control " type="text" placeholder="estudiante.telefono" ng-model="estudiante.telefono">
+                                                  <input class="form-control " type="text" placeholder="funcionario.telefono" ng-model="funcionario.telefono">
                                                 </div>
                                             </td>
                                             <td>
                                               <div class="form-group">
-                                                <input class="form-control " type="text" placeholder="estudiante.correo" ng-model="estudiante.correo">
+                                                <input class="form-control " type="text" placeholder="funcionario.correo" ng-model="funcionario.correo">
                                               </div>
                                             </td>
                                             <td>
                                                 <div class="form-group">
-                                                  <input class="form-control " type="text" placeholder="estudiante.nombre" ng-model="estudiante.nombre">
+                                                  <input class="form-control " type="text" placeholder="funcionario.nombre" ng-model="funcionario.nombre">
                                                 </div>
                                             </td>
 
@@ -242,57 +236,53 @@
                                             
                                             <td>
                                               <div class="form-group">
-                                              <input class="form-control " type="text" placeholder="estudiante.apellido1"ng-model="estudiante.apellido1">
+                                              <input class="form-control " type="text" placeholder="funcionario.apellido1"ng-model="funcionario.apellido1">
                                               </div>
                                             </td>
                                             <td style="display:none">
                                               <div class="form-group">
-                                              <input class="form-control " type="text" placeholder="estudiante.celula"ng-model="estudiante.cedula">
+                                              <input class="form-control " type="text" placeholder="funcionario.celula"ng-model="funcionario.cedula">
                                               </div>
                                             </td >
                                             <td style="display:none">
                                               <div class="form-group">
-                                              <input class="form-control " type="text" placeholder="estudiante.apellido1"ng-model="estudiante.carnet">
+                                              <input class="form-control " type="text" placeholder="funcionario.apellido1"ng-model="funcionario.carnet">
                                               </div>
                                             </td>
                                           </tr>
                                           <tr>
                                             <td>
                                               <div class="form-group">
-                                              <input class="form-control " type="text" placeholder="estudiante.apellido2"ng-model="estudiante.apellido2">
+                                              <input class="form-control " type="text" placeholder="funcionario.apellido2"ng-model="funcionario.apellido2">
                                               </div>
                                             </td>
                                             <td>
                                               <div class="form-group">
-                                                <input class="form-control " type="text" placeholder="estudiante.provincia"ng-model="estudiante.provincia">
+                                                <input class="form-control " type="text" placeholder="funcionario.provincia"ng-model="funcionario.provincia">
                                               </div>
                                             </td>
                                             <td>
                                               <div class="form-group">
-                                                <input class="form-control " type="text" placeholder="estudiante.canton"ng-model="estudiante.canton">
+                                                <input class="form-control " type="text" placeholder="funcionario.canton"ng-model="funcionario.canton">
                                               </div>
                                             </td>
                                           </tr>
                                           <tr>
                                           <td><div class="form-group">
-                                            <input class="form-control " type="text" placeholder="estudiante.distrito"ng-model="estudiante.distrito">
+                                            <input class="form-control " type="text" placeholder="funcionario.distrito"ng-model="funcionario.distrito">
                                             </div>
                                           </td>
                                           <td>
                                             <div class="form-group">
-                                            <input class="form-control " type="text" placeholder="estudiante.detalle"ng-model="estudiante.detalle">
+                                            <input class="form-control " type="text" placeholder="funcionario.detalle"ng-model="funcionario.detalle">
                                             </div>
-                                          </td>
-                                          <td>
-                                              <div class="form-group">
-                                            <input class="form-control " type="text" placeholder="estudiante.id_poliza"ng-model="estudiante.id_poliza"></div>
                                           </td>
 
                                           </tr>
                                         </tbody>  
                                       </table>
                                         <div class="modal-footer " >
-                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postEstudiante(estudiante);"data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"  ></span>edit</button>
+                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postFuncionario(funcionario);"data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"  ></span>edit</button>
                                         </div>
                                   </div>
 
