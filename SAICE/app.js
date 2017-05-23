@@ -12,7 +12,10 @@ angular.module('userModule',['ngRoute'])
                         templateUrl:'app/components/estudiantes/estudiantes.html',
                         controller: 'estudiantesController'
                                              })
-
+                    .when("/Giras",{
+                        templateUrl:'app/components/Giras/Giras.html',
+                        controller: 'GirasController'
+                                             })
 			        .otherwise({
 			            redirectTo: '/'
 			        });

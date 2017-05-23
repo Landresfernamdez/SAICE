@@ -1,29 +1,29 @@
-'use strict'
 angular.module('userModule')
-.controller('estudiantesController',function($scope,OperationsStudents,$location,$route){
-
-	$scope.listaStudents = [];
-	$scope.estudiante = {
-		carnet:"",
-		cedula:"",
-		telefono:"",
-		correo:"",
-		nombre:"",
-		apellido1:"",
-		apellido2:"",
+.controller('GirasController',function($scope,OperationsTours,$location){
+    $scope.listaTours=[];
+	$scope.Tours={
+		id_gira:"",
+		fecha_inicio:"",
+		fecha_final:"",
+		costo:"",
+		duracion:"",
 		provincia:"",
 		canton:"",
 		distrito:"",
-		detalle:"",
-		id_poliza:""
+		detalle:""
 	};
-	console.log("entro a comprobacion");
-	
-	$scope.getEstudiantes = function getEstudiantes() {
+	console.log("entro");
+    $scope.getTours=function getTours(){
+        OperationsTours.getTours(function(res){
+		  $scope.listaTours=res;
+	});
+	}
 
-		OperationsStudents.getStudents( function(res) {
-			$scope.listaStudents = res;
-		});
+	$scope.getTours();
+});
+
+
+/*'use strict'
 
 	};
 	$scope.getEstudiantes();
@@ -65,4 +65,4 @@ angular.module('userModule')
 		});
 	};
 
-});
+});*/

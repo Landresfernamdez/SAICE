@@ -80,11 +80,10 @@ CREATE TABLE Polizas(
                     );
 --Tabla estudiantes
 
-CREATE  Estudiantes(
+CREATE  table Estudiantes(
 	cedula a_cedula PRIMARY KEY,
 	carnet a_carnet,
 	ID_Poliza serial NOT NULL,
-	ID_Poliza CHAR(7) NOT NULL,
 	CONSTRAINT FK_polizas_estudiantes FOREIGN KEY(ID_Poliza) REFERENCES Polizas 	
                         );       
 --Tabla contactos
@@ -135,6 +134,7 @@ CREATE TABLE PRACTICAS(
 		CONSTRAINT FK_id_empresa_practicas FOREIGN KEY(ID_Empresa) REFERENCES Empresas,
 		CONSTRAINT FK_cedula_estudiante_Practicas FOREIGN KEY(cedula) REFERENCES Estudiantes
                       );
+                      select*from giras
 --Tabla giras
 CREATE TABLE Giras(
 	ID_Gira Serial NOT NULL PRIMARY KEY,
@@ -176,11 +176,8 @@ CREATE TABLE  GE(
 
 --Agregar eventos
 create or replace Function insertar_eventos(
-<<<<<<< HEAD:Base de datos/SAICE.sql
 	E_ID_Evento Serial NOT NULL,
-=======
 	E_ID_Evento CHAR(7),
->>>>>>> 2af9f0ab5ef60d84b9d00174aba7b779260ad34e:SAICE.sql
 	E_Nombre VARCHAR(30),
 	E_Descripcion VARCHAR(100),
 	E_FechaInicio DATE,
@@ -313,7 +310,146 @@ CREATE OR REPLACE FUNCTION actualizarEstudiante
 		$BODY$ 
 		LANGUAGE plpgsql;
 
+--Insertar Giras
+create or replace function insertar_Giras(
+	g_Fecha_inicio varchar(50),
+	g_Fecha_final varchar(50),
+	g_costo INT,
+	g_duracion varchar(30),
+	g_provincia VARCHAR(30) ,
+	g_canton VARCHAR(30) ,
+	g_distrito VARCHAR(30) ,
+	g_detalle VARCHAR(100) 
 
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	insert into giras(Fecha_inicio,Fecha_final,costo,duracion,provincia,canton,distrito,detalle) values (cast (g_Fecha_inicio as date),cast(g_Fecha_final as date),g_costo,cast(g_duracion as time),g_provincia,g_canton,g_distrito,g_detalle);	
+	raise notice 'Se inserto Gira';
+end $BODY$
+language plpgsql;
+
+
+create or replace function validaInsercionGiras()
+returns trigger as
+$$
+begin
+	if (cast (NEW.fecha_final as date)<cast(NEW.fecha_inicio as date))then
+		raise notice 'La fecha de finalización de la gira no puede estar antes que su inicio';
+	end if;
+	return new;
+END
+$$
+language plpgsql
+
+create trigger trigger_valida_Giras after insert ON giras
+FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiras();
+
+--Insertar Polizas
+create or replace function insertar_Polizas(
+	p_Descripcion VARCHAR(100),
+	p_Monto INT,
+	p_Fecha_vencimiento varchar(30),
+	p_Aseguradora VARCHAR(30)
+
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	
+	insert into polizas(Descripcion,Monto,Fecha_vencimiento,Aseguradora) values (p_Descripcion,p_Monto,cast(p_Fecha_vencimiento as date),p_Aseguradora);	
+	raise notice 'Se inserto Poliza';
+end $BODY$
+language plpgsql;
+
+
+
+
+----------Modificar-------------
+
+--Modificar giras
+CREATE OR REPLACE FUNCTION modificar_giras
+(	
+	g_ID_Gira int,
+	g_Fecha_inicio varchar(50),
+	g_Fecha_final varchar(50),
+	g_costo INT,
+	g_duracion varchar(30),
+	g_provincia VARCHAR(30) ,
+	g_canton VARCHAR(30) ,
+	g_distrito VARCHAR(30) ,
+	g_detalle VARCHAR(100) 
+
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    update giras set
+	Fecha_inicio=cast(g_Fecha_inicio as date),
+	Fecha_final=cast(g_Fecha_final as date),
+	costo=g_costo,
+	duracion=cast (g_duracion as time),
+	provincia=g_provincia,
+	canton=g_canton,
+	distrito=g_distrito,
+	detalle=g_detalle 
+
+    where ID_gira=g_ID_Gira;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+--Modificar polizas
+CREATE OR REPLACE FUNCTION modificar_polizas
+(
+	p_ID_Poliza int,
+	p_Descripcion VARCHAR(100),
+	p_Monto INT,
+	p_Fecha_vencimiento varchar(30),
+	p_Aseguradora VARCHAR(30)
+
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    update polizas set
+	Descripcion=p_Descripcion,
+	Monto=p_Monto,
+	Fecha_vencimiento=cast(p_Fecha_vencimiento as date),
+	Aseguradora=p_Aseguradora
+
+    where ID_poliza=p_ID_poliza;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+--borrado de giras
+CREATE OR REPLACE FUNCTION borrar_giras
+(
+	g_ID_Gira int
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    delete from giras where id_gira=g_id_gira;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+--borrado polizas
+CREATE OR REPLACE FUNCTION borrar_polizas
+(
+	p_ID_poliza int
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    delete from polizas where id_poliza=p_id_poliza;
+END;
+$BODY$
+LANGUAGE plpgsql;
 
 
 
@@ -337,3 +473,5 @@ select actualizarEstudiante('2015-110180','1-111-111',
 			'8637-4844','landresf3638@hotmail.com',
 			'Andres','adawda','Calderon','Alajuela',
 			'San Ramon','Piedades Sur','Estudiante','1');
+insert into giras(Fecha_inicio,Fecha_final,costo,duracion,provincia,canton,distrito,detalle) values('01-01-2017','01-01-2017',100,'2:30','aaaa','aaa','aaaa','aaaaaaaaa')
+select insertar_Giras('01-01-2017','01-01-2017',100,'2:30','aaaa','aaa','aaaa','aaaaaaaaa');
