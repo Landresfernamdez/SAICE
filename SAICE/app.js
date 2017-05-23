@@ -17,6 +17,10 @@ angular.module('userModule',['ngRoute'])
                         templateUrl:'app/components/funcionarios/funcionarios.html',
                         controller: 'funcionariosController'
                                              })
+                    .when("/contactos",{
+                        templateUrl:'app/components/contactos/contactos.html',
+                        controller: 'contactosController'
+                                             })
 
 			        .otherwise({
 			            redirectTo: '/'

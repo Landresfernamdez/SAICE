@@ -11,6 +11,11 @@ CHECK(VALUE SIMILAR TO '[0-9]-[0-9][0-9][0-9]-[0-9][0-9][0-9]');
 CREATE DOMAIN a_carnet CHAR(11) NOT NULL CONSTRAINT CHK_carnet 
 CHECK (VALUE SIMILAR TO '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9][0-9][0-9]');
 
+
+CREATE DOMAIN id_empresa CHAR(9) NOT NULL CONSTRAINT CHK_id_empresa 
+CHECK (VALUE SIMILAR TO 'Em-[0-9][0-9][0-9][0-9][0-9][0-9]');
+
+
 --Tabla eventos
  CREATE TABLE Eventos(
 	ID_Evento Serial primary key NOT NULL,
@@ -80,7 +85,7 @@ CREATE TABLE Polizas(
                     );
 --Tabla estudiantes
 
-CREATE  Estudiantes(
+CREATE  TABLE Estudiantes(
 	cedula a_cedula PRIMARY KEY,
 	carnet a_carnet,
 	ID_Poliza serial NOT NULL,
@@ -90,11 +95,11 @@ CREATE  Estudiantes(
 CREATE TABLE Contactos(
 	cedula a_cedula PRIMARY KEY ,
 	Puesto VARCHAR(30) NOT NULL,
-	CONSTRAINT FK_cedula_estudiantes_contactos FOREIGN KEY(cedula)REFERENCES Estudiantes
+	CONSTRAINT FK_cedula_personas_contactos FOREIGN KEY(cedula)REFERENCES Personas
                       );
 --Tabla empresas
 CREATE TABLE Empresas(
-	ID_Empresa Serial NOT NULL PRIMARY KEY,
+	ID_Empresa id_empresa NOT NULL PRIMARY KEY,
 	Nombre CHAR(30) NOT NULL,
 	provincia VARCHAR(30) NOT NULL,
 	canton VARCHAR(30) NOT NULL,
@@ -104,20 +109,20 @@ CREATE TABLE Empresas(
 --Tabla contactos empresas
 CREATE TABLE CE(
 	cedula a_cedula,
-	ID_Empresa serial NOT NULL,
+	ID_Empresa id_empresa NOT NULL,
 	CONSTRAINT PK_Contactos_de_empresa PRIMARY KEY(cedula,ID_Empresa),
 	CONSTRAINT FK_cedula_contacto_empresa FOREIGN KEY(cedula)REFERENCES Contactos,
 	CONSTRAINT FK_id_empresa_de_contacto FOREIGN KEY(ID_Empresa)REFERENCES Empresas
                );         
 --Tabla telefonos empresas           
 CREATE TABLE Telefonos_E(
-		ID_Empresa Serial NOT NULL PRIMARY KEY,
+		ID_Empresa id_empresa NOT NULL PRIMARY KEY,
 		telefono a_telefono,
 		CONSTRAINT FK_id_empresa_telefonos FOREIGN KEY(ID_Empresa) REFERENCES Empresas
                         );
 --Tabla correos empresas
 CREATE TABLE Correos_E(
-	ID_Empresa Serial NOT NULL PRIMARY KEY,
+	ID_Empresa id_empresa NOT NULL PRIMARY KEY,
 	correo a_correos ,
 	CONSTRAINT FK_id_empresa_correos FOREIGN KEY(ID_Empresa) REFERENCES Empresas
                 );
@@ -130,7 +135,7 @@ CREATE TABLE PRACTICAS(
 		nota int  NOT NULL,
 		estado CHAR(1) NOT NULL,
 		cedula a_cedula,
-		ID_Empresa serial NOT NULL,
+		ID_Empresa id_empresa NOT NULL,
 		CONSTRAINT FK_id_empresa_practicas FOREIGN KEY(ID_Empresa) REFERENCES Empresas,
 		CONSTRAINT FK_cedula_estudiante_Practicas FOREIGN KEY(cedula) REFERENCES Estudiantes
                       );
@@ -165,7 +170,7 @@ CREATE TABLE ES(
 --Tabla eventos giras funcionarios
 CREATE TABLE  GE(
 	ID_Giras Serial NOT NULL,
-	ID_Empresa serial NOT NULL,
+	ID_Empresa id_empresa NOT NULL,
 	CONSTRAINT PK_Giras_empresas PRIMARY KEY(ID_Giras,ID_Empresa),
 	CONSTRAINT FK_ID_empresa_Giras FOREIGN KEY(ID_Empresa)REFERENCES Empresas,
 	CONSTRAINT FK_ID_giras_empresas FOREIGN KEY(ID_Giras)REFERENCES Giras
@@ -244,10 +249,6 @@ p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza,t.telefono,cp.correo from per
 p inner join estudiantes e on e.cedula=p.cedula inner join 
 correos_p cp on cp.cedula=p.cedula inner join telefonos_p t on t.cedula=p.cedula;
 
-select actualizarEstudiante('2015-110180','1-111-111',
-			'8637-4844','landresf3638@hotmail.com',
-			'Andres','adawda','Calderon','Alajuela',
-			'San Ramon','Piedades Sur','Estudiante',1);
 ---Funcion que se encarga de modificar un estudiante
 CREATE OR REPLACE FUNCTION actualizarEstudiante
 		( 
@@ -368,32 +369,127 @@ CREATE OR REPLACE FUNCTION eliminarFuncionario
 
 -------------------------------------------------------CRUD empresas----------------------------------------------------------------------
 --Agregar empresa
-select insertar_empresa('Avantica','Alajuela','San Carlos','Quesada','lol','8888-9999','lo@lo.lo','4-000-000')
 create or replace function insertar_empresa(
+			e_id_empresa id_empresa,
 			e_nombre CHAR(30),
 			e_provincia VARCHAR(30),
 			e_canton VARCHAR(30),
 			e_distrito VARCHAR(30),
 			e_detalle VARCHAR(100),
 			e_telefono a_telefono,
-			e_correos a_correos,
-			e_cedula a_cedula
+			e_correos a_correos
 			
 )returns void as
 $BODY$
 Begin
 	raise notice 'Insertando';
-	declare ide int=insert into Empresas(Nombre,provincia,canton,distrito,detalle) values (e_nombre,e_provincia,e_canton,e_distrito,e_detalle)returning ID_Empresa;
-	insert into Telefonos_E values(e_id,e_telefono);
-	insert into Correos_E values(p_id,e_correos);
-	insert into CE values (e_cedula,cast(ide as int));
+	insert into Empresas values (e_id_empresa,e_nombre,e_provincia,e_canton,e_distrito,e_detalle);
+	insert into Telefonos_E values(e_id_empresa,e_telefono);
+	insert into Correos_E values(e_id_empresa,e_correos);
 	raise notice 'Se inserto empresa';
 end $BODY$
 language plpgsql;
 -----------------------------------CRUD Contactos---------------------------------
+-----obtener contacto
+select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
+				p.canton,p.distrito,p.detalle,t.telefono,cp.correo,c.puesto,r.ID_empresa from personas
+				p inner join contactos c on c.cedula=p.cedula inner join 
+				correos_p cp on cp.cedula=p.cedula inner join telefonos_p t on t.cedula=p.cedula inner join ce
+				r on r.cedula=p.cedula;
+---insertar contacto
+create or replace function insertar_contacto(
+			p_puesto CHAR(30),
+			p_cedula a_cedula,
+			p_telefono a_telefono,
+			p_correos a_correos,
+			p_Nombre CHAR(30),
+			p_Apellido1 CHAR(30),
+			p_Apellido2 CHAR(30),
+			p_provincia VARCHAR(30),
+			p_canton VARCHAR(30),
+			p_distrito VARCHAR(30),
+			p_detalle VARCHAR(100),
+			p_id_empresa id_empresa
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	insert into personas values (p_cedula,p_Nombre,p_Apellido1,p_Apellido2,p_provincia,p_canton,p_distrito,p_detalle);
+	insert into telefonos_p values(p_cedula,p_telefono);
+	insert into correos_p values(p_cedula,p_correos);
+	insert into contactos values (p_cedula,p_puesto);
+	insert into ce values (p_cedula,p_id_empresa);
+	raise notice 'Se inserto Funcionario';
+end $BODY$
+language plpgsql;
+------modificar un contacto
+
+CREATE OR REPLACE FUNCTION actualizarContacto
+		( 
+			p_puesto VARCHAR(30),
+			p_cedula a_cedula,
+			p_telefono a_telefono,
+			p_correos a_correos,
+			p_Nombre CHAR(30),
+			p_Apellido1 CHAR(30),
+			p_Apellido2 CHAR(30),
+			p_provincia VARCHAR(30),
+			p_canton VARCHAR(30),
+			p_distrito VARCHAR(30),
+			p_detalle VARCHAR(100),
+			p_id_empresa id_empresa
+		) RETURNS VOID
+		AS
+		$BODY$
+		BEGIN
+			update  Personas  set 
+				nombre=p_nombre,
+				apellido1=p_Apellido1,
+				apellido2=p_Apellido2,
+				provincia=p_provincia,
+				canton=p_canton,
+				distrito=p_distrito,
+				detalle=p_detalle
+				where cedula=p_cedula ;
+			update correos_p set correo=p_correos where cedula=p_cedula ;
+			update telefonos_p  set telefono=p_telefono where cedula=p_cedula;
+			update contactos set puesto=p_puesto where cedula=p_cedula;
+		END;
+		$BODY$ 
+		LANGUAGE plpgsql;
+
+---eliminar contacto
+
+CREATE OR REPLACE FUNCTION eliminarContacto
+		( 
+			p_cedula a_cedula
+		) RETURNS VOID
+		AS
+		$BODY$
+		BEGIN
+			delete from ce where cedula=p_cedula;
+			delete  from contactos where cedula=p_cedula;
+			delete  from correos_p where cedula=p_cedula;
+			delete  from telefonos_p where cedula=p_cedula;
+			delete  from personas where cedula=p_cedula;
+		END;
+		$BODY$ 
+		LANGUAGE plpgsql;
 
 
 
+
+
+
+
+
+
+
+select * from contactos
+select * from ce
+select * from empresas
+select * from correos_e 
+select * from telefonos_e 
 select * from polizas
 select * from Estudiantes
 select * from personas 
@@ -401,6 +497,19 @@ select * from correos_p
 select * from telefonos_p 
 select * from funcionarios
 
+
+select insertar_empresa('Em-000000','Avantica','Alajuela','San Carlos','Quesada','lol','8888-9999','ava@ava.ava')
+select insertar_contacto('gerente','1-222-333','3333-3333',
+                    'landresf12@hotmail.com','Andres ','Hernandez',
+                    'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor','Em-000000');
+select eliminarContacto('1-222-333');
+
+ select actualizarContacto('Desarrollador','1-222-333',
+			'8533-4444','landres@hotmail.com',
+			'Andres','Fernandez','Calderon','Alajuela','San Ramon','Piedades Sur','web developer','Em-000000');    
+
+
+			               
 select actualizarFuncionario('2015107073','0-000-000',
 			'8533-4444','l5@hotmail.com',
 			'c','c','c','c',
@@ -417,14 +526,21 @@ select insertar_funcionario('2015107074','4-000-000','4000-0000',
 
 select eliminarFuncionario('4-000-000');
 
+select actualizarEstudiante('2015-110180','1-111-111',
+			'8637-4844','landresf3638@hotmail.com',
+			'Andres','adawda','Calderon','Alajuela',
+			'San Ramon','Piedades Sur','Estudiante',1);
 
 select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza from personas p inner join estudiantes e on e.cedula=p.cedula
 insert into polizas(descripcion,monto,fecha_vencimiento,aseguradora)values('awdadw','5000','08-08-2018','INS'),
 									('awdadw','10000','08-08-2018','INS'),
-									('awdadw','15000','08-08-2018','INS'),										
-select insertar_Estudiante('2015-110180','2-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez','Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','1');
-select insertar_Estudiante('2015-111111','2-321-321','8637-4845','landresf12@hotmail.com','Luis','Fernandez','Matamoros','Alajuela','San Ramon','Piedades Sur','Estudiante');
-select insertar_Estudiante('2015-121212','2-745-217','8637-4846','landresf12@hotmail.com','Luis Andres','Fernandez','Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante');   
+									('awdadw','15000','08-08-2018','INS');									
+select insertar_Estudiante('2015-110180','2-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez',
+'Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','1');
+select insertar_Estudiante('2015-111111','2-321-321','8637-4845','landresf12@hotmail.com','Luis','Fernandez',
+'Matamoros','Alajuela','San Ramon','Piedades Sur','Estudiante','2');
+select insertar_Estudiante('2015-121212','2-745-217','8637-4846','landresf12@hotmail.com',
+'Luis Andres','Fernandez','Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','3');   
 
 select eliminarEstudiante('2-122-193');
 

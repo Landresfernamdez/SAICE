@@ -7,14 +7,15 @@ else
     echo 'La funcion no ha sido creada: Comuniquese';
 }
 
-function ObtenertodosStudents(){
+function ObtenertodosContactos(){
 		//se importa la conexion con la base de datos
 		include("../conexion.php");
 		//se declara el query
 		$query="select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
-				p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza,t.telefono,cp.correo from personas
-				p inner join estudiantes e on e.cedula=p.cedula inner join 
-				correos_p cp on cp.cedula=p.cedula inner join telefonos_p t on t.cedula=p.cedula;";
+				p.canton,p.distrito,p.detalle,t.telefono,cp.correo,c.puesto,r.ID_empresa from personas
+				p inner join contactos c on c.cedula=p.cedula inner join 
+				correos_p cp on cp.cedula=p.cedula inner join telefonos_p t on t.cedula=p.cedula  inner join ce
+				r on r.cedula=p.cedula;";
 		
 		//pg_query se encarga de ejecutar el query mediante la conexion y el query y  se encarga de realizar la consulta a la base y generar una tabla
 		$result=pg_query($con,$query)or die("Error de consulta");
@@ -25,16 +26,16 @@ function ObtenertodosStudents(){
 		// json_encode se encarga de convertir el array en un json(java script object notation)
 		echo json_encode($respuesta);
 }
-function putEstudiantes(){
+function putContactos(){
 		//se importa la conexion con la base de datos
 		include("../conexion.php");
 		//decodifica un string a json 
 	    $obj = json_decode(file_get_contents("php://input"));
 	    //query de la consulta a la base de datos
-	    $query = "select insertar_Estudiante('$obj->carnet','$obj->cedula',"
+	    $query = "select insertar_contacto('$obj->puesto','$obj->cedula',"
 	            . "'$obj->telefono','$obj->correo','$obj->nombre',"
 	            . "'$obj->apellido1','$obj->apellido2','$obj->provincia',"
-	            . "'$obj->canton','$obj->distrito','$obj->detalle','$obj->id_poliza');";
+	            . "'$obj->canton','$obj->distrito','$obj->detalle','$obj->id_empresa');";
 	    //pg_query se encarga de ejecutar el query mediante la conexion y el query y  se encarga de realizar la consulta a la base y generar una tabla
 	    $result = pg_query($con,$query) or die ("'estado': 1");
 	    
@@ -46,13 +47,13 @@ function putEstudiantes(){
 	    echo $respuesta;  
 }
 
-function deleteEstudiantes(){
+function deleteContactos(){
 		//se importa la conexion con la base de datos
 		include("../conexion.php");
 		//decodifica un string a json 
 	    $obj = json_decode(file_get_contents("php://input"));
 	    //query de la consulta a la base de datos
-	    $query = "select eliminarEstudiante('$obj->ida');";
+	    $query = "select eliminarContacto('$obj->ida');";
 	    //pg_query se encarga de ejecutar el query mediante la conexion y el query y  se encarga de realizar la consulta a la base y generar una tabla
 	    $result = pg_query($con,$query) or die ("'estado': 1");
 	    
@@ -63,16 +64,16 @@ function deleteEstudiantes(){
 	    
 	    echo $respuesta;  
 }
-function updateEstudiantes(){
+function updateContactos(){
 		//se importa la conexion con la base de datos
 		include("../conexion.php");
 		//decodifica un string a json 
 	    $obj = json_decode(file_get_contents("php://input"));
 	    //query de la consulta a la base de datos
-	    $query = "select actualizarEstudiante('$obj->carnet','$obj->cedula',"
+	    $query = "select actualizarContacto('$obj->puesto','$obj->cedula',"
 	            . "'$obj->telefono','$obj->correo','$obj->nombre',"
 	            . "'$obj->apellido1','$obj->apellido2','$obj->provincia',"
-	            . "'$obj->canton','$obj->distrito','$obj->detalle','$obj->id_poliza');";
+	            . "'$obj->canton','$obj->distrito','$obj->detalle','$obj->id_empresa');";
 	    //pg_query se encarga de ejecutar el query mediante la conexion y el query y  se encarga de realizar la consulta a la base y generar una tabla
 	    $result = pg_query($con,$query) or die ("'estado': 1");
 	    
