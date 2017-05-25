@@ -67,10 +67,10 @@
               <tr >
 
               <td>
-                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ng-click="actualizarFuncionario(funcionario)"><span class="glyphicon glyphicon-pencil" ></span></button></td>
+                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ng-click="actualizarFuncionario(funcionario)"><span ng-click="actualizarFuncionario(funcionario)" class="glyphicon glyphicon-pencil" ></span></button></td>
                 
               <td>
-                <button class="btn btn-danger btn-xs" data-target="#delete"data-title="Delete" data-toggle="modal"  ><span class="glyphicon glyphicon-trash"></span></button></td>
+                <button class="btn btn-danger btn-xs" data-target="#delete"data-title="Delete" data-toggle="modal" ng-click="actualizarFuncionario(funcionario)" ><span ng-click="actualizarFuncionario(funcionario)" class="glyphicon glyphicon-trash"></span></button></td>
                 <td>
                    <button  type="button" class="btn btn-success btn-circle btn-lg" ><span class="glyphicon glyphicon-plus" data-title="Add" data-toggle="modal" data-target="#add"></span></button>
                 </td> 
@@ -168,7 +168,7 @@
                       </tbody>  
                     </table>
                       <div class="modal-footer " >
-                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putFuncionarios(funcionario);"data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"  ></span>add</button>
+                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putFuncionarios(funcionario);"data-dismiss="modal"><span ng-click="putFuncionarios(funcionario);" class="glyphicon glyphicon-ok-sign"  ></span>add</button>
                       </div>
                 </div>
 
@@ -191,7 +191,7 @@
                    
                   </div>
                     <div class="modal-footer ">
-                    <button type="button" class="btn btn-primary"  data-dismiss="modal"ng-click="delete(funcionario.cedula)"><span class="glyphicon glyphicon-ok-sign"data-dismiss="modal"></span> Yes</button>
+                    <button type="button" class="btn btn-primary"  data-dismiss="modal"ng-click="delete(funcionario.cedula)"><span ng-click="delete(funcionario.cedula)" class="glyphicon glyphicon-ok-sign"data-dismiss="modal"></span> Yes</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span> No</button>
                   </div>
                     </div>
@@ -282,7 +282,7 @@
                                         </tbody>  
                                       </table>
                                         <div class="modal-footer " >
-                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postFuncionario(funcionario);"data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"  ></span>edit</button>
+                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postFuncionario(funcionario);"data-dismiss="modal"><span ng-click="postFuncionario(funcionario);" class="glyphicon glyphicon-ok-sign"  ></span>edit</button>
                                         </div>
                                   </div>
 

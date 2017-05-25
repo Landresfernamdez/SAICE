@@ -28,7 +28,7 @@ angular.module('userModule')
 	$scope.getFuncionarios();
 	$scope.putFuncionarios = function putFuncionarios(funcionario) {
 
-		OperationsFuncionarios.putofficials($scope.funcionario, function(response) {
+		OperationsFuncionarios.putofficials(funcionario, function(response) {
 
 			if (response.success) {
 				console.log("exito");
@@ -39,8 +39,8 @@ angular.module('userModule')
 		});
 	};
 	$scope.delete=function deleteFuncionarios(id){
-		console.log("imprime:"+id);
-		OperationsFuncionarios.deleteofficials(id,function(response){
+		console.log("imprime:"+$scope.funcionario.cedula);
+		OperationsFuncionarios.deleteofficials($scope.funcionario.cedula,function(response){
 				if(response.success){
 				    $location.path('funcionarios');
 				    $route.reload();
@@ -49,7 +49,7 @@ angular.module('userModule')
 
 	};
 	$scope.postFuncionarios = function postFuncionarios(funcionario) {
-		OperationsFuncionarios.updateofficials(funcionario, function(response) {
+		OperationsFuncionarios.updateofficials($scope.funcionario, function(response) {
 
 			if (response.success) {
 				console.log("exito");

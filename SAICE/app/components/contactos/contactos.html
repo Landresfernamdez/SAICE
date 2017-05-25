@@ -69,12 +69,12 @@
               <tr >
 
               <td>
-                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ng-click="actualizarContacto(contacto)"><span class="glyphicon glyphicon-pencil" ></span></button></td>
+                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ng-click="actualizarContacto(contacto)"><span ng-click="actualizarContacto(contacto)" class="glyphicon glyphicon-pencil" ></span></button></td>
                 
               <td>
-                <button class="btn btn-danger btn-xs" data-target="#delete"data-title="Delete" data-toggle="modal"  ><span class="glyphicon glyphicon-trash"ng-click="actualizarContacto(contacto)"></span></button></td>
+                <button class="btn btn-danger btn-xs" data-target="#delete"data-title="Delete" data-toggle="modal" ng-click="actualizarContacto(contacto)"><span ng-click="actualizarContacto(contacto)"  class="glyphicon glyphicon-trash"></span></button></td>
                 <td>
-                   <button  type="button" class="btn btn-success btn-circle btn-lg" ><span class="glyphicon glyphicon-plus" data-title="Add" data-toggle="modal" data-target="#add"></span></button>
+                   <button  type="button" class="btn btn-success btn-circle btn-lg"  ><span class="glyphicon glyphicon-plus" data-title="Add" data-toggle="modal" data-target="#add"></span></button>
                 </td> 
               
               </tr>
@@ -174,7 +174,7 @@
                       </tbody>  
                     </table>
                       <div class="modal-footer " >
-                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putContacto(contacto);"data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"  ></span>add</button>
+                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putContacto(contacto);"data-dismiss="modal"><span ng-click="putContacto(contacto);" class="glyphicon glyphicon-ok-sign"  ></span>add</button>
                       </div>
                 </div>
 
@@ -184,7 +184,7 @@
     </div>
 </div>
   <!--vista de eliminar-->
-            <div ng-controller="contactosController"class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+            <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
                   <div class="modal-dialog">
                 <div class="modal-content">
                       <div class="modal-header">
@@ -197,7 +197,7 @@
                    
                   </div>
                     <div class="modal-footer ">
-                    <button type="button" class="btn btn-primary"  data-dismiss="modal"ng-click="delete(contacto.cedula)"><span class="glyphicon glyphicon-ok-sign"data-dismiss="modal"></span> Yes</button>
+                    <button type="button" class="btn btn-primary"  data-dismiss="modal"ng-click="delete(contacto.cedula)"><span  ng-click="delete(contacto.cedula)"class="glyphicon glyphicon-ok-sign"data-dismiss="modal"></span> Yes</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span> No</button>
                   </div>
                     </div>
@@ -292,7 +292,7 @@
                                         </tbody>  
                                       </table>
                                         <div class="modal-footer " >
-                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postContacto(contacto);"data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"  ></span>edit</button>
+                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postContacto(contacto);"data-dismiss="modal"><span ng-click="postContacto(contacto);" class="glyphicon glyphicon-ok-sign"  ></span>edit</button>
                                         </div>
                                   </div>
 

@@ -29,7 +29,7 @@ angular.module('userModule')
 	$scope.getContactos();
 	$scope.putContacto = function putContacto(contacto) {
 
-		OperationsContacts.putContacts($scope.contacto, function(response) {
+		OperationsContacts.putContacts(contacto, function(response) {
 
 			if (response.success) {
 				console.log("exito");
@@ -40,8 +40,8 @@ angular.module('userModule')
 		});
 	};
 	$scope.delete=function deleteContactos(id){
-		console.log("imprime:"+id);
-		OperationsContacts.deleteContacts(id,function(response){
+		console.log("imprime:"+$scope.contacto.cedula);
+		OperationsContacts.deleteContacts($scope.contacto.cedula,function(response){
 				if(response.success){
 				    $location.path('contactos');
 				    $route.reload();
@@ -50,7 +50,7 @@ angular.module('userModule')
 
 	};
 	$scope.postContacto = function postContacto(contacto) {
-		OperationsContacts.updateContacts(contacto, function(response) {
+		OperationsContacts.updateContacts($scope.contacto, function(response) {
 
 			if (response.success) {
 				console.log("exito");
@@ -59,30 +59,6 @@ angular.module('userModule')
 			}
 		});
 	};
-	$scope.refresh=function refresh(){
-
-				
-			    $scope.contacto.puesto="";
-				$scope.contacto.cedula="";
-				$scope.contacto.telefono="";
-				$scope.contacto.correo="";
-				$scope.contacto.nombre="";
-				$scope.contacto.apellido1="";
-				$scope.contacto.apellido2="";
-				$scope.contacto.provincia="";
-				$scope.contacto.canton="";
-				$scope.contacto.distrito="";
-				$scope.contacto.detalle="";
-				$scope.contacto.ID_empresa="";
-
-				$scope.getContactos();
-				console.log($scope.listaContacts);
-				console.log($scope.contacto);
-			    $location.path('contactos');
-			    $route.reload();
-
-			    console.log("refresco");
-	}
 	$scope.actualizarContacto=function actualizarContacto(contacto){
 		$scope.contacto=contacto;
 		console.log("actualiza:");

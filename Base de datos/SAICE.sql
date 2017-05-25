@@ -15,15 +15,20 @@ CHECK (VALUE SIMILAR TO '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9][0-9][0-9]');
 CREATE DOMAIN id_empresa CHAR(9) NOT NULL CONSTRAINT CHK_id_empresa 
 CHECK (VALUE SIMILAR TO 'Em-[0-9][0-9][0-9][0-9][0-9][0-9]');
 
+CREATE DOMAIN id_evento CHAR(9) NOT NULL CONSTRAINT CHK_id_evento 
+CHECK (VALUE SIMILAR TO 'Ev-[0-9][0-9][0-9][0-9][0-9][0-9]');
 
+CREATE DOMAIN id_practica CHAR(9) NOT NULL CONSTRAINT CHK_id_practica
+CHECK (VALUE SIMILAR TO 'Pr-[0-9][0-9][0-9][0-9][0-9][0-9]');
 --Tabla eventos
  CREATE TABLE Eventos(
-	ID_Evento Serial primary key NOT NULL,
+	ID_Evento id_evento primary key NOT NULL,
 	Nombre VARCHAR(30) NOT NULL,
 	Descripcion VARCHAR(100) NULL,
 	FechaInicio DATE NOT NULL,
 	FechaFinal DATE NOT NULL
                     );
+
 
 --Tabla personas
  CREATE TABLE Personas(
@@ -45,12 +50,13 @@ CREATE TABLE Funcionarios(
 --Tabla eventos funcionarios
 CREATE TABLE EF(
 	cedula a_cedula ,
-	ID_Evento Serial NOT NULL,
+	ID_Evento id_evento NOT NULL,
 	ROL VARCHAR(30) NOT NULL,
         CONSTRAINT PK_funcionarios_eventos PRIMARY KEY(cedula,ID_evento), 
 	CONSTRAINT FK_cedula_Funcionarios_eventos FOREIGN KEY(cedula) REFERENCES Funcionarios,
 	CONSTRAINT FK_idEvento_Funcionarios FOREIGN KEY (ID_Evento) REFERENCES Eventos
                );
+               
 --Tabla correos personas               
 CREATE TABLE Correos_p(
 	cedula a_cedula PRIMARY KEY,
@@ -129,7 +135,7 @@ CREATE TABLE Correos_E(
                 
 --Tabla practicas
 CREATE TABLE PRACTICAS(
-		ID_Practicas Serial NOT NULL PRIMARY KEY,
+		ID_Practicas id_practica NOT NULL PRIMARY KEY,
 		Fecha_inicio DATE NOT NULL,
 		Fecha_final DATE NOT NULL,
 		nota int  NOT NULL,
@@ -139,6 +145,7 @@ CREATE TABLE PRACTICAS(
 		CONSTRAINT FK_id_empresa_practicas FOREIGN KEY(ID_Empresa) REFERENCES Empresas,
 		CONSTRAINT FK_cedula_estudiante_Practicas FOREIGN KEY(cedula) REFERENCES Estudiantes
                       );
+                      
 --Tabla giras
 CREATE TABLE Giras(
 	ID_Gira Serial NOT NULL PRIMARY KEY,
@@ -367,28 +374,7 @@ CREATE OR REPLACE FUNCTION eliminarFuncionario
 		$BODY$ 
 		LANGUAGE plpgsql;
 
--------------------------------------------------------CRUD empresas----------------------------------------------------------------------
---Agregar empresa
-create or replace function insertar_empresa(
-			e_id_empresa id_empresa,
-			e_nombre CHAR(30),
-			e_provincia VARCHAR(30),
-			e_canton VARCHAR(30),
-			e_distrito VARCHAR(30),
-			e_detalle VARCHAR(100),
-			e_telefono a_telefono,
-			e_correos a_correos
-			
-)returns void as
-$BODY$
-Begin
-	raise notice 'Insertando';
-	insert into Empresas values (e_id_empresa,e_nombre,e_provincia,e_canton,e_distrito,e_detalle);
-	insert into Telefonos_E values(e_id_empresa,e_telefono);
-	insert into Correos_E values(e_id_empresa,e_correos);
-	raise notice 'Se inserto empresa';
-end $BODY$
-language plpgsql;
+
 -----------------------------------CRUD Contactos---------------------------------
 -----obtener contacto
 select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
@@ -477,9 +463,419 @@ CREATE OR REPLACE FUNCTION eliminarContacto
 		LANGUAGE plpgsql;
 
 
+------Filtros----
+---Filtro de estudiante
+select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
+				p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza,t.telefono,cp.correo from personas
+				p inner join estudiantes e on e.cedula='1-123-123'and p.cedula='1-123-123' inner join 
+				correos_p cp on cp.cedula='1-123-123' inner join telefonos_p t on t.cedula='1-123-123';
+
+--- CRUD practicas
+
+create or replace function insertar_Practica(
+	p_id_practica id_practica,
+	p_fecha_inicio varchar(8),
+	p_fecha_final varchar(8),
+	p_cedula a_cedula,
+	p_id_empresa id_empresa
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	insert into practicas values (p_id_practica,cast(p_fecha_inicio as date),cast(p_fecha_final as date),0,'r',p_cedula,p_id_empresa);	
+	raise notice 'Se inserto Estudiante';
+end $BODY$
+language plpgsql;
 
 
 
+---------- borrar practica---------------------
+create or replace function borrar_practica( 
+	p_id_practica id_practica
+) returns void as
+$BODY$
+begin
+	delete from practicas where id_practicas=p_id_practica;
+	raise notice 'practica borrada';
+end
+$BODY$
+language plpgsql;
+
+-------------- modificar practica------
+create or replace function modificar_Practica(
+	p_id_practica id_practica,
+	p_fecha_inicio varchar(10),
+	p_fecha_final varchar(10),
+	p_nota integer,
+	p_estado char(1),
+	p_cedula a_cedula,
+	p_id_empresa id_empresa
+)returns void as
+$BODY$
+Begin
+	update practicas set
+		id_practicas=p_id_practica,
+		fecha_inicio=cast (p_fecha_inicio as date),
+		fecha_final=cast(p_fecha_final as date),
+		nota=p_nota,
+		estado=p_estado,
+		cedula=p_cedula,
+		id_empresa=p_id_empresa
+	where id_practicas=p_id_practica;	
+	raise notice 'Se modifico Practica';
+end $BODY$
+language plpgsql;
+
+--obtener practicas
+select ES.nombre, ES.apellido1, ES.apellido2, ES.carnet, PR.cedula,PR.id_practicas,PR.nota, PR.nombre,PR.fecha_inicio,PR.fecha_final from 
+	(select P.nombre, P.apellido1, P.apellido2, P.cedula, E.carnet 
+	from personas P inner join estudiantes E on P.cedula=E.cedula) as ES
+inner join 
+	(select P.cedula,P.id_practicas,E.nombre,P.nota,P.fecha_inicio,P.fecha_final
+	from practicas P inner join empresas E on P.id_empresa = E.id_empresa) as PR
+on ES.cedula=PR.cedula
+
+
+
+select * from practicas
+--pruebas crod practicas
+select insertar_Practica('Pr-000000','20-03-2017','20-06-2017','2-222-222','Em-000000');
+select insertar_Practica('Pr-000001','20-03-2017','20-06-2017','2-222-222','Em-000000');
+select insertar_Practica('Pr-000002','20-03-2017','20-06-2017','2-222-222','Em-000000'); -- ya funcuiona
+
+select modificar_Practica('Pr-000002','21-04-2018','21-07-2018',90,'A','2-222-222','Em-000000'); --ya funciona
+
+select borrar_practica('Pr-000001');-- 
+
+
+select * from estudiantes
+
+-------------------------------------------------------CRUD empresas----------------------------------------------------------------------
+--Agregar empresa
+
+create or replace function insertar_empresa(
+			e_id_empresa id_empresa,
+			e_nombre CHAR(30),
+			e_provincia VARCHAR(30),
+			e_canton VARCHAR(30),
+			e_distrito VARCHAR(30),
+			e_detalle VARCHAR(100),
+			e_telefono a_telefono,
+			e_correos a_correos
+			
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	insert into Empresas values (e_id_empresa,e_nombre,e_provincia,e_canton,e_distrito,e_detalle);
+	insert into Telefonos_E values(e_id_empresa,e_telefono);
+	insert into Correos_E values(e_id_empresa,e_correos);
+	raise notice 'Se inserto empresa';
+end $BODY$
+language plpgsql;
+
+
+--borrar empresa
+create or replace function borrar_empresa( 
+	p_id_empresa id_empresa
+) returns void as
+$BODY$
+begin
+	delete from telefonos_E where id_empresa=p_id_empresa;
+	delete from correos_E where id_empresa=p_id_empresa;
+	delete from ce where id_empresa=p_id_empresa;
+	delete from empresas where id_empresa=p_id_empresa;
+	raise notice 'empresa borrada';
+end
+$BODY$
+language plpgsql;
+
+-- modificar empresa
+create or replace function modificar_empresa(
+			e_id_empresa id_empresa,
+			e_nombre CHAR(30),
+			e_provincia VARCHAR(30),
+			e_canton VARCHAR(30),
+			e_distrito VARCHAR(30),
+			e_detalle VARCHAR(100),
+			e_telefono a_telefono,
+			e_correos a_correos
+			
+)returns void as
+$BODY$
+Begin
+	update Empresas set
+		nombre=e_nombre,
+		provincia=e_provincia,
+		canton=e_canton,
+		distrito=e_distrito,
+		detalle=e_detalle where id_empresa=e_id_empresa;
+	update Telefonos_E set telefono = e_telefono where id_empresa=e_id_empresa;
+	update Correos_E set correo = e_correos where id_empresa=e_id_empresa;
+	raise notice 'Se modifico la empresa' ;
+end $BODY$
+language plpgsql;
+
+--obtener empresa
+
+select E.id_empresa,E.nombre,E.provincia, E.canton, E.distrito,E.detalle, T.telefono,C.correo from empresas E inner join telefonos_e T on  E.id_empresa = T.id_empresa
+inner join correos_E C on E.id_empresa=C.id_empresa;
+
+select insertar_empresa('Em-000000','GBS','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com')
+select modificar_empresa('Em-000000','GBS','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com')
+select borrar_empresa('Em-000000');
+----------------------------------------------------------CRUD eventos------------------------------------------------------------------
+create or replace function insertar_Evento( -- funcion creada
+	p_id_evento id_evento,
+	p_nombre varchar(30),
+	p_descripcion varchar(100),
+	p_fecha_inicio date,
+	p_fecha_final date,
+	p_cedula_funcionario varchar(9),
+	p_rol_funcionario varchar(30)
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	insert into eventos values (p_id_evento,p_nombre,p_descripcion,p_fecha_inicio,p_fecha_final);
+	insert into EF values (p_cedula_funcionario,p_id_evento,p_rol_funcionario);
+	
+	raise notice 'Se inserto evento';
+end $BODY$
+language plpgsql;
+
+--borrar evento
+create or replace function borrar_evento
+(
+	p_id_evento id_evento
+)returns void as
+$BODY$
+begin
+	delete from EF      where id_evento = p_id_evento;
+	delete from eventos where id_evento = p_id_evento;
+end 
+$BODY$ 
+language plpgsql;
+
+-- modificar eventos
+CREATE OR REPLACE FUNCTION modificar_Evento
+(
+	p_id_evento id_evento,
+	p_nombre varchar(30),
+	p_descripcion varchar(100),
+	p_fecha_inicio date,
+	p_fecha_final date,
+	p_cedula_funcionario varchar(9),
+	p_rol_funcionario varchar(30)
+) returns void as
+$BODY$ begin
+	update eventos set
+		id_evento=p_id_evento,
+		nombre=p_nombre,
+		descripcion=p_descripcion,
+		fechainicio=p_fecha_inicio,
+		fechafinal=p_fecha_final
+		where id_evento=p_id_evento;
+	update EF set 
+		cedula=p_cedula_funcionario,
+		id_evento=p_id_evento,
+		rol=p_rol_funcionario
+		where id_evento=p_id_evento;
+	
+	raise notice 'se modifico evento';
+end $BODY$
+language plpgsql;
+
+--obtener evento
+
+select EV.nombre,EV.fechainicio,EV.fechafinal, EV.rol,PE.cedula, PE.nombre, PE.apellido1 from 
+(select F.cedula,E.nombre,E.fechainicio,E.fechafinal, F.rol from eventos E inner join EF  F on E.id_evento= F.id_evento) as EV
+inner join
+(select F.cedula, P.nombre, P.apellido1 from funcionarios F inner join personas P on F.cedula=P.cedula) as PE
+on EV.cedula=PE.cedula;
+
+
+
+
+select insertar_Evento('Ev-000000','cena','cena residencia','25-06-2017','26-06-2017','1-111-111','Trabajad');--funciona
+
+select modificar_evento('Ev-000000','Comelona','cena residencia','25-06-2017','26-06-2017','1-111-111','web');--funciona
+
+select borrar_evento('Ev-000000');--funciona
+-----------------------------------------------CRUD Giras---------------------------------------------------------------
+
+--Insertar Giras
+create or replace function insertar_Giras(
+	g_Fecha_inicio varchar(50),
+	g_Fecha_final varchar(50),
+	g_costo INT,
+	g_duracion varchar(30),
+	g_provincia VARCHAR(30) ,
+	g_canton VARCHAR(30) ,
+	g_distrito VARCHAR(30) ,
+	g_detalle VARCHAR(100) 
+
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	insert into giras(Fecha_inicio,Fecha_final,costo,duracion,provincia,canton,distrito,detalle) values (cast (g_Fecha_inicio as date),cast(g_Fecha_final as date),g_costo,cast(g_duracion as time),g_provincia,g_canton,g_distrito,g_detalle);	
+	
+	raise notice 'Se inserto Gira';
+end $BODY$
+language plpgsql;
+
+
+
+----------Modificar giras-------------
+
+--Modificar giras
+CREATE OR REPLACE FUNCTION modificar_giras
+(	
+	g_ID_Gira int,
+	g_Fecha_inicio varchar(50),
+	g_Fecha_final varchar(50),
+	g_costo INT,
+	g_duracion varchar(30),
+	g_provincia VARCHAR(30) ,
+	g_canton VARCHAR(30) ,
+	g_distrito VARCHAR(30) ,
+	g_detalle VARCHAR(100) 
+
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    update giras set
+	Fecha_inicio=cast(g_Fecha_inicio as date),
+	Fecha_final=cast(g_Fecha_final as date),
+	costo=g_costo,
+	duracion=cast (g_duracion as time),
+	provincia=g_provincia,
+	canton=g_canton,
+	distrito=g_distrito,
+	detalle=g_detalle 
+
+    where ID_gira=g_ID_Gira;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+--borrado de giras
+CREATE OR REPLACE FUNCTION borrar_giras
+(
+	g_ID_Gira int
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    delete from giras where id_gira=g_id_gira;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+-------------------------------------------------------CRUD de polizas--------------------------------------------------------
+
+--Insertar Polizas
+create or replace function insertar_Polizas(
+	p_Descripcion VARCHAR(100),
+	p_Monto INT,
+	p_Fecha_vencimiento varchar(30),
+	p_Aseguradora VARCHAR(30)
+
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	
+	insert into polizas(Descripcion,Monto,Fecha_vencimiento,Aseguradora) values (p_Descripcion,p_Monto,cast(p_Fecha_vencimiento as date),p_Aseguradora);	
+	raise notice 'Se inserto Poliza';
+end $BODY$
+language plpgsql;
+
+
+
+
+
+---------------Modificar polizas----------------
+CREATE OR REPLACE FUNCTION modificar_polizas
+(
+	p_ID_Poliza int,
+	p_Descripcion VARCHAR(100),
+	p_Monto INT,
+	p_Fecha_vencimiento varchar(30),
+	p_Aseguradora VARCHAR(30)
+
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    update polizas set
+	Descripcion=p_Descripcion,
+	Monto=p_Monto,
+	Fecha_vencimiento=cast(p_Fecha_vencimiento as date),
+	Aseguradora=p_Aseguradora
+
+    where ID_poliza=p_ID_poliza;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+--borrado polizas
+CREATE OR REPLACE FUNCTION borrar_polizas
+(
+	p_ID_poliza int
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    delete from polizas where id_poliza=p_id_poliza;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+
+
+---------------------------------------------------------Triggers-------------------------------------------------------------
+--funcion para trigger valida que la fecha final no ocurra antes que la de inicio
+create or replace function validaInsercionGiras()
+returns trigger as
+$$
+begin
+	if (cast (NEW.fecha_final as date)<cast(NEW.fecha_inicio as date))then
+		delete from giras where new.id_gira=id_gira;
+		raise notice 'La fecha de finalización de la gira no puede estar antes que su inicio';
+	end if;
+	return new;
+END
+$$
+language plpgsql
+--trigger de validacion de fecha sobre giras
+create trigger trigger_valida_Giras after insert ON giras
+FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiras();
+
+
+
+
+
+/*1. Sacar el promedio de aprobacion de practicas de un año
+con respectto a la cantidad de practicas, la mejor nota 
+y la peor.
+2. Sacar el promedio de estudiantes que obtuvieron 
+una nota entre 0 y 70, 70 y 80, 80 y 90,90 y 100 con respecto
+a la cantidad de practicas.
+3. Promedio de estudiantes que utilizan un tipo de poliza 
+con respecto al total de estudiantes para cada poliza.
+4. Promedio de estudiantes que pertenece a una provincia
+del pais con respecto a todos los estudiantes, asi para cada provincia.
+5. Promedio de Giras realizadas a una empresa en el año x con respecto
+a todas las giras realizadas en el mismo año y el funcionario que ha tenido 
+mayor participacion.  
+*/
 
 
 

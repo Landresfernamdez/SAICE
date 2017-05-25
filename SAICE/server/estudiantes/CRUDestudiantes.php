@@ -83,4 +83,24 @@ function updateEstudiantes(){
 	    
 	    echo $respuesta;  
 }
+function searchEstudiante(){
+		//se importa la conexion con la base de datos
+		include("../conexion.php");
+		//se declara el query
+		$obj = json_decode(file_get_contents("php://input"));
+		$query="select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
+				p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza,t.telefono,cp.correo from personas
+				p inner join estudiantes e on e.cedula='$obj->ida' and p.cedula='$obj->ida' inner join 
+				correos_p cp on cp.cedula='$obj->ida' inner join telefonos_p t on t.cedula='$obj->ida';";
+		
+		//pg_query se encarga de ejecutar el query mediante la conexion y el query y  se encarga de realizar la consulta a la base y generar una tabla
+		$result=pg_query($con,$query)or die("Error de consulta");
+		//se cierra la conexion ya que los datos se guardaron en la variable $result
+		pg_close($con);
+		//pg_fetch_all se encarga de retornar un array con filas y columnas de la tabla que se creo con el query
+		$respuesta=pg_fetch_all($result);
+		// json_encode se encarga de convertir el array en un json(java script object notation)
+		echo json_encode($respuesta);
+}
+
 ?>

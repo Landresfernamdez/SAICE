@@ -1,7 +1,7 @@
 'use strict'
 angular.module('userModule')
 .controller('estudiantesController',function($scope,OperationsStudents,$location,$route){
-
+	$scope.cedula="";
 	$scope.listaStudents = [];
 	$scope.estudiante = {
 		carnet:"",
@@ -29,7 +29,7 @@ angular.module('userModule')
 	$scope.getEstudiantes();
 	$scope.putEstudiante = function putEstudiante(estudiante) {
 
-		OperationsStudents.putStudents($scope.estudiante, function(response) {
+		OperationsStudents.putStudents(estudiante, function(response) {
 
 			if (response.success) {
 				console.log("exito");
@@ -40,8 +40,8 @@ angular.module('userModule')
 		});
 	};
 	$scope.delete=function deleteEstudiantes(id){
-		console.log("imprime:"+id);
-		OperationsStudents.deleteStudents(id,function(response){
+		console.log("imprime:"+$scope.estudiante.cedula);
+		OperationsStudents.deleteStudents($scope.estudiante.cedula,function(response){
 				if(response.success){
 				    $location.path('estudiantes');
 				    $route.reload();
@@ -50,7 +50,7 @@ angular.module('userModule')
 
 	};
 	$scope.postEstudiante = function postEstudiante(estudiante) {
-		OperationsStudents.updateStudents(estudiante, function(response) {
+		OperationsStudents.updateStudents($scope.estudiante, function(response) {
 
 			if (response.success) {
 				console.log("exito");
@@ -87,6 +87,17 @@ angular.module('userModule')
 		$scope.estudiante=estudiante;
 		console.log("actualiza:");
 		console.log($scope.estudiante);
+
+	}
+	$scope.buscarEstudiante=function buscarEstudiante(id){
+		OperationsStudents.searchStudent(id,function(response) {
+				console.log("exito en la busqueda");
+				$scope.listaStudents=[];
+				$scope.listaStudents=response;
+				console.log(response);
+			    //$location.path('estudiantes');
+			    //$route.reload();
+		});
 
 	}
 

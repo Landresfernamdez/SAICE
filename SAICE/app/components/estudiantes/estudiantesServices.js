@@ -69,6 +69,25 @@ angular.module('userModule')
                             alert("Se ha producido un error en la eliminacion"+data);
                             callback({success: false});
                 });
+            },
+            searchStudent:function(id,callback){
+                $http({
+                    method  : 'POST',
+                    url     : urlp+"searchEstudiante",
+                    data    : {ida:id}
+
+                })// si la insercion fue exitosa entra al succes de lo contrario retorna un error departe del servidor
+                    .success(function(response){
+                            console.log("service:");
+                            console.log(id);
+                            alert("se busco exitosamente ");
+                            console.log(response);
+                            callback(response);
+                    }).error(function(response) {
+                    //En caso de fallo en la peticion entra en esta funcion
+                            alert("Se ha producido un error en la eliminacion"+data);
+                            callback(response);
+                });
             }
         }
         return respuesta;

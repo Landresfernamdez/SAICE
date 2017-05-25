@@ -25,6 +25,7 @@ angular.module('userModule')
                             alert("insercion exitosa");
                             console.log("service:");
                             console.log(funcionario);
+                            console.log(data);
                             callback({success: true});
                     }).error(function(data) {
                     //En caso de fallo en la peticion entra en esta funcion
