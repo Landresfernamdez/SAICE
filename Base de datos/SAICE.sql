@@ -924,12 +924,26 @@ end;
 $BODY$ language plpgsql;
 
 select Calcular_Promedio_Practicas(2017);
-select * from promedio_practicas
+select * from promedio_practicas;
 
 /*
 2. Sacar el promedio de estudiantes que obtuvieron 
 una nota entre 0 y 70, 70 y 80, 80 y 90,90 y 100 con respecto
-a la cantidad de practicas.
+a la cantidad de practicas.*/
+select 
+((select count(id_practicas) as nota from practicas  where nota <= 70)*100/
+(select count(id_practicas) as cant from practicas)) as "promedio <= 70",
+((select count(id_practicas) as nota from practicas  where nota >70 and nota <= 80)*100/
+(select count(id_practicas) as cant from practicas)) as ">70 <=80",
+((select count(id_practicas) as nota from practicas  where nota >80 and nota <= 90)*100/
+(select count(id_practicas) as cant from practicas)) as ">80 <=90",
+((select count(id_practicas) as nota from practicas  where nota >90 and nota <= 100)*100/
+(select count(id_practicas) as cant from practicas)) as ">70 <=80";
+ --from practicas limit 1
+
+
+
+/*
 3. Promedio de estudiantes que utilizan un tipo de poliza 
 con respecto al total de estudiantes para cada poliza.
 4. Promedio de estudiantes que pertenece a una provincia
