@@ -184,11 +184,9 @@ CREATE TABLE  GE(
                ); 
 
 ------------------Funciones agregar-----------
-
 --Agregar eventos
 create or replace Function insertar_eventos(
-	E_ID_Evento Serial NOT NULL,
-	E_ID_Evento CHAR(7),
+	E_ID_Evento id_evento,
 	E_Nombre VARCHAR(30),
 	E_Descripcion VARCHAR(100),
 	E_FechaInicio DATE,
@@ -858,9 +856,36 @@ language plpgsql
 create trigger trigger_valida_Giras after insert ON giras
 FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiras();
 
+---------------------------------------------------------------------CURSORES-----------------------
 
+--CURSOR_POLIZAS------------
+create or replace function cursor_polizas()
+returns void as
+$$
+declare
+	cursor_polizas CURSOR for
+		select distinct id_poliza  from 
+		polizas;
+	v_id int;
+begin
+	open cursor_polizas;
+	fetch next  from cursor_polizas into v_id;
+	while (found) loop
+		raise notice 'Registro: %', v_id;
+		update polizas
+		set num_estudiantes=(select P.cantidad from
+		(select count(E.cedula) cantidad , E.id_poliza
+		from estudiantes  E inner join polizas P on E.id_poliza=P.id_poliza
+		group by E.id_poliza) as P where P.id_poliza=v_id 
+		)
+		where id_poliza=v_id;
+		fetch next  from cursor_polizas into v_id;
+	end loop;
+end;
+$$
+language plpgsql;
 
-
+-----------------------------------------------------FIN CURSORES--------------------------
 
 /*1. Sacar el promedio de aprobacion de practicas de un año
 con respectto a la cantidad de practicas, la mejor nota 
