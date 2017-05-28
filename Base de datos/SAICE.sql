@@ -20,6 +20,9 @@ CHECK (VALUE SIMILAR TO 'Ev-[0-9][0-9][0-9][0-9][0-9][0-9]');
 
 CREATE DOMAIN id_practica CHAR(9) NOT NULL CONSTRAINT CHK_id_practica
 CHECK (VALUE SIMILAR TO 'Pr-[0-9][0-9][0-9][0-9][0-9][0-9]');
+
+CREATE DOMAIN id_poliza CHAR(9) NOT NULL CONSTRAINT CHK_id_poliza
+CHECK (VALUE SIMILAR TO 'Po-[0-9][0-9][0-9][0-9][0-9][0-9]');
 --Tabla eventos
  CREATE TABLE Eventos(
 	ID_Evento id_evento primary key NOT NULL,
@@ -83,7 +86,7 @@ CREATE TABLE SF(
                ); 
 --Tabla polizas
 CREATE TABLE Polizas(
-	ID_Poliza Serial NOT NULL PRIMARY KEY,
+	ID_Poliza id_poliza NOT NULL PRIMARY KEY,
 	Descripcion VARCHAR(100) NULL,
 	Monto INT NOT NULL,
 	Fecha_vencimiento DATE NOT NULL,
@@ -94,7 +97,7 @@ CREATE TABLE Polizas(
 CREATE  TABLE Estudiantes(
 	cedula a_cedula PRIMARY KEY,
 	carnet a_carnet,
-	ID_Poliza serial NOT NULL,
+	ID_Poliza id_poliza NOT NULL,
 	CONSTRAINT FK_polizas_estudiantes FOREIGN KEY(ID_Poliza) REFERENCES Polizas 	
                         );       
 --Tabla contactos
@@ -866,7 +869,7 @@ declare
 	cursor_polizas CURSOR for
 		select distinct id_poliza  from 
 		polizas;
-	v_id int;
+	v_id char(9);
 begin
 	open cursor_polizas;
 	fetch next  from cursor_polizas into v_id;
@@ -885,11 +888,18 @@ end;
 $$
 language plpgsql;
 
+select cursor_polizas();
+select * from polizas;
+alter table polizas add column num_estudiantes bigint
+
 -----------------------------------------------------FIN CURSORES--------------------------
 
 /*1. Sacar el promedio de aprobacion de practicas de un año
 con respectto a la cantidad de practicas, la mejor nota 
-y la peor.
+y la peor.*/
+
+
+/*
 2. Sacar el promedio de estudiantes que obtuvieron 
 una nota entre 0 y 70, 70 y 80, 80 y 90,90 y 100 con respecto
 a la cantidad de practicas.
