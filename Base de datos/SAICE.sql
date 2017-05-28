@@ -895,9 +895,36 @@ alter table polizas add column num_estudiantes bigint
 -----------------------------------------------------FIN CURSORES--------------------------
 
 /*1. Sacar el promedio de aprobacion de practicas de un año
-con respectto a la cantidad de practicas, la mejor nota 
+con respecto a la cantidad de practicas, la mejor nota 
 y la peor.*/
 
+-- la consulta se hace mediante una funcion para poder indicarle el año
+--la tabla guarda el resultado de la consulta
+create table promedio_practicas
+(
+	promedio bigint,
+	mejor_nota int,
+	peor_nota int
+);
+
+CREATE OR REPLACE FUNCTION Calcular_Promedio_Practicas(año int)
+returns void as
+$BODY$
+begin
+	insert into promedio_practicas  
+	(select * from
+(select distinct
+(select count(id_practicas) as aprobadas from practicas where extract(year from fecha_inicio)=año and nota>=70)*100/
+(select count(id_practicas) as cant from practicas where extract(year from fecha_inicio)=año) "promedio en %"  from practicas ) as PR
+cross join 
+(select nota as "Mejor nota" from practicas where extract(year from fecha_inicio)=año order by nota desc limit 1) as M
+cross join
+(select nota as "Peor nota" from practicas where extract(year from fecha_inicio)=año order by nota asc limit 1) as P);
+end;
+$BODY$ language plpgsql;
+
+select Calcular_Promedio_Practicas(2017);
+select * from promedio_practicas
 
 /*
 2. Sacar el promedio de estudiantes que obtuvieron 
