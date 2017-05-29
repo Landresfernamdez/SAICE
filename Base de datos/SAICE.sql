@@ -954,6 +954,18 @@ mayor participacion.
 */
 
 
+/*
+ 6. Empresas con indice de aprobacion de prácticas más alto
+*/
+select E.nombre,P.* from 
+(select nombre,id_empresa from empresas)as E 
+inner join
+(select A.id_empresa,A.Cantidad_participantes,B.numero_aprobados,((Numero_aprobados)*100/(Cantidad_participantes)) porcentaje_aprobacion from (
+select count(id_practicas) Cantidad_participantes,id_empresa  from practicas group by id_empresa) as A inner join
+(select count(id_practicas)Numero_aprobados, id_empresa from practicas where nota >=70 group by id_empresa) as B
+on A.id_empresa = B.id_empresa  order by porcentaje_aprobacion desc) as P
+on p.id_empresa=E.id_empresa;
+
 
 
 
