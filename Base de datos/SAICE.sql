@@ -953,9 +953,21 @@ a todas las giras realizadas en el mismo año y el funcionario que ha tenido
 mayor participacion.  
 */
 
+/*
+6.  top 3 Cantones con más egresados en dado año  #### FALTA PONERLE EL AÑO
+*/
+
+select count(P.id_practicas) cantidad_practicas,E.canton from
+(select E.cedula,P.canton from estudiantes E inner join  personas P on E.cedula=P.cedula) E 
+inner join practicas  P on P.cedula=E.cedula and extract(year from P.fecha_final)=2017 and P.nota >=70
+group by canton 
+order by cantidad_practicas desc 
+limit 3;
+
+
 
 /*
- 6. Empresas con indice de aprobacion de prácticas más alto
+ 7. Empresas con indice de aprobacion de prácticas más alto
 */
 select E.nombre,P.* from 
 (select nombre,id_empresa from empresas)as E 
