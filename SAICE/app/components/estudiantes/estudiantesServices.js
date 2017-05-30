@@ -1,7 +1,7 @@
 'use strict'
 angular.module('userModule')
     .factory('OperationsStudents',function($http,$location){
-        var urlp="http://localhost:8080/SAICE/server/estudiantes/CRUDestudiantes.php?Funcion=";
+        var urlp="http://localhost:8080/SAICE/SAICE/server/estudiantes/CRUDestudiantes.php?Funcion=";
         var respuesta={
             getStudents: function(callback){
                 $http.get(

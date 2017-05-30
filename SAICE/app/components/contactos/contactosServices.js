@@ -1,7 +1,7 @@
 'use strict'
 angular.module('userModule')
     .factory('OperationsContacts',function($http,$location){
-        var urlp="http://localhost:8080/SAICE/server/contactos/CRUDcontactos.php?Funcion=";
+        var urlp="http://localhost:8080/SAICE/SAICE/server/contactos/CRUDcontactos.php?Funcion=";
         var respuesta={
             getContacts: function(callback){
                 $http.get(

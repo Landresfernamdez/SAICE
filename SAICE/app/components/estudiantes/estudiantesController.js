@@ -22,6 +22,7 @@ angular.module('userModule')
 
 		OperationsStudents.getStudents( function(res) {
 			$scope.listaStudents = res;
+			console.log($scope.listaStudents)
 		});
 
 	};
