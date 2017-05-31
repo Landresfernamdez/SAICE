@@ -232,6 +232,9 @@ Begin
 end $BODY$
 language plpgsql;
 
+
+
+
 --Funcion que se encarga de eliminar un estudiante
 		CREATE OR REPLACE FUNCTION eliminarEstudiante
 		( 
@@ -240,10 +243,12 @@ language plpgsql;
 		AS
 		$BODY$
 		BEGIN
+			delete from practicas where cedula=p_cedula;
 			delete  from Estudiantes where cedula=p_cedula;
 			delete  from correos_p where cedula=p_cedula;
 			delete  from telefonos_p where cedula=p_cedula;
 			delete  from personas where cedula=p_cedula;
+			
 		END;
 		$BODY$ 
 		LANGUAGE plpgsql;
@@ -470,7 +475,7 @@ select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
 				p inner join estudiantes e on e.cedula='1-123-123'and p.cedula='1-123-123' inner join 
 				correos_p cp on cp.cedula='1-123-123' inner join telefonos_p t on t.cedula='1-123-123';
 
---- CRUD practicas
+--- ---------------------------------------------------------CRUD practicas-----------------------------------------------
 
 create or replace function insertar_Practica(
 	p_id_practica id_practica,
@@ -507,12 +512,17 @@ create or replace function modificar_Practica(
 	p_fecha_inicio varchar(10),
 	p_fecha_final varchar(10),
 	p_nota integer,
-	p_estado char(1),
 	p_cedula a_cedula,
 	p_id_empresa id_empresa
 )returns void as
 $BODY$
+	declare p_estado CHAR(1);
 Begin
+	if(p_nota>=70) then 
+		p_estado='a';
+	elseif(p_nota<70)then 
+		p_estado='r';
+	end if;
 	update practicas set
 		id_practicas=p_id_practica,
 		fecha_inicio=cast (p_fecha_inicio as date),
@@ -543,9 +553,10 @@ select insertar_Practica('Pr-000000','20-03-2017','20-06-2017','2-222-222','Em-0
 select insertar_Practica('Pr-000001','20-03-2017','20-06-2017','2-222-222','Em-000000');
 select insertar_Practica('Pr-000002','20-03-2017','20-06-2017','2-222-222','Em-000000'); -- ya funcuiona
 
-select modificar_Practica('Pr-000002','21-04-2018','21-07-2018',90,'A','2-222-222','Em-000000'); --ya funciona
+select modificar_Practica('Pr-000002','21-04-2018','21-07-2018',90,'a','2-222-222','Em-000000'); --ya funciona
 
 select borrar_practica('Pr-000001');-- 
+select * from practicas
 
 
 select * from estudiantes
@@ -858,9 +869,47 @@ language plpgsql
 create trigger trigger_valida_Giras after insert ON giras
 FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiras();
 
+----------funcion que se encarga de validar cuando se elimina un estudiante
+create or replace function validaEliminacionEstudiante()
+returns trigger as
+$$
+begin
+	if (OLD.estado='a')then
+		insert into practicas values (OLD.id_practicas,OLD.fecha_inicio,OLD.fecha_final,OLD.nota,OLD.estado,OLD.cedula,OLD.id_empresa);
+		raise notice 'El estudiante es un egresado por lo tanto no se puede eliminar';
+	end if;
+	return new;
+END
+$$
+language plpgsql
+
+--trigger de validacion de eliminacion de estudiantes
+create trigger trigger_valida_Estudiantes after delete ON practicas
+FOR EACH ROW EXECUTE PROCEDURE validaEliminacionEstudiante();
 
 
+----------funcion que se encarga de actualizar el estado de una practica cuando se le modifica la nota
+create or replace function validaModificacionPractica()
+returns trigger as
+$$
+begin
+	if (NEW.nota>=70)then
+		raise notice 'La practica se actualizo como aprobada';
+	elseif(NEW.nota<70) then
+		 raise notice 'La practica se actualizo como reprobada';
+	end if;
+	return new;
+END
+$$
+language plpgsql
 
+update practicas set estado='a' where id_practicas='Pr-000002';
+
+select modificar_Practica('Pr-000002','21-04-2018','21-08-2018',70,'2-745-217','Em-000000');
+select * from practicas
+---------trigger que se encarga de asignar el estado a la practica de un estudiante
+create trigger trigger_valida_modPracticas after update ON practicas
+FOR EACH ROW EXECUTE PROCEDURE validaModificacionPractica();
 
 /*1. Sacar el promedio de aprobacion de practicas de un año
 con respectto a la cantidad de practicas, la mejor nota 
@@ -938,7 +987,12 @@ select insertar_Estudiante('2015-111111','2-321-321','8637-4845','landresf12@hot
 select insertar_Estudiante('2015-121212','2-745-217','8637-4846','landresf12@hotmail.com',
 'Luis Andres','Fernandez','Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','3');   
 
-select eliminarEstudiante('2-122-193');
+
+
+select modificar_Practica('Pr-000002','21-04-2018','21-07-2018',70,'2-745-217','Em-000000');
+select * from practicas
+
+select eliminarEstudiante('2-745-217');
 
 drop function actualizarEstudiante()
 
