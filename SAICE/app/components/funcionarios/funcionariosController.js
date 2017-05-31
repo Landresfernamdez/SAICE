@@ -16,7 +16,6 @@ angular.module('userModule')
 		distrito:"",
 		detalle:""
 	};
-	console.log("entro a comprobacion");
 	$scope.getFuncionarios = function getFuncionarios() {
 
 		OperationsFuncionarios.getofficials( function(res) {
@@ -58,29 +57,6 @@ angular.module('userModule')
 			}
 		});
 	};
-	$scope.refresh=function refresh(){
-
-				
-			    $scope.funcionario.carnet="";
-				$scope.funcionario.cedula="";
-				$scope.funcionario.telefono="";
-				$scope.funcionario.correo="";
-				$scope.funcionario.nombre="";
-				$scope.funcionario.apellido1="";
-				$scope.funcionario.apellido2="";
-				$scope.funcionario.provincia="";
-				$scope.funcionario.canton="";
-				$scope.funcionario.distrito="";
-				$scope.funcionario.detalle="";
-
-				$scope.getFuncionarios();
-				console.log($scope.listaFuncionarios);
-				console.log($scope.funcionario);
-			    $location.path('funcionarios');
-			    $route.reload();
-
-			    console.log("refresco");
-	}
 	$scope.actualizarFuncionario=function actualizarFuncionario(funcionario){
 		$scope.funcionario=funcionario;
 		console.log("actualiza:");

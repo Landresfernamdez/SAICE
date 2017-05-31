@@ -7,7 +7,7 @@ else
     echo 'La funcion no ha sido creada: Comuniquese';
 }
 
-function ObtenertodosStudents(){
+function ObtenertodosEvents(){
 		//se importa la conexion con la base de datos
 		include("../conexion.php");
 		//se declara el query
@@ -25,7 +25,7 @@ function ObtenertodosStudents(){
 		// json_encode se encarga de convertir el array en un json(java script object notation)
 		echo json_encode($respuesta);
 }
-function putEstudiantes(){
+function putEventos(){
 		//se importa la conexion con la base de datos
 		include("../conexion.php");
 		//decodifica un string a json 
@@ -46,7 +46,7 @@ function putEstudiantes(){
 	    echo $respuesta;  
 }
 
-function deleteEstudiantes(){
+function deleteEventos(){
 		//se importa la conexion con la base de datos
 		include("../conexion.php");
 		//decodifica un string a json 
@@ -63,7 +63,7 @@ function deleteEstudiantes(){
 	    
 	    echo $respuesta;  
 }
-function updateEstudiantes(){
+function updateEventos(){
 		//se importa la conexion con la base de datos
 		include("../conexion.php");
 		//decodifica un string a json 

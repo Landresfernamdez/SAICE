@@ -1,4 +1,4 @@
-angular.module('userModule',['ngRoute'])
+angular.module('userModule',['ngRoute','zingchart-angularjs'])
 .config(['$routeProvider',function($routeProvider)
     {
         $routeProvider
@@ -22,6 +22,14 @@ angular.module('userModule',['ngRoute'])
                         controller: 'contactosController'
                                              })
 
+                    .when("/eventos",{
+                        templateUrl:'app/components/eventos/eventos.html',
+                        controller: 'eventosController'
+                                             })
+                    .when("/estadisticas",{
+                        templateUrl:'app/components/estadisticas/estadisticas.html',
+                        controller:'estadisticasController'
+                                             })
 			        .otherwise({
 			            redirectTo: '/'
 			        });

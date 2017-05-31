@@ -1,9 +1,9 @@
 'use strict'
 angular.module('userModule')
-    .factory('OperationsStudents',function($http,$location){
+    .factory('OperationsEvents',function($http,$location){
         var urlp="http://localhost:8080/SAICE/server/estudiantes/CRUDestudiantes.php?Funcion=";
         var respuesta={
-            getStudents: function(callback){
+            getEvents: function(callback){
                 $http.get(
                     urlp+"ObtenertodosStudents"
                 ).success(function successCallback(response){
@@ -14,17 +14,17 @@ angular.module('userModule')
                 });
             },
             //Esta funcion se encarga de insertar un estudiante mediante la conexion con el servidor
-            putStudents:function(estudiante,callback){
+            putEvents:function(evento,callback){
                  $http({
                     method  :'POST',
-                    url     : urlp+"putEstudiantes",
-                    data    : estudiante
+                    url     : urlp+"putEventos",
+                    data    : evento
 
                 })// si la insercion fue exitosa entra al succes de lo contrario retorna un error departe del servidor
                     .success(function(data){
                             alert("insercion exitosa");
                             console.log("service:");
-                            console.log(estudiante);
+                            console.log(evento);
                             callback({success: true});
                     }).error(function(data) {
                     //En caso de fallo en la peticion entra en esta funcion
@@ -32,10 +32,10 @@ angular.module('userModule')
                             callback({success: false});
                 });
             },
-            deleteStudents:function(id,callback){
+            deleteEvents:function(id,callback){
                 $http({
                     method  : 'POST',
-                    url     : urlp+"deleteEstudiantes",
+                    url     : urlp+"deleteEventos",
                     data    : {ida:id}
 
                 })// si la insercion fue exitosa entra al succes de lo contrario retorna un error departe del servidor
@@ -52,16 +52,16 @@ angular.module('userModule')
                             callback({success: false});
                 });
             },
-            updateStudents:function(estudiante,callback){
+            updateEvents:function(evento,callback){
                 $http({
                     method  : 'POST',
-                    url     : urlp+"updateEstudiantes",
-                    data    : estudiante
+                    url     : urlp+"updateEventos",
+                    data    : evento
 
                 })// si la insercion fue exitosa entra al succes de lo contrario retorna un error departe del servidor
                     .success(function(data){
                             console.log("service:");
-                            console.log(estudiante);
+                            console.log(evento);
                             alert("se actualizo exitosamente "+data);
                             callback({success: true});
                     }).error(function(data) {
