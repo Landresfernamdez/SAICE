@@ -20,6 +20,9 @@ CHECK (VALUE SIMILAR TO 'Ev-[0-9][0-9][0-9][0-9][0-9][0-9]');
 
 CREATE DOMAIN id_practica CHAR(9) NOT NULL CONSTRAINT CHK_id_practica
 CHECK (VALUE SIMILAR TO 'Pr-[0-9][0-9][0-9][0-9][0-9][0-9]');
+
+CREATE DOMAIN id_poliza CHAR(9) NOT NULL CONSTRAINT CHK_id_poliza
+CHECK (VALUE SIMILAR TO 'Po-[0-9][0-9][0-9][0-9][0-9][0-9]');
 --Tabla eventos
  CREATE TABLE Eventos(
 	ID_Evento id_evento primary key NOT NULL,
@@ -83,7 +86,7 @@ CREATE TABLE SF(
                ); 
 --Tabla polizas
 CREATE TABLE Polizas(
-	ID_Poliza Serial NOT NULL PRIMARY KEY,
+	ID_Poliza id_poliza NOT NULL PRIMARY KEY,
 	Descripcion VARCHAR(100) NULL,
 	Monto INT NOT NULL,
 	Fecha_vencimiento DATE NOT NULL,
@@ -94,7 +97,7 @@ CREATE TABLE Polizas(
 CREATE  TABLE Estudiantes(
 	cedula a_cedula PRIMARY KEY,
 	carnet a_carnet,
-	ID_Poliza serial NOT NULL,
+	ID_Poliza id_poliza NOT NULL,
 	CONSTRAINT FK_polizas_estudiantes FOREIGN KEY(ID_Poliza) REFERENCES Polizas 	
                         );       
 --Tabla contactos
@@ -184,11 +187,9 @@ CREATE TABLE  GE(
                ); 
 
 ------------------Funciones agregar-----------
-
 --Agregar eventos
 create or replace Function insertar_eventos(
-	E_ID_Evento Serial NOT NULL,
-	E_ID_Evento CHAR(7),
+	E_ID_Evento id_evento,
 	E_Nombre VARCHAR(30),
 	E_Descripcion VARCHAR(100),
 	E_FechaInicio DATE,
@@ -869,6 +870,7 @@ language plpgsql
 create trigger trigger_valida_Giras after insert ON giras
 FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiras();
 
+<<<<<<< HEAD
 ----------funcion que se encarga de validar cuando se elimina un estudiante
 create or replace function validaEliminacionEstudiante()
 returns trigger as
@@ -886,8 +888,42 @@ language plpgsql
 --trigger de validacion de eliminacion de estudiantes
 create trigger trigger_valida_Estudiantes after delete ON practicas
 FOR EACH ROW EXECUTE PROCEDURE validaEliminacionEstudiante();
+=======
+---------------------------------------------------------------------CURSORES-----------------------
 
+--CURSOR_POLIZAS------------
+create or replace function cursor_polizas()
+returns void as
+$$
+declare
+	cursor_polizas CURSOR for
+		select distinct id_poliza  from 
+		polizas;
+	v_id char(9);
+begin
+	open cursor_polizas;
+	fetch next  from cursor_polizas into v_id;
+	while (found) loop
+		raise notice 'Registro: %', v_id;
+		update polizas
+		set num_estudiantes=(select P.cantidad from
+		(select count(E.cedula) cantidad , E.id_poliza
+		from estudiantes  E inner join polizas P on E.id_poliza=P.id_poliza
+		group by E.id_poliza) as P where P.id_poliza=v_id 
+		)
+		where id_poliza=v_id;
+		fetch next  from cursor_polizas into v_id;
+	end loop;
+end;
+$$
+language plpgsql;
+>>>>>>> rama1
 
+select cursor_polizas();
+select * from polizas;
+alter table polizas add column num_estudiantes bigint
+
+<<<<<<< HEAD
 ----------funcion que se encarga de actualizar el estado de una practica cuando se le modifica la nota
 create or replace function validaModificacionPractica()
 returns trigger as
@@ -910,13 +946,60 @@ select * from practicas
 ---------trigger que se encarga de asignar el estado a la practica de un estudiante
 create trigger trigger_valida_modPracticas after update ON practicas
 FOR EACH ROW EXECUTE PROCEDURE validaModificacionPractica();
+=======
+-----------------------------------------------------FIN CURSORES--------------------------
+>>>>>>> rama1
 
 /*1. Sacar el promedio de aprobacion de practicas de un año
-con respectto a la cantidad de practicas, la mejor nota 
-y la peor.
+con respecto a la cantidad de practicas, la mejor nota 
+y la peor.*/
+
+-- la consulta se hace mediante una funcion para poder indicarle el año
+--la tabla guarda el resultado de la consulta
+create table promedio_practicas
+(
+	promedio bigint,
+	mejor_nota int,
+	peor_nota int
+);
+
+CREATE OR REPLACE FUNCTION Calcular_Promedio_Practicas(año int)
+returns void as
+$BODY$
+begin
+	insert into promedio_practicas  
+	(select * from
+(select distinct
+(select count(id_practicas) as aprobadas from practicas where extract(year from fecha_inicio)=año and nota>=70)*100/
+(select count(id_practicas) as cant from practicas where extract(year from fecha_inicio)=año) "promedio en %"  from practicas ) as PR
+cross join 
+(select nota as "Mejor nota" from practicas where extract(year from fecha_inicio)=año order by nota desc limit 1) as M
+cross join
+(select nota as "Peor nota" from practicas where extract(year from fecha_inicio)=año order by nota asc limit 1) as P);
+end;
+$BODY$ language plpgsql;
+
+select Calcular_Promedio_Practicas(2017);
+select * from promedio_practicas;
+
+/*
 2. Sacar el promedio de estudiantes que obtuvieron 
 una nota entre 0 y 70, 70 y 80, 80 y 90,90 y 100 con respecto
-a la cantidad de practicas.
+a la cantidad de practicas.*/
+select 
+((select count(id_practicas) as nota from practicas  where nota <= 70)*100/
+(select count(id_practicas) as cant from practicas)) as "promedio <= 70",
+((select count(id_practicas) as nota from practicas  where nota >70 and nota <= 80)*100/
+(select count(id_practicas) as cant from practicas)) as ">70 <=80",
+((select count(id_practicas) as nota from practicas  where nota >80 and nota <= 90)*100/
+(select count(id_practicas) as cant from practicas)) as ">80 <=90",
+((select count(id_practicas) as nota from practicas  where nota >90 and nota <= 100)*100/
+(select count(id_practicas) as cant from practicas)) as ">70 <=80";
+ --from practicas limit 1
+
+
+
+/*
 3. Promedio de estudiantes que utilizan un tipo de poliza 
 con respecto al total de estudiantes para cada poliza.
 4. Promedio de estudiantes que pertenece a una provincia
@@ -926,6 +1009,30 @@ a todas las giras realizadas en el mismo año y el funcionario que ha tenido
 mayor participacion.  
 */
 
+/*
+6.  top 3 Cantones con más egresados en dado año  #### FALTA PONERLE EL AÑO
+*/
+
+select count(P.id_practicas) cantidad_practicas,E.canton from
+(select E.cedula,P.canton from estudiantes E inner join  personas P on E.cedula=P.cedula) E 
+inner join practicas  P on P.cedula=E.cedula and extract(year from P.fecha_final)=2017 and P.nota >=70
+group by canton 
+order by cantidad_practicas desc 
+limit 3;
+
+
+
+/*
+ 7. Empresas con indice de aprobacion de prácticas más alto
+*/
+select E.nombre,P.* from 
+(select nombre,id_empresa from empresas)as E 
+inner join
+(select A.id_empresa,A.Cantidad_participantes,B.numero_aprobados,((Numero_aprobados)*100/(Cantidad_participantes)) porcentaje_aprobacion from (
+select count(id_practicas) Cantidad_participantes,id_empresa  from practicas group by id_empresa) as A inner join
+(select count(id_practicas)Numero_aprobados, id_empresa from practicas where nota >=70 group by id_empresa) as B
+on A.id_empresa = B.id_empresa  order by porcentaje_aprobacion desc) as P
+on p.id_empresa=E.id_empresa;
 
 
 
