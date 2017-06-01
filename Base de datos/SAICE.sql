@@ -15,8 +15,15 @@ CHECK (VALUE SIMILAR TO '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9][0-9][0-9]');
 CREATE DOMAIN id_empresa CHAR(9) NOT NULL CONSTRAINT CHK_id_empresa 
 CHECK (VALUE SIMILAR TO 'Em-[0-9][0-9][0-9][0-9][0-9][0-9]');
 
+<<<<<<< HEAD
 CREATE DOMAIN id_evento CHAR(9) NOT NULL CONSTRAINT CHK_id_evento 
 CHECK (VALUE SIMILAR TO 'Ev-[0-9][0-9][0-9][0-9][0-9][0-9]');
+=======
+CREATE DOMAIN d_secciones CHAR(10) NOT NULL CONSTRAINT CHK_id_secciones 
+CHECK (VALUE SIMILAR TO '[0-9][0-9]-[0-9][0-9]/[0-9][0-9][0-9][0-9]');
+
+
+>>>>>>> Rama3
 
 CREATE DOMAIN id_practica CHAR(9) NOT NULL CONSTRAINT CHK_id_practica
 CHECK (VALUE SIMILAR TO 'Pr-[0-9][0-9][0-9][0-9][0-9][0-9]');
@@ -72,10 +79,7 @@ CREATE TABLE Telefonos_p(
 	telefono a_telefono,
 	CONSTRAINT FK_cedula_persona_telefonos FOREIGN KEY(cedula) REFERENCES Personas
                         );
---Tabla secciones
-CREATE TABLE Secciones(
-	Id_secciones serial NOT NULL PRIMARY KEY
-		      );
+
 --Tabla secciones funcionarios
 CREATE TABLE SF(
 	Id_secciones Serial NOT NULL ,
@@ -93,7 +97,6 @@ CREATE TABLE Polizas(
 	Aseguradora VARCHAR(30) NOT NULL
                     );
 --Tabla estudiantes
-
 CREATE  TABLE Estudiantes(
 	cedula a_cedula PRIMARY KEY,
 	carnet a_carnet,
@@ -186,8 +189,14 @@ CREATE TABLE  GE(
 	CONSTRAINT FK_ID_giras_empresas FOREIGN KEY(ID_Giras)REFERENCES Giras
                ); 
 
+<<<<<<< HEAD
 ------------------Funciones agregar-----------
 --Agregar eventos
+=======
+------------------Funciones agregar--------------------
+
+--Agregar eventos REVISAR
+>>>>>>> Rama3
 create or replace Function insertar_eventos(
 	E_ID_Evento id_evento,
 	E_Nombre VARCHAR(30),
@@ -469,6 +478,7 @@ CREATE OR REPLACE FUNCTION eliminarContacto
 		LANGUAGE plpgsql;
 
 
+<<<<<<< HEAD
 ------Filtros----
 ---Filtro de estudiante
 select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
@@ -484,17 +494,32 @@ create or replace function insertar_Practica(
 	p_fecha_final varchar(8),
 	p_cedula a_cedula,
 	p_id_empresa id_empresa
+=======
+--Insertar Polizas
+create or replace function insertar_Polizas(
+	p_Descripcion VARCHAR(100),
+	p_Monto INT,
+	p_Fecha_vencimiento varchar(30),
+	p_Aseguradora VARCHAR(30)
+
+>>>>>>> Rama3
 )returns void as
 $BODY$
 Begin
 	raise notice 'Insertando';
+<<<<<<< HEAD
 	insert into practicas values (p_id_practica,cast(p_fecha_inicio as date),cast(p_fecha_final as date),0,'r',p_cedula,p_id_empresa);	
 	raise notice 'Se inserto Estudiante';
+=======
+	insert into polizas(Descripcion,Monto,Fecha_vencimiento,Aseguradora) values (p_Descripcion,p_Monto,cast(p_Fecha_vencimiento as date),p_Aseguradora);	
+	raise notice 'Se inserto Poliza';
+>>>>>>> Rama3
 end $BODY$
 language plpgsql;
 
 
 
+<<<<<<< HEAD
 ---------- borrar practica---------------------
 create or replace function borrar_practica( 
 	p_id_practica id_practica
@@ -546,6 +571,47 @@ inner join
 	from practicas P inner join empresas E on P.id_empresa = E.id_empresa) as PR
 on ES.cedula=PR.cedula
 
+=======
+
+
+---------------Modificar polizas----------------
+CREATE OR REPLACE FUNCTION modificar_polizas
+(
+	p_ID_Poliza int,
+	p_Descripcion VARCHAR(100),
+	p_Monto INT,
+	p_Fecha_vencimiento varchar(30),
+	p_Aseguradora VARCHAR(30)
+
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    update polizas set
+	Descripcion=p_Descripcion,
+	Monto=p_Monto,
+	Fecha_vencimiento=cast(p_Fecha_vencimiento as date),
+	Aseguradora=p_Aseguradora
+
+    where ID_poliza=p_ID_poliza;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+--borrado polizas
+CREATE OR REPLACE FUNCTION borrar_polizas
+(
+	p_ID_poliza int
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    delete from polizas where id_poliza=p_id_poliza;
+END;
+$BODY$
+LANGUAGE plpgsql;
+>>>>>>> Rama3
 
 
 select * from practicas
@@ -1107,3 +1173,233 @@ select actualizarEstudiante('2222-222222','2-222-222',
 			'8533-4444','l5@hotmail.com',
 			'c','c','c','c',
 			'c','c','c','1');
+
+
+Select * from Personas
+
+
+--Insertar Giras
+create or replace function insertar_Giras(
+	g_Fecha_inicio varchar(50),
+	g_Fecha_final varchar(50),
+	g_costo INT,
+	g_duracion varchar(30),
+	g_provincia VARCHAR(30) ,
+	g_canton VARCHAR(30) ,
+	g_distrito VARCHAR(30) ,
+	g_detalle VARCHAR(100) 
+
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando';
+	insert into giras(Fecha_inicio,Fecha_final,costo,duracion,provincia,canton,distrito,detalle) values (cast (g_Fecha_inicio as date),cast(g_Fecha_final as date),g_costo,cast(g_duracion as time),g_provincia,g_canton,g_distrito,g_detalle);	
+	
+	raise notice 'Se inserto Gira';
+end $BODY$
+language plpgsql;
+
+--funcion para trigger valida que la fecha final no ocurra antes que la de inicio
+create or replace function validaInsercionGiras()
+returns trigger as
+$$
+begin
+	if (cast (NEW.fecha_final as date)<cast(NEW.fecha_inicio as date))then
+		raise notice 'La fecha de finalización de la gira no puede estar antes que su inicio';
+		delete from giras where new.id_gira=id_gira;
+	end if;
+	return new;
+END
+$$
+language plpgsql
+--trigger de validacion de fecha sobre giras
+create trigger trigger_valida_Giras after insert ON giras
+FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiras();
+----------Modificar giras-------------
+--Modificar giras
+CREATE OR REPLACE FUNCTION modificar_giras
+(	
+	g_ID_Gira int,
+	g_Fecha_inicio varchar(50),
+	g_Fecha_final varchar(50),
+	g_costo INT,
+	g_duracion varchar(30),
+	g_provincia VARCHAR(30) ,
+	g_canton VARCHAR(30) ,
+	g_distrito VARCHAR(30) ,
+	g_detalle VARCHAR(100) 
+
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    update giras set
+	Fecha_inicio=cast(g_Fecha_inicio as date),
+	Fecha_final=cast(g_Fecha_final as date),
+	costo=g_costo,
+	duracion=cast (g_duracion as time),
+	provincia=g_provincia,
+	canton=g_canton,
+	distrito=g_distrito,
+	detalle=g_detalle 
+
+    where ID_gira=g_ID_Gira;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+--borrado de giras
+CREATE OR REPLACE FUNCTION borrar_giras
+(
+	g_ID_Gira int
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    Delete from GE where id_gira=g_id_gira;
+    delete from gs where id_gira=g_id_gira;
+    delete from giras where id_gira=g_id_gira;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+--insertar giras y secciones
+create or replace function insertar_Giras_secciones(
+	idGira int,
+	idSecciones int
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando gira con empresa';
+	insert into GS values(idGira,idSecciones);	
+	raise notice 'Se inserto Gira';
+end $BODY$
+language plpgsql
+
+
+--insertar gira empresa
+create or replace function insertar_Giras_empresa(
+	idGira int,
+	idEmpresa char(9)
+)returns void as
+$BODY$
+Begin
+	raise notice 'Insertando gira con empresa';
+	insert into GE values(idGira,idEmpresa);	
+	raise notice 'Se inserto Gira';
+end $BODY$
+language plpgsql
+
+--- Esta funcion sirve para editar las empresas de las giras esto se hace boorandolas de la tabla
+--- Empresa Gira (GE)
+CREATE OR REPLACE FUNCTION borrar_giras_empresas
+(
+	g_id_Gira int,
+	g_id_empresa char(9)
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    Delete from GE where id_giras=g_id_gira and id_empresa=g_id_empresa;
+    
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+--- Esta funcion sirve para editar las secciones de las giras esto se hace boorandolas de la tabla
+--- Giras secciones (GS)
+CREATE OR REPLACE FUNCTION borrar_giras_secciones
+(
+	g_id_Gira int,
+	g_id_seccion char(9)
+) RETURNS VOID
+AS
+$BODY$
+BEGIN
+    Delete from GS where id_giras=g_id_gira and id_seccion=g_id_seccion;
+    
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+
+
+
+--Tabla secciones
+-------------------------SE DEBE MODIFICAR FUNCIONARIOS DE SER NECESARIO PARA LA NUEVA FORMA DE SECCIONES.------------------
+CREATE TABLE Secciones(
+	Id_secciones D_SECCIONES NOT NULL PRIMARY KEY
+		      );
+
+--- Insertar secciones
+CREATE OR REPLACE function insertar_secciones
+(
+	s_id_seccion char(5)
+)returns void as
+$BODY$
+Begin
+	insert into secciones values (s_id_seccion || '/' ||extract(year from now()));
+End;
+$BODY$
+Language plpgsql;
+--ELIMINAR SECCIONES
+CREATE or replace FUNCTION ELIMINAR_SECCIONES
+(
+	ID_ELIMINA_SECCION CHAR(10);
+)RETURNS VOID AS
+$BODY$
+BEGIN
+	DELETE FROM SECCIONES WHERE ID_ELIMINA_SECCION=ID_SECCIONES
+end
+$$
+language plpgsql;
+SELECT INSERTAR_SECCIONES('07-02')
+select insertar_giras_secciones('2','Em-000000')
+select insertar_giras_empresa('2','Em-000000')
+select insertar_giras('2017-03-20','2017-04-01',1000000,'05:00:00','A la','Verga','Nos fuimos','Rayos')
+select * from giras
+select * from empresas
+select * from GE
+select * from SECCIONES
+select borrar_giras_empresas(2,'Em-000000')
+
+--cambiando el tipo de llave serial a domian de secciones
+ALTER TABLE SG DROP CONSTRAINT fk_id_secciones_giras;
+ALTER TABLE SF DROP CONSTRAINT fk_id_secciones_funcionarios_secciones;
+ALTER TABLE ES DROP CONSTRAINT fk_id_secciones_ESTUDIANTES;
+alter table secciones drop ID_SECCIONES;
+ALTER TABLE SECCIONES ADD ID_SECCIONES D_SECCIONES;
+ALTER TABLE SECCIONES ADD PRIMARY KEY(ID_SECCIONES);
+
+
+
+--Consulta
+/*Porcentaje de estudiantes que utilizan un tipo de póliza con respecto al total de estudiantes para cada póliza.*/
+select p.monto,total.t_e*100/(select count(cedula) from estudiantes)||'%' from polizas p
+	inner join
+	(select id_poliza,count(cedula) as t_e from estudiantes
+		group by(id_poliza)
+	)as total on total.id_poliza=p.id_poliza;
+	
+select*from polizas 
+select*from estudiantes
+select * from personas
+
+/*. Porcentaje de estudiantes que pertenecen a una provincia del país con respecto a todos los estudiantes, así para cada provincia.*/
+select  count(provincia)*100/(select count(cedula)from estudiantes),provincia from 
+	(select pp.provincia,e.cedula from estudiantes e
+		inner join 
+		(select provincia,cedula from personas p )as pp
+			on e.cedula=pp.cedula) as t
+	group by(provincia)
+		 
+
+select insertar_Estudiante('2015-110160','1-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez',
+'Calderon','San Jose','San Ramon','Piedades Sur','Estudiante','1');
+
+
+
