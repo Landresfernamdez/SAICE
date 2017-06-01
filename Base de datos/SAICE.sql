@@ -153,7 +153,7 @@ CREATE TABLE Giras(
                   );
 --Tabla secciones grupos
 CREATE TABLE SG(
-	Id_secciones Serial NOT NULL,
+	Id_secciones d_secciones NOT NULL,
 	ID_Gira serial NOT NULL,
 	CONSTRAINT PK_Secciones_Giras PRIMARY KEY(Id_secciones,ID_Gira),
 	CONSTRAINT FK_id_secciones_giras FOREIGN KEY(Id_secciones)REFERENCES Secciones,
@@ -698,19 +698,51 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
+--insertar giras funcionario´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
+
+
 
 --insertar giras y secciones
 create or replace function insertar_Giras_secciones(
 	idGira int,
-	idSecciones int
+	idSecciones char(10)
 )returns void as
 $BODY$
 Begin
-	raise notice 'Insertando gira con empresa';
-	insert into GS values(idGira,idSecciones);	
+	raise notice 'Insertando gira con seccion';
+	insert into SG values(idSecciones,idGira);	
 	raise notice 'Se inserto Gira';
 end $BODY$
-language plpgsql
+language plpgsql;
+
+
+--Valida que las secciones existan
+CREATE OR REPLACE FUNCTION validaInsercionGiraSecciones()
+RETURNS trigger AS
+$BODY$
+begin
+	if (1=(select count(id_gira) from giras g where new.id_gira=g.id_gira) 
+		and 1=(select count(id_secciones) from secciones s where new.id_secciones=s.id_secciones))then
+		raise notice 'Gira insertada con exito';
+	else 
+		delete from SG where new.id_secciones=SG.id_secciones;
+		raise notice 'ERROR';
+	end if;
+	return new;
+END
+$BODY$
+LANGUAGE plpgsql;
+--trigger verifica que las secciones existan
+create trigger trigger_valida_Giras_secciones after insert ON SG
+FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiraSecciones();
+
+/*select insertar_Giras_empresas(2,'07-03/2018');
+select*from empresas
+select*from giras
+select*from SG
+select insertar_secciones('07-03')
+*/
+
 
 
 --insertar gira empresa
@@ -725,6 +757,35 @@ Begin
 	raise notice 'Se inserto Gira';
 end $BODY$
 language plpgsql
+
+--Valida que las empresas existan
+CREATE OR REPLACE FUNCTION validaInsercionGiraEmpresas()
+RETURNS trigger AS
+$BODY$
+begin
+	if (1=(select count(id_gira) from giras g where new.id_gira=g.id_gira) 
+		and 1=(select count(id_empresa) from empresas s where new.id_empresa=s.id_empresa))then
+		raise notice 'Empresa insertada con exito';
+	else 
+		delete from GE where new.id_empresa=id_empresa;
+		raise notice 'ERROR';
+	end if;
+	return new;
+END
+$BODY$
+LANGUAGE plpgsql;
+--trigger verifica que las secciones existan
+create trigger valida_Insercion_Gira_Empresas after insert ON GE
+FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiraEmpresas();
+
+/*select insertar_giras_empresa(2,'Em-000000');
+select*from empresas
+select*from giras
+select*from SG
+select insertar_secciones('07-03')
+*/
+
+
 
 --- Esta funcion sirve para editar las empresas de las giras esto se hace boorandolas de la tabla
 --- Empresa Gira (GE)
@@ -759,7 +820,7 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
-
+-----------------------------------------------------------------------------Falta crear gira funcionario y eliminar---------------------------------------------------------------------
 
 
 
@@ -780,6 +841,9 @@ Begin
 End;
 $BODY$
 Language plpgsql;
+
+
+
 --ELIMINAR SECCIONES
 CREATE or replace FUNCTION ELIMINAR_SECCIONES
 (
@@ -790,6 +854,11 @@ BEGIN
 	DELETE FROM SECCIONES WHERE ID_ELIMINA_SECCION=ID_SECCIONES
 end
 $$
+
+--eliminar funcionario seccion e insertar funcionario seccion'''''''''''''''''''''''''''''''''''''''''''''
+
+
+
 language plpgsql;
 SELECT INSERTAR_SECCIONES('07-02')
 select insertar_giras_secciones('2','Em-000000')
@@ -835,5 +904,21 @@ select  count(provincia)*100/(select count(cedula)from estudiantes),provincia fr
 select insertar_Estudiante('2015-110160','1-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez',
 'Calderon','San Jose','San Ramon','Piedades Sur','Estudiante','1');
 
+/*Promedio de aprobación de la práctica profesional por empresas*/
+--contar la cantidad de notas aprobadas y reprobadas en total, sacarlo por empresa,
+select * from empresas
+select * from practicas
+
+select nombre,sum(nota)/count(p.id_empresa) as promedio ,p.id_empresa from practicas p 
+	inner join 
+		(select nombre, id_empresa from empresas e)as e 
+	on p.id_empresa=e.id_empresa
+	group by (p.id_empresa,nombre)
 
 
+insert into practicas(Fecha_inicio,Fecha_final,nota,estado,cedula,ID_Empresa) values('10-10-2017','10-10-2017',40,'a','1-122-193','Em-000001');
+select insertar_empresa('Em-000002','Avantica','Alajuela','San Carlos','Quesada','lol','8888-9999','ava@ava.ava')
+
+
+/*Porcentaje de Giras realizadas a una empresa en el año x con respecto a todas las giras realizadas en el mismo año y el funcionario que ha tenido mayor participación.*/
+--Hablar sobre esto
