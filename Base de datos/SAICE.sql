@@ -1282,6 +1282,7 @@ end $BODY$
 language plpgsql;
 
 
+<<<<<<< HEAD
 --Valida que las secciones existan
 CREATE OR REPLACE FUNCTION validaInsercionGiraSecciones()
 RETURNS trigger AS
@@ -1301,6 +1302,8 @@ LANGUAGE plpgsql;
 --trigger verifica que las secciones existan
 create trigger trigger_valida_Giras_secciones after insert ON SG
 FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiraSecciones();
+=======
+>>>>>>> Rama3
 
 /*select insertar_Giras_empresas(2,'07-03/2018');
 select*from empresas
@@ -1324,6 +1327,7 @@ Begin
 end $BODY$
 language plpgsql
 
+<<<<<<< HEAD
 --Valida que las empresas existan
 CREATE OR REPLACE FUNCTION validaInsercionGiraEmpresas()
 RETURNS trigger AS
@@ -1345,6 +1349,10 @@ create trigger valida_Insercion_Gira_Empresas after insert ON GE
 FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiraEmpresas();
 
 /*select insertar_giras_empresa(2,'Em-000000');
+=======
+
+/*select insertar_giras_empresa(2,'Em-000003');
+>>>>>>> Rama3
 select*from empresas
 select*from giras
 select*from SG
@@ -1421,9 +1429,12 @@ BEGIN
 end
 $$
 
+<<<<<<< HEAD
 --eliminar funcionario seccion e insertar funcionario seccion'''''''''''''''''''''''''''''''''''''''''''''
 
 
+=======
+>>>>>>> Rama3
 
 language plpgsql;
 SELECT INSERTAR_SECCIONES('07-02')
@@ -1459,22 +1470,36 @@ select*from estudiantes
 select * from personas
 
 /*. Porcentaje de estudiantes que pertenecen a una provincia del país con respecto a todos los estudiantes, así para cada provincia.*/
-select  count(provincia)*100/(select count(cedula)from estudiantes),provincia from 
-	(select pp.provincia,e.cedula from estudiantes e
+select * from 
+	(select count(provincia)*100/(select count(cedula) from estudiantes)as Porcentajes,
+		count(cedulas)as Total_en_provincia,provincia,
+		(select count(cedula)as "cedulas" from estudiantes)as"Total" from 
+		
+		(select e.cedula,count(e.cedula)as "cedulas" from estudiantes e
+			group by(e.cedula)) as es
+
 		inner join 
-		(select provincia,cedula from personas p )as pp
-			on e.cedula=pp.cedula) as t
-	group by(provincia)
-		 
+		(select provincia,cedula from personas) as pp
+
+			on es.cedula=pp.cedula
+		group by(provincia)
+	
+	)as t
+	order by Total_en_provincia desc
 
 select insertar_Estudiante('2015-110160','1-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez',
 'Calderon','San Jose','San Ramon','Piedades Sur','Estudiante','1');
 
+<<<<<<< HEAD
 /*Promedio de aprobación de la práctica profesional por empresas*/
+=======
+/*Promedio de aprobación de la práctica profesional por empresas filtrado entre el annos de finalizacion*/
+>>>>>>> Rama3
 --contar la cantidad de notas aprobadas y reprobadas en total, sacarlo por empresa,
 select * from empresas
 select * from practicas
 
+<<<<<<< HEAD
 select nombre,sum(nota)/count(p.id_empresa) as promedio ,p.id_empresa from practicas p 
 	inner join 
 		(select nombre, id_empresa from empresas e)as e 
@@ -1484,6 +1509,29 @@ select nombre,sum(nota)/count(p.id_empresa) as promedio ,p.id_empresa from pract
 
 insert into practicas(Fecha_inicio,Fecha_final,nota,estado,cedula,ID_Empresa) values('10-10-2017','10-10-2017',40,'a','1-122-193','Em-000001');
 select insertar_empresa('Em-000002','Avantica','Alajuela','San Carlos','Quesada','lol','8888-9999','ava@ava.ava')
+=======
+select nombre,sum(nota)/count(p.id_empresa) as promedio ,p.id_empresa,fecha 
+	from empresas e inner join 
+		(select fecha_final as fecha,nota,p.id_empresa from practicas p)as p
+		
+	on p.id_empresa=e.id_empresa 
+	group by (p.id_empresa,nombre,fecha)
+	order by (promedio) desc
+
+
+insert into practicas(Fecha_inicio,Fecha_final,nota,estado,cedula,ID_Empresa) values('10-10-2017','10-10-2018',40,'a','1-122-193','Em-000001');
+select insertar_empresa('Em-000002','Avantica','Alajuela','San Carlos','Quesada','lol','8888-9999','ava@ava.ava')
+
+
+/*Porcentaje de Giras realizadas a una empresa en el año x con respecto a todas las giras realizadas en el mismo año y el funcionario que ha tenido mayor participación.*/
+--Hablar sobre esto
+
+select * from eventos
+select * from ef
+
+/* Agregar a las empresas el número de estudiantes que realizan práctica en ella durante el año actual*/
+
+>>>>>>> Rama3
 
 
 /*Porcentaje de Giras realizadas a una empresa en el año x con respecto a todas las giras realizadas en el mismo año y el funcionario que ha tenido mayor participación.*/
