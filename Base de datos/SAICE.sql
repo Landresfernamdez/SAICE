@@ -1283,6 +1283,9 @@ language plpgsql;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2633c946d996c5280fa522bcf9dc54d95d70d43b
 --Valida que las secciones existan
 CREATE OR REPLACE FUNCTION validaInsercionGiraSecciones()
 RETURNS trigger AS
@@ -1302,8 +1305,11 @@ LANGUAGE plpgsql;
 --trigger verifica que las secciones existan
 create trigger trigger_valida_Giras_secciones after insert ON SG
 FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiraSecciones();
+<<<<<<< HEAD
 =======
 >>>>>>> Rama3
+=======
+>>>>>>> 2633c946d996c5280fa522bcf9dc54d95d70d43b
 
 /*select insertar_Giras_empresas(2,'07-03/2018');
 select*from empresas
@@ -1328,6 +1334,9 @@ end $BODY$
 language plpgsql
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2633c946d996c5280fa522bcf9dc54d95d70d43b
 --Valida que las empresas existan
 CREATE OR REPLACE FUNCTION validaInsercionGiraEmpresas()
 RETURNS trigger AS
@@ -1349,10 +1358,13 @@ create trigger valida_Insercion_Gira_Empresas after insert ON GE
 FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiraEmpresas();
 
 /*select insertar_giras_empresa(2,'Em-000000');
+<<<<<<< HEAD
 =======
 
 /*select insertar_giras_empresa(2,'Em-000003');
 >>>>>>> Rama3
+=======
+>>>>>>> 2633c946d996c5280fa522bcf9dc54d95d70d43b
 select*from empresas
 select*from giras
 select*from SG
@@ -1430,11 +1442,17 @@ end
 $$
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 --eliminar funcionario seccion e insertar funcionario seccion'''''''''''''''''''''''''''''''''''''''''''''
 
 
 =======
 >>>>>>> Rama3
+=======
+--eliminar funcionario seccion e insertar funcionario seccion'''''''''''''''''''''''''''''''''''''''''''''
+
+
+>>>>>>> 2633c946d996c5280fa522bcf9dc54d95d70d43b
 
 language plpgsql;
 SELECT INSERTAR_SECCIONES('07-02')
@@ -1491,15 +1509,22 @@ select insertar_Estudiante('2015-110160','1-122-193','8637-4844','landresf12@hot
 'Calderon','San Jose','San Ramon','Piedades Sur','Estudiante','1');
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*Promedio de aprobación de la práctica profesional por empresas*/
 =======
 /*Promedio de aprobación de la práctica profesional por empresas filtrado entre el annos de finalizacion*/
 >>>>>>> Rama3
+=======
+/*Promedio de aprobación de la práctica profesional por empresas*/
+>>>>>>> 2633c946d996c5280fa522bcf9dc54d95d70d43b
 --contar la cantidad de notas aprobadas y reprobadas en total, sacarlo por empresa,
 select * from empresas
 select * from practicas
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2633c946d996c5280fa522bcf9dc54d95d70d43b
 select nombre,sum(nota)/count(p.id_empresa) as promedio ,p.id_empresa from practicas p 
 	inner join 
 		(select nombre, id_empresa from empresas e)as e 
@@ -1509,6 +1534,7 @@ select nombre,sum(nota)/count(p.id_empresa) as promedio ,p.id_empresa from pract
 
 insert into practicas(Fecha_inicio,Fecha_final,nota,estado,cedula,ID_Empresa) values('10-10-2017','10-10-2017',40,'a','1-122-193','Em-000001');
 select insertar_empresa('Em-000002','Avantica','Alajuela','San Carlos','Quesada','lol','8888-9999','ava@ava.ava')
+<<<<<<< HEAD
 =======
 select nombre,sum(nota)/count(p.id_empresa) as promedio ,p.id_empresa,fecha 
 	from empresas e inner join 
@@ -1532,6 +1558,8 @@ select * from ef
 /* Agregar a las empresas el número de estudiantes que realizan práctica en ella durante el año actual*/
 
 >>>>>>> Rama3
+=======
+>>>>>>> 2633c946d996c5280fa522bcf9dc54d95d70d43b
 
 
 /*Porcentaje de Giras realizadas a una empresa en el año x con respecto a todas las giras realizadas en el mismo año y el funcionario que ha tenido mayor participación.*/
