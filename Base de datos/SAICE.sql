@@ -1111,10 +1111,10 @@ end;
 $$
 language plpgsql;
 )
------------------------------------------------------FIN CURSORES--------------------------
+----------fin cursores
 
 
-
+----------------------------------------------CONSULTAS-------------------------------
 (/*1. Sacar el promedio de aprobacion de practicas de un año
 con respecto a la cantidad de practicas, la mejor nota 
 y la peor.*/
@@ -1233,7 +1233,34 @@ on p.id_empresa=E.id_empresa;
 )
 
 
+-----fin conultas
+-----------------------------------------------------VISTAS------------------------------------
 
+--vista de estudiantes
+create or replace view vista_estudiantes as 
+	select E.cedula,E.carnet,(E.nombre||' '||E.apellido1) as "Nombre cmpleto",E.provincia,E.canton,E.distrito, E.detalle from
+	(select E.cedula,E.carnet,P.nombre, P.apellido1,P.apellido2,P.provincia,P.canton,P.distrito,P.detalle  
+	from estudiantes E inner join personas P on E.cedula=P.cedula) as E inner join
+	(select C.cedula, C.correo, T.telefono from correos_P C inner join telefonos_P T on C.cedula=T.cedula) as I
+	on E.cedula=I.cedula;
+	
+select * from vista_estudiantes; -- llamada de la vista
+
+--vista de empresas
+
+select * from empresas 
+select * from telefonos_e
+select * from correos_e
+
+create or replace view vista_empresas as
+	select E.id_empresa,E.nombre,E.provincia,E.canton, E.distrito, E.detalle, I.telefono, I.correo from empresas E 
+	inner join 
+	(select T.telefono,T.id_empresa,C.correo from telefonos_e T inner join correos_e C on T.id_empresa=C.id_empresa) as I
+	on E.id_empresa=I.id_empresa;
+
+select * from vista_empresas;
+
+------------fin vistas
 /*select insertar_Giras_empresas(2,'07-03/2018');
 select*from empresas
 select*from giras
