@@ -1066,7 +1066,7 @@ FOR EACH ROW EXECUTE PROCEDURE validaEliminacionEstudiante();
 )
 
 /*
-2)Un estudiante que haya perdido su práctica profesional no podrá realizarla nuevamente en la misma empresa.
+2-Un estudiante que haya perdido su práctica profesional no podrá realizarla nuevamente en la misma empresa.
 */
 create or replace function validaPracticaPerdidaEmpresa()
 returns trigger as
@@ -1083,14 +1083,40 @@ begin
 END
 $$
 language plpgsql
-----
---trigger de validacion de eliminacion de estudiantes
+
+--trigger que valida la inserccion de una practica de un estudiante repitente para evitar practica en misma empresa
 create trigger trigger_Practica_Perdida_Empresa after insert on practicas
 FOR EACH ROW EXECUTE PROCEDURE validaPracticaPerdidaEmpresa();
 
-)
+/*
+3-Prohibir las giras en un periodo de tiempo ejemplo: Sección 7-1 realiza una gira hoy, hasta dentro de 2 meses puede volver a hacer gira 
+*/
 
-select * from practicas    -- la empresa esta asociada por un id con la practica y con la cedula con el estudiante
+create or replace function validaGiraSeccion()
+returns trigger as
+$$
+begin
+	if ((select 
+	(select extract (month from fecha_final)as mes from giras  G inner join SG S on G.id_gira=NEW.id_gira 
+	and S.id_secciones=NEW.id_secciones order by mes desc limit 1)-
+	(select extract (month from fecha_final)as mes from giras  G inner join SG S on G.id_gira=S.id_gira 
+	and S.id_secciones=NEW.id_secciones order by mes desc limit 1) as algo)<2)
+		then
+		delete from sg where id_gira=NEW.id_gira;
+		raise notice 'La seccion no puede realizar giras luego de dos meses despues de la anterior';
+		return NULL;
+	end if;
+	return NEW;
+END
+$$
+language plpgsql
+
+--
+create trigger trigger_validaGiraSeccion before insert on SG
+FOR EACH ROW EXECUTE PROCEDURE validaGiraSeccion();
+-------------------------------------------------
+
+
 ----------------------------------------CURSORES-----------------------
 (--CURSOR_POLIZAS------------
 create or replace function cursor_polizas()
