@@ -1045,25 +1045,8 @@ LANGUAGE plpgsql;
 )
 
 ---------------------------------------------------------Triggers-------------------------------------------------------------
-(--Falta validar fecha eventos y practicas
---funcion para trigger valida que la fecha final no ocurra antes que la de inicio
-create or replace function validaInsercionGiras()
-returns trigger as
-$$
-begin
-	if (cast (NEW.fecha_final as date)<cast(NEW.fecha_inicio as date))then
-		delete from giras where new.id_gira=id_gira;
-		raise notice 'La fecha de finalización de la gira no puede estar antes que su inicio';
-	end if;
-	return new;
-END
-$$
-language plpgsql
---trigger de validacion de fecha sobre giras
-create trigger trigger_valida_Giras after insert ON giras
-FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiras();
-
-----------funcion que se encarga de validar cuando se elimina un estudiante
+(
+--1)---------funcion que se encarga de validar cuando se elimina un estudiante
 create or replace function validaEliminacionEstudiante()
 returns trigger as
 $$
@@ -1082,7 +1065,32 @@ create trigger trigger_valida_Estudiantes after delete ON practicas
 FOR EACH ROW EXECUTE PROCEDURE validaEliminacionEstudiante();
 )
 
+/*
+2)Un estudiante que haya perdido su práctica profesional no podrá realizarla nuevamente en la misma empresa.
+*/
+create or replace function validaPracticaPerdidaEmpresa()
+returns trigger as
+$$
+begin
+	if ((select count (*) num from
+		(select * from practicas P inner join empresas E on E.id_empresa=P.id_empresa) as P
+		inner join estudiantes E on E.cedula =P.cedula and E.cedula=NEW.cedula)>0)
+		then
+		delete from practicas where id_practicas=NEW.id_practicas;
+		raise notice 'El estudiante no puede realizar la practica en la misma empresa';
+	end if;
+	return new;
+END
+$$
+language plpgsql
+----
+--trigger de validacion de eliminacion de estudiantes
+create trigger trigger_Practica_Perdida_Empresa after insert on practicas
+FOR EACH ROW EXECUTE PROCEDURE validaPracticaPerdidaEmpresa();
 
+)
+
+select * from practicas    -- la empresa esta asociada por un id con la practica y con la cedula con el estudiante
 ----------------------------------------CURSORES-----------------------
 (--CURSOR_POLIZAS------------
 create or replace function cursor_polizas()
