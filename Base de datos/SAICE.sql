@@ -1184,16 +1184,21 @@ select * from promedio_practicas;
 (/*2. Sacar el promedio de estudiantes que obtuvieron 
 una nota entre 0 y 70, 70 y 80, 80 y 90,90 y 100 con respecto
 a la cantidad de practicas.*/
+
 select 
+(select * from Cantidad_practicas) as Total_Practicas,
 ((select count(id_practicas) as nota from practicas  where nota <= 70)*100/
-(select count(id_practicas) as cant from practicas)) as "promedio <= 70",
+(select * from Cantidad_practicas)) as "promedio <= 70",
+(select count(id_practicas) as nota from practicas  where nota >=70) as Cantidad_menor_70,
 ((select count(id_practicas) as nota from practicas  where nota >70 and nota <= 80)*100/
-(select count(id_practicas) as cant from practicas)) as ">70 <=80",
+(select * from Cantidad_practicas)) as ">70 <=80",
+(select count(id_practicas) as nota from practicas  where nota >70 and nota <= 80) as Cantidad_70_80,
 ((select count(id_practicas) as nota from practicas  where nota >80 and nota <= 90)*100/
-(select count(id_practicas) as cant from practicas)) as ">80 <=90",
+(select * from Cantidad_practicas)) as ">80 <=90",
+(select count(id_practicas) as nota from practicas  where nota >80 and nota <= 90) as Cantidad_80_90,
 ((select count(id_practicas) as nota from practicas  where nota >90 and nota <= 100)*100/
-(select count(id_practicas) as cant from practicas)) as ">70 <=80";
- --from practicas limit 1
+(select * from Cantidad_practicas)) as ">90 <=100",
+(select count(id_practicas) as nota from practicas  where nota >90 and nota <= 100) as Cantidad_90_100;
 )
 
 
@@ -1294,24 +1299,12 @@ create or replace view vista_empresas as
 
 select * from vista_empresas;
 
-------------fin vistas
-/*select insertar_Giras_empresas(2,'07-03/2018');
-select*from empresas
-select*from giras
-select*from SG
-select insertar_secciones('07-03')
-*/
+------------vista de contador de practicas
+create or replace view Cantidad_practicas as
+	select count(id_practicas) as cant from practicas;
 
---insertar giras funcionario´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
-/*select insertar_giras_empresa(2,'Em-000000');
-/*select insertar_giras_empresa(2,'Em-000003');
-select*from empresas
-select*from giras
-select*from SG
-select insertar_secciones('07-03')
-*/
+--vista aplicada a una consulta 
 
 
---eliminar funcionario seccion e insertar funcionario seccion'''''''''''''''''''''''''''''''''''''''''''''
-/*Porcentaje de Giras realizadas a una empresa en el año x con respecto a todas las giras realizadas en el mismo año y el funcionario que ha tenido mayor participación.*/
---Hablar sobre esto
+
+------------fin vistas-----------------------------------------
