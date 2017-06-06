@@ -1147,6 +1147,57 @@ language plpgsql;
 )
 ----------fin cursores
 
+-----------------------------------------------------VISTAS------------------------------------
+
+--vista de estudiantes
+create or replace view vista_estudiantes as 
+	select E.cedula,E.carnet,(E.nombre||' '||E.apellido1) as "Nombre cmpleto",E.provincia,E.canton,E.distrito, E.detalle from
+	(select E.cedula,E.carnet,P.nombre, P.apellido1,P.apellido2,P.provincia,P.canton,P.distrito,P.detalle  
+	from estudiantes E inner join personas P on E.cedula=P.cedula) as E inner join
+	(select C.cedula, C.correo, T.telefono from correos_P C inner join telefonos_P T on C.cedula=T.cedula) as I
+	on E.cedula=I.cedula;
+	
+
+--vista de empresas
+
+select * from empresas 
+select * from telefonos_e
+select * from correos_e
+
+create or replace view vista_empresas as
+	select E.id_empresa,E.nombre,E.provincia,E.canton, E.distrito, E.detalle, I.telefono, I.correo from empresas E 
+	inner join 
+	(select T.telefono,T.id_empresa,C.correo from telefonos_e T inner join correos_e C on T.id_empresa=C.id_empresa) as I
+	on E.id_empresa=I.id_empresa;
+
+
+--vista de contador de practicas
+
+create or replace view Cantidad_practicas as
+	select count(id_practicas) as cant from practicas;
+
+--vista porcentaje de polizas por provincias
+
+create or replace view Porcentaje_Polizas_Provincias as 
+select count(provincia)*100/(select count(cedula) from estudiantes)as Porcentajes,
+	count(pp.cedula)as Total_en_provincia,provincia,
+	(select count(cedula)as "cedulas" from estudiantes)as"Total" from 
+		
+	(select e.cedula from estudiantes e) as es
+	inner join 
+	(select provincia,cedula from personas) as pp
+	on es.cedula=pp.cedula
+	group by(provincia);
+	
+-----------------------Promedio de aprobacion de practicas
+
+create or replace view Promedio_Aprobacion_Practica_Empresa as
+	select A.id_empresa,A.Cantidad_participantes,B.numero_aprobados,((Numero_aprobados)*100/(Cantidad_participantes)) porcentaje_aprobacion from (
+	select count(id_practicas) Cantidad_participantes,id_empresa  from practicas group by id_empresa) as A inner join
+	(select count(id_practicas)Numero_aprobados, id_empresa from practicas where nota >=70 group by id_empresa) as B
+	on A.id_empresa = B.id_empresa  order by porcentaje_aprobacion desc;
+
+------------fin vistas-----------------------------------------
 
 ----------------------------------------------CONSULTAS-------------------------------
 (/*1. Sacar el promedio de aprobacion de practicas de un año
@@ -1252,58 +1303,9 @@ limit 3;)
 select E.nombre,P.* from 
 (select nombre,id_empresa from empresas)as E 
 inner join
-(select A.id_empresa,A.Cantidad_participantes,B.numero_aprobados,((Numero_aprobados)*100/(Cantidad_participantes)) porcentaje_aprobacion from (
-select count(id_practicas) Cantidad_participantes,id_empresa  from practicas group by id_empresa) as A inner join
-(select count(id_practicas)Numero_aprobados, id_empresa from practicas where nota >=70 group by id_empresa) as B
-on A.id_empresa = B.id_empresa  order by porcentaje_aprobacion desc) as P
+(select * from Promedio_Aprobacion_Practica_Empresa) as P
 on p.id_empresa=E.id_empresa;
 )
 
 
 -----fin conultas
------------------------------------------------------VISTAS------------------------------------
-
---vista de estudiantes
-create or replace view vista_estudiantes as 
-	select E.cedula,E.carnet,(E.nombre||' '||E.apellido1) as "Nombre cmpleto",E.provincia,E.canton,E.distrito, E.detalle from
-	(select E.cedula,E.carnet,P.nombre, P.apellido1,P.apellido2,P.provincia,P.canton,P.distrito,P.detalle  
-	from estudiantes E inner join personas P on E.cedula=P.cedula) as E inner join
-	(select C.cedula, C.correo, T.telefono from correos_P C inner join telefonos_P T on C.cedula=T.cedula) as I
-	on E.cedula=I.cedula;
-	
-select * from vista_estudiantes; -- llamada de la vista
-
---vista de empresas
-
-select * from empresas 
-select * from telefonos_e
-select * from correos_e
-
-create or replace view vista_empresas as
-	select E.id_empresa,E.nombre,E.provincia,E.canton, E.distrito, E.detalle, I.telefono, I.correo from empresas E 
-	inner join 
-	(select T.telefono,T.id_empresa,C.correo from telefonos_e T inner join correos_e C on T.id_empresa=C.id_empresa) as I
-	on E.id_empresa=I.id_empresa;
-
-select * from vista_empresas;
-
-------------vista de contador de practicas
-create or replace view Cantidad_practicas as
-	select count(id_practicas) as cant from practicas;
-
---vista porcentaje de polizas por provincias
-
-create or replace view Porcentaje_Polizas_Provincias as 
-select count(provincia)*100/(select count(cedula) from estudiantes)as Porcentajes,
-	count(pp.cedula)as Total_en_provincia,provincia,
-	(select count(cedula)as "cedulas" from estudiantes)as"Total" from 
-		
-	(select e.cedula from estudiantes e) as es
-	inner join 
-	(select provincia,cedula from personas) as pp
-	on es.cedula=pp.cedula
-	group by(provincia);
-	
-
-
-------------fin vistas-----------------------------------------
