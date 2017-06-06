@@ -1188,16 +1188,16 @@ a la cantidad de practicas.*/
 select 
 (select * from Cantidad_practicas) as Total_Practicas,
 ((select count(id_practicas) as nota from practicas  where nota <= 70)*100/
-(select * from Cantidad_practicas)) as "promedio <= 70",
+(select * from Cantidad_practicas))||'%' as "promedio <= 70",
 (select count(id_practicas) as nota from practicas  where nota >=70) as Cantidad_menor_70,
 ((select count(id_practicas) as nota from practicas  where nota >70 and nota <= 80)*100/
-(select * from Cantidad_practicas)) as ">70 <=80",
+(select * from Cantidad_practicas))||'%' as ">70 <=80",
 (select count(id_practicas) as nota from practicas  where nota >70 and nota <= 80) as Cantidad_70_80,
 ((select count(id_practicas) as nota from practicas  where nota >80 and nota <= 90)*100/
-(select * from Cantidad_practicas)) as ">80 <=90",
+(select * from Cantidad_practicas))||'%' as ">80 <=90",
 (select count(id_practicas) as nota from practicas  where nota >80 and nota <= 90) as Cantidad_80_90,
 ((select count(id_practicas) as nota from practicas  where nota >90 and nota <= 100)*100/
-(select * from Cantidad_practicas)) as ">90 <=100",
+(select * from Cantidad_practicas))||'%' as ">90 <=100",
 (select count(id_practicas) as nota from practicas  where nota >90 and nota <= 100) as Cantidad_90_100;
 )
 
@@ -1205,7 +1205,7 @@ select
 
 (/*3Porcentaje de estudiantes que utilizan un tipo de póliza con respecto
 al total de estudiantes para cada póliza.*/
-select p.monto,total.t_e*100/(select count(cedula) from estudiantes)||'%' from polizas p
+select p.id_poliza,p.monto,total.t_e*100/(select count(cedula) from estudiantes)||'%' from polizas p
 	inner join
 	(select id_poliza,count(cedula) as t_e from estudiantes
 		group by(id_poliza)
@@ -1219,21 +1219,8 @@ select * from personas
 
 (/*4. Porcentaje de estudiantes que pertenecen a una provincia del país con respecto a todos los estudiantes, así para cada provincia.*/
 select * from 
-	(select count(provincia)*100/(select count(cedula) from estudiantes)as Porcentajes,
-		count(cedulas)as Total_en_provincia,provincia,
-		(select count(cedula)as "cedulas" from estudiantes)as"Total" from 
-		
-		(select e.cedula,count(e.cedula)as "cedulas" from estudiantes e
-			group by(e.cedula)) as es
-
-		inner join 
-		(select provincia,cedula from personas) as pp
-
-			on es.cedula=pp.cedula
-		group by(provincia)
-	
-	)as t
-	order by Total_en_provincia desc
+	Porcentaje_Polizas_Provincias P
+	order by P.Total_en_provincia desc
 
 select insertar_Estudiante('2015-110160','1-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez',
 'Calderon','San Jose','San Ramon','Piedades Sur','Estudiante','1');
@@ -1260,6 +1247,7 @@ inner join practicas  P on P.cedula=E.cedula and extract(year from P.fecha_final
 group by canton 
 order by cantidad_practicas desc 
 limit 3;)
+
 (/* 7. Empresas con indice de aprobacion de prácticas más alto*/
 select E.nombre,P.* from 
 (select nombre,id_empresa from empresas)as E 
@@ -1303,8 +1291,19 @@ select * from vista_empresas;
 create or replace view Cantidad_practicas as
 	select count(id_practicas) as cant from practicas;
 
---vista aplicada a una consulta 
+--vista porcentaje de polizas por provincias
 
+create or replace view Porcentaje_Polizas_Provincias as 
+select count(provincia)*100/(select count(cedula) from estudiantes)as Porcentajes,
+	count(pp.cedula)as Total_en_provincia,provincia,
+	(select count(cedula)as "cedulas" from estudiantes)as"Total" from 
+		
+	(select e.cedula from estudiantes e) as es
+	inner join 
+	(select provincia,cedula from personas) as pp
+	on es.cedula=pp.cedula
+	group by(provincia);
+	
 
 
 ------------fin vistas-----------------------------------------
