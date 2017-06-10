@@ -1308,4 +1308,24 @@ on p.id_empresa=E.id_empresa;
 )
 
 
+/*
+8-Sacar el porcentaje del monto entre 10000 y 15000, entre 15000 y 20000 y más de 20000
+de giras realizadas en dado año, Así como la gira más cara y las mas barata.
+*/
+select * from
+(select 
+(select count (id_gira) parcial from giras where extract(year from fecha_inicio)=2017 and costo between 10000 and 15000)*100 /
+(select  count(id_gira) total from giras where extract (year from fecha_inicio)=2017)||'%' as "10-15",
+(select count (id_gira) parcial from giras where extract(year from fecha_inicio)=2017 and costo between 15000 and 20000)*100 /
+(select  count(id_gira) total from giras where extract (year from fecha_inicio)=2017)||'%' as "15-20",
+(select count (id_gira) parcial from giras where extract(year from fecha_inicio)=2017 and costo >20000)*100 /
+(select  count(id_gira) total from giras where extract (year from fecha_inicio)=2017)||'%' as "20+" from giras limit 1) A
+
+cross join 
+(
+select * from
+(select  detalle as "Gira mas barata", costo from giras  order by costo limit 1) as B cross join
+(select detalle as "Gira mas cara",costo from giras order by costo desc limit 1) as C) B
+
+select * from giras
 -----fin conultas
