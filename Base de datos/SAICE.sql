@@ -1046,27 +1046,8 @@ LANGUAGE plpgsql;
 
 ---------------------------------------------------------Triggers-------------------------------------------------------------
 (
---1)---------funcion que se encarga de validar cuando se elimina un estudiante
-create or replace function validaEliminacionEstudiante()
-returns trigger as
-$$
-begin
-	if (OLD.estado='a')then
-		insert into practicas values (OLD.id_practicas,OLD.fecha_inicio,OLD.fecha_final,OLD.nota,OLD.estado,OLD.cedula,OLD.id_empresa);
-		raise notice 'El estudiante es un egresado por lo tanto no se puede eliminar';
-	end if;
-	return new;
-END
-$$
-language plpgsql
-
---trigger de validacion de eliminacion de estudiantes
-create trigger trigger_valida_Estudiantes after delete ON practicas
-FOR EACH ROW EXECUTE PROCEDURE validaEliminacionEstudiante();
-)
-
 /*
-2-Un estudiante que haya perdido su práctica profesional no podrá realizarla nuevamente en la misma empresa.
+1-Un estudiante que haya perdido su práctica profesional no podrá realizarla nuevamente en la misma empresa.
 */
 create or replace function validaPracticaPerdidaEmpresa()
 returns trigger as
@@ -1087,6 +1068,32 @@ language plpgsql
 --trigger que valida la inserccion de una practica de un estudiante repitente para evitar practica en misma empresa
 create trigger trigger_Practica_Perdida_Empresa after insert on practicas
 FOR EACH ROW EXECUTE PROCEDURE validaPracticaPerdidaEmpresa();
+
+/*
+2-No se puede eliminar un estudiante una vez graduado para para llevar un control de los egresados.
+*/
+
+--funcion que se encarga de validar cuando se elimina un estudiante
+create or replace function validaEliminacionEstudiante()
+returns trigger as
+$$
+begin
+	if (OLD.estado='A')then
+		raise notice 'El estudiante es un egresado por lo tanto no se puede eliminar';
+		return null;
+	end if;
+	return new;
+END
+$$
+language plpgsql
+
+--trigger de validacion de eliminacion de estudiantes
+create trigger trigger_valida_Estudiantes before delete ON practicas
+FOR EACH ROW EXECUTE PROCEDURE validaEliminacionEstudiante();
+)
+
+--select * from practicas P inner join estudiantes E on P.cedula=E.cedula
+--delete  from practicas where id_practicas='Pr-000003'
 
 /*
 3-Prohibir las giras en un periodo de tiempo ejemplo: Sección 7-1 realiza una gira hoy, hasta dentro de 2 meses puede volver a hacer gira 
