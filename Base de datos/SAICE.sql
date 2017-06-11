@@ -1092,8 +1092,8 @@ create trigger trigger_valida_Estudiantes before delete ON practicas
 FOR EACH ROW EXECUTE PROCEDURE validaEliminacionEstudiante();
 )
 
---select * from practicas P inner join estudiantes E on P.cedula=E.cedula
---delete  from practicas where id_practicas='Pr-000003'
+select * from practicas P inner join estudiantes E on P.cedula=E.cedula
+delete  from practicas where id_practicas='Pr-000003'
 
 /*
 3-Prohibir las giras en un periodo de tiempo ejemplo: Sección 7-1 realiza una gira hoy, hasta dentro de 2 meses puede volver a hacer gira 
@@ -1336,3 +1336,46 @@ select * from
 
 select * from giras
 -----fin conultas
+--------------------------------------------------------------------TRANSACCIONES---------------------
+
+/*
+ 1-insertar un evento validando que no exista ninguno con la misma fecha de inicio o con el mismo nombre.
+ De acuerdo a esto lo inserte o si se parece mucho a uno anterior que solo se modifiquen las fechas
+ -> cuando el nombre es igual pero el evento no ha ocurrido, no se puede insertar con el mismo nombre
+ -> cuando el nombre es igual pero ya el evento ocurrio nadamas se modifica
+ -> caso contrario se inserta uno nuevo
+*/
+
+create  or replace function insertar_Evento_T(ID char(9),NE varchar(30),DE varchar(100),FI date,FF date)
+returns void as 
+$$
+begin
+	if(select count(*) from eventos where nombre similar to NE and fechainicio != FI and fechainicio > (current_date))!=0 then
+		raise exception  'existe un evento con el mismo nombre que aun no ha ocurrido';
+	end if;
+	if (select count(*) from eventos where nombre similar to NE and fechainicio != FI and fechainicio < (current_date))!=0 then
+		update eventos 
+		set descripcion=DE, fechainicio=FI, fechafinal=FF
+		where id_evento = (select id_evento from eventos where nombre similar to NE and fechainicio = FI);
+		raise notice 'se modifico un evento ya ocurrido con elmismo nombre ';
+	else 
+		insert into eventos values (ID,NE,DE,FI,FF);
+		raise notice 'se inserto un nuevo evento';
+	end if;
+exception
+	when raise_exception then raise notice 'manejo de la exception';
+end;
+$$ language plpgsql;
+
+
+ 2-Validar que no se pueda asignar a un funcionario más de 3 eventos en un año, pero sí en diferentes años
+*/
+
+
+/*
+3- Validar que dos giras a la misma empresa no sean de la misma sección en un mismo año, pero sí en diferentes años.
+*/
+
+/*
+4-Un funcionario no puede coordinar una gira y un evento en la misma fecha
+*/
