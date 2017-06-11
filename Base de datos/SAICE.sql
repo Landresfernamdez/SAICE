@@ -31,8 +31,7 @@ CHECK (VALUE SIMILAR TO 'Pr-[0-9][0-9][0-9][0-9][0-9][0-9]');
 ----Tabla Secciones
 CREATE TABLE Secciones(
 	Id_secciones D_SECCIONES NOT NULL PRIMARY KEY
-		      );
-
+		);
 --Tabla eventos
  CREATE TABLE Eventos(
 	ID_Evento id_evento primary key NOT NULL,
@@ -40,8 +39,7 @@ CREATE TABLE Secciones(
 	Descripcion VARCHAR(100) NULL,
 	FechaInicio DATE NOT NULL,
 	FechaFinal DATE NOT NULL
-                    );
-
+                  );
 
 --Tabla personas
  CREATE TABLE Personas(
@@ -194,8 +192,6 @@ CREATE TABLE  GE(
 )
 
 
-
-
 -----------------------------------------Funciones agregar----------------------------------------------------------------
 --------------------------------------------------------CRUD de estudiantes-----------------------------------------------
 (
@@ -289,8 +285,7 @@ CREATE OR REPLACE FUNCTION actualizarEstudiante
 		END;
 		$BODY$ 
 		LANGUAGE plpgsql;
-)
---select insertar_Estudiante('2015-110180','2-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez','Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','1');	
+)--select insertar_Estudiante('2015-110180','2-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez','Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','1');	
 --------------------------------------------------------CRUD de funcionarios------------------------------------------------------------------
 (
 ---Obtener funcionario
@@ -372,8 +367,8 @@ CREATE OR REPLACE FUNCTION eliminarFuncionario
 		$BODY$ 
 		LANGUAGE plpgsql;
 
-
 )
+
 ----------------------------------------------------------CRUD Contactos---------------------------------
 (
 -----obtener contacto
@@ -408,8 +403,8 @@ Begin
 	raise notice 'Se inserto Funcionario';
 end $BODY$
 language plpgsql;
-------modificar un contacto
 
+------modificar un contacto
 CREATE OR REPLACE FUNCTION actualizarContacto
 		( 
 			p_puesto VARCHAR(30),
@@ -465,6 +460,7 @@ CREATE OR REPLACE FUNCTION eliminarContacto
 )
 --- -------------------------------------------------------CRUD practicas-----------------------------------------------
 (
+--insertar practica
 create or replace function insertar_Practica(
 	p_id_practica id_practica,
 	p_fecha_inicio varchar(8),
@@ -523,21 +519,14 @@ end $BODY$
 language plpgsql;
 
 --obtener practicas
-select ES.nombre, ES.apellido1, ES.apellido2, ES.carnet, PR.cedula,PR.id_practicas,PR.nota, PR.nombre,PR.fecha_inicio,PR.fecha_final from 
-	(select P.nombre, P.apellido1, P.apellido2, P.cedula, E.carnet 
-	from personas P inner join estudiantes E on P.cedula=E.cedula) as ES
-inner join 
-	(select P.cedula,P.id_practicas,E.nombre,P.nota,P.fecha_inicio,P.fecha_final
-	from practicas P inner join empresas E on P.id_empresa = E.id_empresa) as PR
-on ES.cedula=PR.cedula
+select ES.nombre, ES.apellido1, ES.apellido2, ES.carnet, PR.cedula,PR.id_practicas,PR.estado,PR.nota, PR.nombre,PR.fecha_inicio,PR.fecha_final from 
+			(select P.nombre, P.apellido1, P.apellido2, P.cedula, E.carnet 
+			from personas P inner join estudiantes E on P.cedula=E.cedula) as ES
+			inner join 
+			(select P.cedula,P.id_practicas,E.nombre,P.nota,P.fecha_inicio,P.estado,P.fecha_final
+			from practicas P inner join empresas E on P.id_empresa = E.id_empresa) as PR
+			on ES.cedula=PR.cedula;
 )
-
-
-
-
-
-
-
 -----------------------------------------------------------CRUD Polizas-----------------------------------------------
 (--Insertar Polizas
 create or replace function insertar_Polizas(
@@ -578,7 +567,7 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
-
+select * from polizas
 --borrado polizas
 CREATE OR REPLACE FUNCTION borrar_polizas
 (
@@ -588,7 +577,6 @@ AS
 $BODY$
 BEGIN
     delete from polizas where id_poliza=p_id_poliza;
-    
 END;
 $BODY$
 LANGUAGE plpgsql;
@@ -608,8 +596,6 @@ End;
 $BODY$
 Language plpgsql;
 
-
-
 --ELIMINAR SECCIONES
 CREATE or replace FUNCTION ELIMINAR_SECCIONES
 (
@@ -618,10 +604,15 @@ CREATE or replace FUNCTION ELIMINAR_SECCIONES
 $BODY$
 BEGIN
 	DELETE FROM SECCIONES WHERE ID_ELIMINA_SECCION=ID_SECCIONES;
+	delete from SG WHERE ID_ELIMINA_SECCION=ID_SECCIONES;
+	delete from SF WHERE ID_ELIMINA_SECCION=ID_SECCIONES;
+	
 end;
 $BODY$
 Language plpgsql;
 )
+
+
 ----------------------------------------------------------CRUD empresas----------------------------------------------------------------------
 (--Agregar empresa
 
@@ -688,12 +679,12 @@ Begin
 end $BODY$
 language plpgsql;
 
+
 --obtener empresa
 
 select E.id_empresa,E.nombre,E.provincia, E.canton, E.distrito,E.detalle, T.telefono,C.correo from empresas E inner join telefonos_e T on  E.id_empresa = T.id_empresa
 inner join correos_E C on E.id_empresa=C.id_empresa;
 )
-
 
 ----------------------------------------------------------CRUD eventos------------------------------------------------------------------
 (
@@ -781,7 +772,7 @@ create or replace function insertar_Giras(
 	g_duracion varchar(30),
 	g_provincia VARCHAR(30) ,
 	g_canton VARCHAR(30) ,
-	g_distrito VARCHAR(30) ,
+	g_distrito VARCHAR(30),
 	g_detalle VARCHAR(100) 
 )returns void as
 $BODY$
@@ -843,8 +834,6 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
-
-
 -------------------------------------------------------------insertar giras y secciones
 create or replace function insertar_Giras_secciones(
 	idGira int,
@@ -857,7 +846,6 @@ Begin
 	raise notice 'Se inserto Gira';
 end $BODY$
 language plpgsql;
-
 
 -------------------------------------------------------------------------- Giras secciones (GS)-----------------------------
 --- Esta funcion sirve para editar las secciones de las giras esto se hace boorandolas de la tabla
@@ -889,7 +877,6 @@ Begin
 end $BODY$
 language plpgsql
 
-
 --- Esta funcion sirve para editar las empresas de las giras esto se hace boorandolas de la tabla
 --- Empresa Gira (GE)
 CREATE OR REPLACE FUNCTION borrar_giras_empresas
@@ -906,29 +893,11 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
-
 )
 
 ---------------------------------------------------------Triggers-------------------------------------------------------------
-(--Falta validar fecha eventos y practicas
---funcion para trigger valida que la fecha final no ocurra antes que la de inicio
-create or replace function validaInsercionGiras()
-returns trigger as
-$$
-begin
-	if (cast (NEW.fecha_final as date)<cast(NEW.fecha_inicio as date))then
-		delete from giras where new.id_gira=id_gira;
-		raise notice 'La fecha de finalización de la gira no puede estar antes que su inicio';
-	end if;
-	return new;
-END
-$$
-language plpgsql
---trigger de validacion de fecha sobre giras
-create trigger trigger_valida_Giras after insert ON giras
-FOR EACH ROW EXECUTE PROCEDURE validaInsercionGiras();
-
-----------funcion que se encarga de validar cuando se elimina un estudiante
+(
+---1)funcion que se encarga de validar cuando se elimina un estudiante
 create or replace function validaEliminacionEstudiante()
 returns trigger as
 $$
@@ -945,7 +914,58 @@ language plpgsql
 --trigger de validacion de eliminacion de estudiantes
 create trigger trigger_valida_Estudiantes after delete ON practicas
 FOR EACH ROW EXECUTE PROCEDURE validaEliminacionEstudiante();
+
+/*
+2-Un estudiante que haya perdido su práctica profesional no podrá realizarla nuevamente en la misma empresa.
+*/
+create or replace function validaPracticaPerdidaEmpresa()
+returns trigger as
+$$
+begin
+	if ((select count (*) num from
+		(select * from practicas P inner join empresas E on E.id_empresa=P.id_empresa) as P
+		inner join estudiantes E on E.cedula =P.cedula and E.cedula=NEW.cedula)>0)
+		then
+		delete from practicas where id_practicas=NEW.id_practicas;
+		raise notice 'El estudiante no puede realizar la practica en la misma empresa';
+	end if;
+	return new;
+END
+$$
+language plpgsql
+
+--trigger que valida la inserccion de una practica de un estudiante repitente para evitar practica en misma empresa
+create trigger trigger_Practica_Perdida_Empresa after insert on practicas
+FOR EACH ROW EXECUTE PROCEDURE validaPracticaPerdidaEmpresa();
+
+/*
+3-Prohibir las giras en un periodo de tiempo ejemplo: Sección 7-1 realiza una gira hoy, hasta dentro de 2 meses puede volver a hacer gira 
+*/
+
+create or replace function validaGiraSeccion()
+returns trigger as
+$$
+begin
+	if ((select 
+	(select extract (month from fecha_final)as mes from giras  G inner join SG S on G.id_gira=NEW.id_gira 
+	and S.id_secciones=NEW.id_secciones order by mes desc limit 1)-
+	(select extract (month from fecha_final)as mes from giras  G inner join SG S on G.id_gira=S.id_gira 
+	and S.id_secciones=NEW.id_secciones order by mes desc limit 1) as algo)<2)
+		then
+		delete from sg where id_gira=NEW.id_gira;
+		raise notice 'La seccion no puede realizar giras luego de dos meses despues de la anterior';
+		return NULL;
+	end if;
+	return NEW;
+END
+$$
+language plpgsql
+
+create trigger trigger_validaGiraSeccion before insert on SG
+FOR EACH ROW EXECUTE PROCEDURE validaGiraSeccion();
 )
+
+
 
 
 ----------------------------------------CURSORES-----------------------
@@ -978,9 +998,6 @@ end;
 $$
 language plpgsql;
 
-
-
-
 /*Agregar a las empresas el número de estudiantes que realizan práctica en ella durante el año actual*/
 
 alter table empresas add column num_estudiantes int;
@@ -1005,12 +1022,62 @@ begin
 end;
 $BODY$
 language plpgsql;
-
-
 )
 -----------------------------------------------------FIN CURSORES--------------------------
 
+(-----------------------------------------------------VISTAS------------------------------------
 
+--vista de estudiantes
+create or replace view vista_estudiantes as 
+	select E.cedula,E.carnet,(E.nombre||' '||E.apellido1) as "Nombre cmpleto",E.provincia,E.canton,E.distrito, E.detalle from
+	(select E.cedula,E.carnet,P.nombre, P.apellido1,P.apellido2,P.provincia,P.canton,P.distrito,P.detalle  
+	from estudiantes E inner join personas P on E.cedula=P.cedula) as E inner join
+	(select C.cedula, C.correo, T.telefono from correos_P C inner join telefonos_P T on C.cedula=T.cedula) as I
+	on E.cedula=I.cedula;
+	
+
+--vista de empresas
+
+select * from empresas 
+select * from telefonos_e
+select * from correos_e
+
+create or replace view vista_empresas as
+	select E.id_empresa,E.nombre,E.provincia,E.canton, E.distrito, E.detalle, I.telefono, I.correo from empresas E 
+	inner join 
+	(select T.telefono,T.id_empresa,C.correo from telefonos_e T inner join correos_e C on T.id_empresa=C.id_empresa) as I
+	on E.id_empresa=I.id_empresa;
+
+--vista de contador de practicas
+
+create or replace view Cantidad_practicas as
+	select count(id_practicas) as cant from practicas;
+
+--vista porcentaje de polizas por provincias
+
+create or replace view Porcentaje_Polizas_Provincias as 
+select count(provincia)*100/(select count(cedula) from estudiantes)as Porcentajes,
+	count(pp.cedula)as Total_en_provincia,provincia,
+	(select count(cedula)as "cedulas" from estudiantes)as"Total" from 
+		
+	(select e.cedula from estudiantes e) as es
+	inner join 
+	(select provincia,cedula from personas) as pp
+	on es.cedula=pp.cedula
+	group by(provincia);
+	
+-----------------------Promedio de aprobacion de practicas
+
+create or replace view Promedio_Aprobacion_Practica_Empresa as
+	select A.id_empresa,A.Cantidad_participantes,B.numero_aprobados,((Numero_aprobados)*100/(Cantidad_participantes)) porcentaje_aprobacion from (
+	select count(id_practicas) Cantidad_participantes,id_empresa  from practicas group by id_empresa) as A inner join
+	(select count(id_practicas)Numero_aprobados, id_empresa from practicas where nota >=70 group by id_empresa) as B
+	on A.id_empresa = B.id_empresa  order by porcentaje_aprobacion desc;
+
+------------fin vistas-----------------------------------------
+)
+
+----------------------------------------------CONSULTAS-------------------------------
 (/*1. Sacar el promedio de aprobacion de practicas de un año
 con respecto a la cantidad de practicas, la mejor nota 
 y la peor.*/
@@ -1043,6 +1110,31 @@ $BODY$ language plpgsql;
 select Calcular_Promedio_Practicas(2017);
 select * from promedio_practicas;
 )
+
+---------Revizar cual es la consulta 2 que funciona o lo que le falta
+
+(/*2. Sacar el promedio de estudiantes que obtuvieron 
+una nota entre 0 y 70, 70 y 80, 80 y 90,90 y 100 con respecto
+a la cantidad de practicas.*/
+
+select 
+(select * from Cantidad_practicas) as Total_Practicas,
+((select count(id_practicas) as nota from practicas  where nota <= 70)*100/
+(select * from Cantidad_practicas))||'%' as "promedio <= 70",
+(select count(id_practicas) as nota from practicas  where nota >=70) as Cantidad_menor_70,
+((select count(id_practicas) as nota from practicas  where nota >70 and nota <= 80)*100/
+(select * from Cantidad_practicas))||'%' as ">70 <=80",
+(select count(id_practicas) as nota from practicas  where nota >70 and nota <= 80) as Cantidad_70_80,
+((select count(id_practicas) as nota from practicas  where nota >80 and nota <= 90)*100/
+(select * from Cantidad_practicas))||'%' as ">80 <=90",
+(select count(id_practicas) as nota from practicas  where nota >80 and nota <= 90) as Cantidad_80_90,
+((select count(id_practicas) as nota from practicas  where nota >90 and nota <= 100)*100/
+(select * from Cantidad_practicas))||'%' as ">90 <=100",
+(select count(id_practicas) as nota from practicas  where nota >90 and nota <= 100) as Cantidad_90_100;
+
+
+)
+
 (/*2. Sacar el promedio de estudiantes que obtuvieron 
 una nota entre 0 y 70, 70 y 80, 80 y 90,90 y 100 con respecto
 a la cantidad de practicas.*/
@@ -1057,12 +1149,10 @@ select
 (select count(id_practicas) as cant from practicas)) as ">70 <=80";
  --from practicas limit 1
 )
-
-
-
 (/*3Porcentaje de estudiantes que utilizan un tipo de póliza con respecto
 al total de estudiantes para cada póliza.*/
-select p.monto,total.t_e*100/(select count(cedula) from estudiantes)||'%' from polizas p
+select p.monto "values",p.id_poliza "text",total.t_e*100/(select count(cedula) from estudiantes)porcentage,total.t_e  total from polizas p
+
 	inner join
 	(select id_poliza,count(cedula) as t_e from estudiantes
 		group by(id_poliza)
@@ -1072,8 +1162,6 @@ select*from polizas
 select*from estudiantes
 select * from personas
 )
-
-
 (/*4. Porcentaje de estudiantes que pertenecen a una provincia del país con respecto a todos los estudiantes, así para cada provincia.*/
 select * from 
 	(select count(provincia)*100/(select count(cedula) from estudiantes)as Porcentajes,
@@ -1091,10 +1179,8 @@ select * from
 	
 	)as t
 	order by Total_en_provincia desc
-
-select insertar_Estudiante('2015-110160','1-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez',
-'Calderon','San Jose','San Ramon','Piedades Sur','Estudiante','1');
 )
+
 (/*5Promedio de aprobación de la práctica profesional por empresas filtrado entre el años de finalizacion*/
 select nombre,sum(nota)/count(p.id_empresa) as promedio ,p.id_empresa,fecha 
 	from empresas e inner join 
@@ -1116,7 +1202,8 @@ select count(P.id_practicas) cantidad_practicas,E.canton from
 inner join practicas  P on P.cedula=E.cedula and extract(year from P.fecha_final)=2017 and P.nota >=70
 group by canton 
 order by cantidad_practicas desc 
-limit 3;)
+limit 3;
+)
 (/* 7. Empresas con indice de aprobacion de prácticas más alto*/
 select E.nombre,P.* from 
 (select nombre,id_empresa from empresas)as E 
@@ -1127,9 +1214,6 @@ select count(id_practicas) Cantidad_participantes,id_empresa  from practicas gro
 on A.id_empresa = B.id_empresa  order by porcentaje_aprobacion desc) as P
 on p.id_empresa=E.id_empresa;
 )
-
-
-
 (/*8. Porcentaje de Giras realizadas a una empresa en el año x con respecto
 a todas las giras realizadas en el mismo año*/
 --funcion encargada de enlazar secciones y funcioarios
@@ -1160,7 +1244,6 @@ select nombre,f as año,tg as Total_giras_realizadas,cu*100/tg||'%' as porcentaj
 	
 )
 
-	
 (/*9.  Promedio de eventos realizadas por funcionario por anno */
 select f,te*100/total,cedula, total as Eventos_durante_el_año from
 	(select f,count(e.id_evento) as te,EF.cedula  
@@ -1173,37 +1256,33 @@ select f,te*100/total,cedula, total as Eventos_durante_el_año from
 		(select count(id_evento) as total ,extract(year from fechainicio) as y from eventos group by y) as ev
 	on ev.y=t.f
 
-
-
-select * from EF
-select * from eventos
-
 )
-
-
-
-
-
-/*. select insertar_Giras_empresas(2,'07-03/2018');
-select*from empresas
-select*from giras
-select insertar_giras_secciones(3,'07-02/2017')
-select * from secciones
-select*from SG
-select insertar_secciones('07-01')
-*/
-
---insertar giras funcionario´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
-/*select insertar_giras_empresa(2,'Em-000000');
-/*select insertar_giras_empresa(2,'Em-000003');
-select*from empresas
-select*from giras
-select*from SG
-select insertar_secciones('07-03')
-*/
 
 ------------------------------------------------------ Un par de pruebas
 (
+------------------------pruebas polizas
+insert into polizas(descripcion,monto,fecha_vencimiento,aseguradora)values('Poliza estudiantil','5000','08-08-2018','INS'),
+									('Poliza estudiantil','10000','08-08-2018','INS'),
+									('Poliza estudiantil','15000','08-08-2018','INS');
+									
+select borrar_polizas(4)
+
+select * from polizas
+select insertar_Polizas('d','1000','10-10-2018','adads')
+-----------------------------Pruebas -estudiantes
+select insertar_Estudiante('2015-110180','2-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez',
+'Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','2');
+select insertar_Estudiante('2015-111111','2-321-321','8637-4845','landresf12@hotmail.com','Luis','Fernandez',
+'Matamoros','Alajuela','San Ramon','Piedades Sur','Estudiante','3');
+select insertar_Estudiante('2015-121212','2-745-217','8637-4846','landresf12@hotmail.com',
+'Luis Andres','Fernandez','Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','4');
+
+
+select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
+				p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza,t.telefono,cp.correo from personas
+				p inner join estudiantes e on e.cedula='1-123-123'and p.cedula='1-123-123' inner join 
+				correos_p cp on cp.cedula='1-123-123' inner join telefonos_p t on t.cedula='1-123-123';
+
 ---Filtro de estudiante
 select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
 				p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza,t.telefono,cp.correo from personas
@@ -1211,9 +1290,111 @@ select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
 				correos_p cp on cp.cedula='1-123-123' inner join telefonos_p t on t.cedula='1-123-123';
 
 
+update practicas set estado='a' where id_practicas='Pr-000002';
+
+select modificar_Practica('Pr-000002','21-04-2018','21-08-2018',70,'2-745-217','Em-000000');
+select * from practicas
+select * from practicas
+--pruebas crod practicas
+select insertar_Practica('Pr-000000','20-03-2017','20-06-2017','2-222-222','Em-000000');
+select insertar_Practica('Pr-000001','20-03-2017','20-06-2017','2-222-222','Em-000000');
+select insertar_Practica('Pr-000002','20-03-2017','20-06-2017','2-222-222','Em-000000'); -- ya funcuiona
+select insertar_empresa('Em-000000','GBS','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com')
+select insertar_Evento('Ev-000000','cena','cena residencia','25-06-2017','26-06-2017','1-111-111','Trabajad');--
+
+
+select modificar_Practica('Pr-000002','21-04-2018','21-07-2018',90,'a','2-222-222','Em-000000'); --ya funciona
+select modificar_empresa('Em-000000','GBS','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com')
+select modificar_evento('Ev-000000','Comelona','cena residencia','25-06-2017','26-06-2017','1-111-111','web');--funciona
+
+
+select insertar_empresa('Em-000000','Avantica','Alajuela','San Carlos','Quesada','lol','8888-9999','ava@ava.ava')
+select insertar_contacto('gerente','1-222-333','3333-3333',
+                    'landresf12@hotmail.com','Andres ','Hernandez',
+                    'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor','Em-000000');
+select eliminarContacto('1-222-333');
+select actualizarContacto('Desarrollador','1-222-333',
+ select actualizarContacto('Desarrollador','1-222-333',
+			'8533-4444','landres@hotmail.com',
+			'Andres','Fernandez','Calderon','Alajuela','San Ramon','Piedades Sur','web developer','Em-000000');    
+
+--Pruebas funcionarios			  
+select actualizarFuncionario('2015107073','0-000-000',
+			'8533-4444','l5@hotmail.com',
+			'c','c','c','c',
+			'c','c','c');			
+select insertar_funcionario('2015107073','0-000-000','0000-0000',
+                    'landresf12@hotmail.com','Andres ','Hernandez',
+                    'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor');
+                    
+select insertar_funcionario('2015107073','0-000-001','4000-0000',
+                    'landresf3638@hotmail.com','Andres ','Hernandez',
+                    'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor');
+select insertar_funcionario('2015107073','1-111-111','4000-0000',
+                    'landresf3638@hotmail.com','Andres ','Hernandez',
+                    'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor');
+                    
+select actualizarfuncionario('2015107073','0-000-000','4000-0000',
+                    'landresf3638@hotmail.com','Andres ','Hernandez',
+                    'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor')
+
+select eliminarFuncionario('0-000-000');
+
+
+select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza from personas p inner join estudiantes e on e.cedula=p.cedula
+
+----------------------pruebas  practicas
+select insertar_Practica('Pr-000000','20-03-2017','20-06-2017','2-745-217','Em-000000');
+select insertar_Practica('Pr-000001','20-03-2017','20-06-2017','2-745-217','Em-000000');
+select insertar_Practica('Pr-000002','20-03-2017','20-06-2017','2-745-217','Em-000000'); 
 
 
 
+select * from practicas;
+
+select modificar_Practica('Pr-000002','21-04-2018','21-07-2018',90,'a','2-222-222','Em-000000'); --ya funciona
+select borrar_practica('Pr-000001');
+
+--------------------------pruebas de eventos
+select insertar_Evento('Ev-000000','cena','cena residencia','25-06-2017','26-06-2017','1-111-111','Trabajad');--
+
+select modificar_evento('Ev-000000','Comelona','cena residencia','25-06-2017','26-06-2017','1-111-111','web');--funciona
+select borrar_evento('Ev-000000');
+select * from eventos
+--pruebas empresas
+select * from empresas
+select insertar_empresa('Em-000000','GBSYS','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com');
+select insertar_empresa('Em-000001','Avantica','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com');
+select insertar_empresa('Em-000002','Intel','Heredia','Belen','Belen','lol XD','8888-8888','gbs@lol.com');
+select insertar_empresa('Em-000003','GAB','San Jose','Curridabat','Curridabat','lol XD','8888-8888','gbs@lol.com');
+select insertar_empresa('Em-000004','HP','Alajuela','San Carlos','Zapote','lol XD','8888-8888','gbs@lol.com');
+select insertar_empresa('Em-000005','GBSYS','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com');
+select insertar_empresa('Em-000006','NOVACOM','San Jose','Curridabat','Curridabat','lol XD','8888-8888','gbs@lol.com');
+select insertar_empresa('Em-000007','GO LABS','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com');
+select insertar_empresa('Em-000008','NQC','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com');
+select borrar_empresa('Em-000000');
+
+------------------------------------------------------ Un par de pruebas
+
+---Filtro de estudiante
+select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
+				p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza,t.telefono,cp.correo from personas
+				p inner join estudiantes e on e.cedula='1-123-123'and p.cedula='1-123-123' inner join 
+				correos_p cp on cp.cedula='1-123-123' inner join telefonos_p t on t.cedula='1-123-123';
+
+
+language plpgsql;
+SELECT INSERTAR_SECCIONES('07-02')
+select insertar_giras_secciones('2','Em-000000')
+select insertar_giras_empresa('2','Em-000000')
+select insertar_giras('2017-03-20','2017-04-01',1000000,'05:00:00','A la','Verga','Nos fuimos','Rayos')
+select * from giras
+select * from empresas
+select * from GE
+select * from SG
+select * from SECCIONES
+select borrar_giras_empresas(2,'Em-000000')
+select borrar_giras(2)
 
 --pruebas polizas
 Descripcion,Monto,Fecha_vencimiento,Aseguradora
@@ -1223,10 +1404,17 @@ insert into polizas(descripcion,monto,fecha_vencimiento,aseguradora)values('Poli
 									('Poliza estudiantil','10000','08-08-2018','INS'),
 									('Poliza estudiantil','15000','08-08-2018','INS');									
 
-select borrar_polizas(5)
+select * from SECCIONES
+select borrar_giras_empresas(2,'Em-000000')
 
-select * from polizas
 
+Select * from Personas
+select cursor_polizas();
+select * from polizas;
+select * from estudiantes
+
+
+alter table polizas add column num_estudiantes bigint
 
 
 
@@ -1235,6 +1423,7 @@ select * from practicas
 update practicas set estado='a' where id_practicas='Pr-000002';
 select modificar_Practica('Pr-000002','21-04-2018','21-08-2018',70,'2-745-217','Em-000000');
 select * from practicas
+
 
 select insertar_Practica('Pr-000000','20-03-2017','20-06-2017','2-122-193','Em-000000');
 select insertar_Practica('Pr-000001','20-03-2017','20-06-2017','2-122-193','Em-000000');
@@ -1247,29 +1436,6 @@ select modificar_empresa('Em-000000','GBS','Alajuela','San Carlos','Quesada','lo
 select modificar_evento('Ev-000000','Comelona','cena residencia','25-06-2017','26-06-2017','1-111-111','web');--funciona
 
 
-
-
---empresa evento
-select * from empresas
-select borrar_empresa('Em-000000');
-select borrar_practica('Pr-000001');-- 
-select borrar_evento('Ev-000000');--funciona
-funciona
-select insertar_Evento('Ev-000004','cena','cena residencia','25-06-2018','26-06-2018','0-000-001','Trabaja');--
-select * from eventos
-
-select * from contactos
-select * from ce
-select * from empresas
-select * from correos_e 
-select * from telefonos_e 
-select * from polizas
-select * from Estudiantes
-select * from personas 
-select * from correos_p 
-select * from telefonos_p 
-select * from funcionarios
-
 --pruebas contactos empresas
 select * from contactos
 select * from empresas
@@ -1279,9 +1445,27 @@ select insertar_contacto('gerente','1-222-333','3333-3333',
                     'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor','Em-000000');
 select eliminarContacto('1-222-333');
 
+<<<<<<< HEAD
 select actualizarContacto('Desarrollador','1-222-333',
 			'8533-4444','landres@hotmail.com',
 			'Andres','Fernandez','Calderon','Alajuela','San Ramon','Piedades Sur','web developer','Em-000000');    
+
+
+----probando giras
+----Selecciona todas las giras
+select * from giras
+----Selecciona todas las secciones ligadas a una gira x
+select s.id_secciones from giras g inner join sg s on 3=s.id_gira
+----Selecciona todas las empresas ligadas a una gira x
+select e.id_empresa from giras g inner join ge e on 3=e.id_giras
+-----------------------------pruebas giras--------------------------------------------
+select insertar_Giras('12-01-2018','12-01-2018','150000','16:0:0','Alajuela','San Carlos','Quesada','gira con fines didacticos')
+select insertar_Giras_secciones('3','07-03/2017')
+select insertar_Giras_secciones('3','07-02/2017')
+select insertar_Giras_empresa('3','Em-000000')
+select insertar_Giras_empresa('3','Em-000003')
+select modificar_giras('3','12-01-2018','12-01-2018','150000','16:0:0','Alajuela','San Carlos','Quesada','gira con fines didacticas')
+select borrar_giras('3');
 
 
 --Pruebas funcionarios			               
@@ -1301,11 +1485,7 @@ select insertar_funcionario('2015107073','0-000-000','4000-0000',
 select actualizarfuncionario('2015107073','0-000-000','4000-0000',
                     'landresf3638@hotmail.com','Andres ','Hernandez',
                     'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor')
-
-select 
 select eliminarFuncionario('2-321-321');
-
-
 
 select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza from personas p inner join estudiantes e on e.cedula=p.cedula
 
@@ -1317,27 +1497,14 @@ select insertar_Estudiante('2015-111111','2-321-321','8637-4845','landresf12@hot
 select insertar_Estudiante('2015-121212','2-745-217','8637-4846','landresf12@hotmail.com',
 'Luis Andres','Fernandez','Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','3');
 select eliminarEstudiante('2-321-321');
-
-
-select actualizarestudiante('2015-121212','2-745-217','8637-4846','landresf12@hotmail.com','Luis Andres','Fernandez','Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','2')
-select * from estudiantes
-
-
-
 select modificar_Practica('Pr-000002','21-04-2018','21-07-2018',70,'2-745-217','Em-000000');
 select * from practicas
-
-
-
 drop function actualizarEstudiante()
 
 select actualizarEstudiante('2222-222222','2-222-222',
 			'8533-4444','l5@hotmail.com',
 			'c','c','c','c',
 			'c','c','c','1');
-
-language plpgsql;
-
 
 --pruebas giras
 SELECT INSERTAR_SECCIONES('07-02')
@@ -1351,24 +1518,4 @@ select * from SG
 select * from SECCIONES
 select borrar_giras_empresas(2,'Em-000000')
 select borrar_giras(2)
-
---cambiando el tipo de llave serial a domian de secciones
-ALTER TABLE SG DROP CONSTRAINT fk_id_secciones_giras;
-ALTER TABLE SF DROP CONSTRAINT fk_id_secciones_funcionarios_secciones;
-ALTER TABLE ES DROP CONSTRAINT fk_id_secciones_ESTUDIANTES;
-alter table secciones drop ID_SECCIONES;
-ALTER TABLE SECCIONES ADD ID_SECCIONES D_SECCIONES;
-ALTER TABLE SECCIONES ADD PRIMARY KEY(ID_SECCIONES);
-
-
-
-
-Select * from Personas
-select cursor_polizas();
-select * from polizas;
-select * from estudiantes
-
-
-alter table polizas add column num_estudiantes bigint
-
 )

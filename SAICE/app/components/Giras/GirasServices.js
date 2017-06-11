@@ -13,7 +13,10 @@ angular.module('userModule')
                     //En este caso particular nuestro response esta estructurado de manera que
                     //los datos que interesan estan en el atributo content
                     //Se devuelve un callback el cual se ejecuta en el controller
+<<<<<<< HEAD
                     console.log("Aqui estoy rasta")
+=======
+>>>>>>> ramasergio
                     console.log(response);
                     callback(response);
                 }).error(function errorCallback(response) {
@@ -22,6 +25,7 @@ angular.module('userModule')
                     callback(response);
                 });
             }
+<<<<<<< HEAD
             putTours:function(Tours,callback){
                 $http({
                     method:'POST',
@@ -36,10 +40,34 @@ angular.module('userModule')
                 });
             },
 
+=======
+>>>>>>> ramasergio
         }
         return respuesta;
     });
 
+<<<<<<< HEAD
 
 /*
 */
+=======
+/*
+            //Esta funcion se encarga de insertar un estudiante mediante la conexion con el servidor
+            putStudents:function(estudiante,callback){
+                 $http({
+                    method  :'POST',
+                    url     : urlp+"putEstudiantes",
+                    data    : estudiante
+
+                })// si la insercion fue exitosa entra al succes de lo contrario retorna un error departe del servidor
+                    .success(function(data){
+
+                            alert("insercion exitosa");
+                            callback({success: true});
+                    }).error(function(data) {
+                    //En caso de fallo en la peticion entra en esta funcion
+                            alert("Se ha producido un error en la insercion"+data);
+                            callback({success: false});
+                });
+            },*/
+>>>>>>> ramasergio

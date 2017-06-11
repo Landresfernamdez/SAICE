@@ -22,6 +22,7 @@ function getTours(){
 		$respuesta=pg_fetch_all($result);
 		echo json_encode($respuesta);
 }
+<<<<<<< HEAD
 function putTours(){
 		//se importa la conexion con la base de datos
 		include("../conexion.php");
@@ -46,4 +47,6 @@ function putTours(){
 }
 
 
+=======
+>>>>>>> ramasergio
 ?>

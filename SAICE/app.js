@@ -12,6 +12,7 @@ angular.module('userModule',['ngRoute','zingchart-angularjs'])
                         templateUrl:'app/components/estudiantes/estudiantes.html',
                         controller: 'estudiantesController'
                                              })
+<<<<<<< HEAD
 
                     .when("/funcionarios",{
                         templateUrl:'app/components/funcionarios/funcionarios.html',
@@ -21,10 +22,13 @@ angular.module('userModule',['ngRoute','zingchart-angularjs'])
                         templateUrl:'app/components/contactos/contactos.html',
                         controller: 'contactosController'
                                              })
+=======
+>>>>>>> ramasergio
                     .when("/Giras",{
                         templateUrl:'app/components/Giras/Giras.html',
                         controller: 'GirasController'
                                              })
+<<<<<<< HEAD
 
                     .when("/eventos",{
                         templateUrl:'app/components/eventos/eventos.html',
@@ -34,6 +38,8 @@ angular.module('userModule',['ngRoute','zingchart-angularjs'])
                         templateUrl:'app/components/estadisticas/estadisticas.html',
                         controller:'estadisticasController'
                                              })
+=======
+>>>>>>> ramasergio
 			        .otherwise({
 			            redirectTo: '/'
 			        });
