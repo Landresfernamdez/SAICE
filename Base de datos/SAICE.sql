@@ -372,6 +372,7 @@ CREATE OR REPLACE FUNCTION eliminarFuncionario
 		$BODY$ 
 		LANGUAGE plpgsql;
 
+
 )
 ----------------------------------------------------------CRUD Contactos---------------------------------
 (
@@ -949,6 +950,8 @@ FOR EACH ROW EXECUTE PROCEDURE validaEliminacionEstudiante();
 
 ----------------------------------------CURSORES-----------------------
 (--CURSOR_POLIZAS------------
+alter table polizas add column num_estudiantes int;
+
 create or replace function cursor_polizas()
 returns void as
 $$
@@ -974,9 +977,38 @@ begin
 end;
 $$
 language plpgsql;
+
+
+
+
+/*Agregar a las empresas el número de estudiantes que realizan práctica en ella durante el año actual*/
+
+alter table empresas add column num_estudiantes int;
+
+create or replace function cursor_empresas() returns void as
+$BODY$
+declare
+	cursor_empresa cursor for select ID_empresa from empresas;
+	v_id char(9);
+begin
+	open cursor_empresa;
+	fetch next from cursor_empresa into v_id;
+	While (found)loop
+		Raise notice 'Registro: %', v_id;
+		update empresas set num_estudiantes=(select t.total_de_practicas from
+			(select Count(*) Total_de_practicas,p.id_empresa from practicas p 
+				inner join empresas e on e.id_empresa=p.id_empresa
+				group by p.id_empresa) as t where t.id_empresa=v_id)
+		where id_empresa=v_id;
+		fetch next from cursor_empresa into v_id;
+	end loop;
+end;
+$BODY$
+language plpgsql;
+
+
 )
 -----------------------------------------------------FIN CURSORES--------------------------
-
 
 
 (/*1. Sacar el promedio de aprobacion de practicas de un año
@@ -1098,11 +1130,67 @@ on p.id_empresa=E.id_empresa;
 
 
 
-/*select insertar_Giras_empresas(2,'07-03/2018');
+(/*8. Porcentaje de Giras realizadas a una empresa en el año x con respecto
+a todas las giras realizadas en el mismo año*/
+--funcion encargada de enlazar secciones y funcioarios
+create or replace function insertar_funcionarios_secciones(
+	f_cedula char(9),
+	s_id_secciones char(10) 
+)returns void as
+$BODY$
+Begin
+	insert into SF values(s_id_secciones,f_cedula);
+end;
+$BODY$
+Language plpgsql;
+
+select insertar_funcionarios_secciones('0-000-001','07-01/2017')
+
+select nombre,f as año,tg as Total_giras_realizadas,cu*100/tg||'%' as porcentaje,emp.id_empresa from
+	--sacando datos para los porcentajes
+	(select  extract (year from fecha_inicio) as y,count(id_gira) as tg from giras group by y)as t
+	inner join
+	(select extract (year from fecha_inicio) as f,ge.id_empresa,count(Id_giras) as cu from GE inner join giras g 
+		on g.id_gira=GE.id_giras		
+		group by f,ge.id_empresa) as emp
+	on t.y=emp.f
+	inner join
+	(select nombre,id_empresa from empresas) as en
+	on en.id_empresa=emp.id_empresa 
+	
+)
+
+	
+(/*9.  Promedio de eventos realizadas por funcionario por anno */
+select f,te*100/total,cedula, total as Eventos_durante_el_año from
+	(select f,count(e.id_evento) as te,EF.cedula  
+		from
+			(select extract(year from fechainicio) f,count (*) as cant,id_evento from eventos e group by f,id_evento) as e 
+			inner join EF on e.id_evento=EF.id_evento
+		group by f,EF.cedula) as t
+
+	inner join
+		(select count(id_evento) as total ,extract(year from fechainicio) as y from eventos group by y) as ev
+	on ev.y=t.f
+
+
+
+select * from EF
+select * from eventos
+
+)
+
+
+
+
+
+/*. select insertar_Giras_empresas(2,'07-03/2018');
 select*from empresas
 select*from giras
+select insertar_giras_secciones(3,'07-02/2017')
+select * from secciones
 select*from SG
-select insertar_secciones('07-03')
+select insertar_secciones('07-01')
 */
 
 --insertar giras funcionario´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
@@ -1114,23 +1202,6 @@ select*from SG
 select insertar_secciones('07-03')
 */
 
-
---eliminar funcionario seccion e insertar funcionario seccion'''''''''''''''''''''''''''''''''''''''''''''
-/*Porcentaje de Giras realizadas a una empresa en el año x con respecto a todas las giras realizadas en el mismo año y el funcionario que ha tenido mayor participación.*/
---Hablar sobre esto
-
-
-
-
-
-
-
-
-
-
-
-
-
 ------------------------------------------------------ Un par de pruebas
 (
 ---Filtro de estudiante
@@ -1140,10 +1211,7 @@ select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,
 				correos_p cp on cp.cedula='1-123-123' inner join telefonos_p t on t.cedula='1-123-123';
 
 
-update practicas set estado='a' where id_practicas='Pr-000002';
 
-select modificar_Practica('Pr-000002','21-04-2018','21-08-2018',70,'2-745-217','Em-000000');
-select * from practicas
 
 
 
@@ -1164,22 +1232,31 @@ select * from polizas
 
 select * from practicas
 --pruebas crod practicas
-select insertar_Practica('Pr-000000','20-03-2017','20-06-2017','2-222-222','Em-000000');
-select insertar_Practica('Pr-000001','20-03-2017','20-06-2017','2-222-222','Em-000000');
-select insertar_Practica('Pr-000002','20-03-2017','20-06-2017','2-222-222','Em-000000'); -- ya funcuiona
-select insertar_empresa('Em-000000','GBS','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com')
-select insertar_Evento('Ev-000000','cena','cena residencia','25-06-2017','26-06-2017','1-111-111','Trabajad');--
+update practicas set estado='a' where id_practicas='Pr-000002';
+select modificar_Practica('Pr-000002','21-04-2018','21-08-2018',70,'2-745-217','Em-000000');
+select * from practicas
 
+select insertar_Practica('Pr-000000','20-03-2017','20-06-2017','2-122-193','Em-000000');
+select insertar_Practica('Pr-000001','20-03-2017','20-06-2017','2-122-193','Em-000000');
+select insertar_Practica('Pr-000002','20-03-2017','20-06-2017','2-122-193','Em-000001'); -- ya funcuiona
+select insertar_empresa('Em-000000','GBS','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com')
+select* from funcionarios
 
 select modificar_Practica('Pr-000002','21-04-2018','21-07-2018',90,'a','2-222-222','Em-000000'); --ya funciona
 select modificar_empresa('Em-000000','GBS','Alajuela','San Carlos','Quesada','lol XD','8888-8888','gbs@lol.com')
 select modificar_evento('Ev-000000','Comelona','cena residencia','25-06-2017','26-06-2017','1-111-111','web');--funciona
 
+
+
+
+--empresa evento
 select * from empresas
 select borrar_empresa('Em-000000');
 select borrar_practica('Pr-000001');-- 
 select borrar_evento('Ev-000000');--funciona
 funciona
+select insertar_Evento('Ev-000004','cena','cena residencia','25-06-2018','26-06-2018','0-000-001','Trabaja');--
+select * from eventos
 
 select * from contactos
 select * from ce
@@ -1196,7 +1273,7 @@ select * from funcionarios
 --pruebas contactos empresas
 select * from contactos
 select * from empresas
-select insertar_empresa('Em-000000','Avantica','Alajuela','San Carlos','Quesada','lol','8888-9999','ava@ava.ava')
+select insertar_empresa('Em-000002','Mc Donald','Alajuela','San Carlos','Quesada','Comida','8888-9999','ava@ava.ava')
 select insertar_contacto('gerente','1-222-333','3333-3333',
                     'landresf12@hotmail.com','Andres ','Hernandez',
                     'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor','Em-000000');
@@ -1208,15 +1285,16 @@ select actualizarContacto('Desarrollador','1-222-333',
 
 
 --Pruebas funcionarios			               
-select actualizarFuncionario('2015107073','0-000-000',
+select actualizarFuncionario('2015107074','0-000-001',
 			'8533-4444','l5@hotmail.com',
 			'c','c','c','c',
 			'c','c','c');
-			
-select insertar_funcionario('2015107073','0-000-000','0000-0000',
+				
+select insertar_funcionario('2015107073','0-000-001','0000-0000',
                     'landresf12@hotmail.com','Andres ','Hernandez',
                     'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor');
-                    
+
+            SELECT * FROM FUNCIONARIOS
 select insertar_funcionario('2015107073','0-000-000','4000-0000',
                     'landresf3638@hotmail.com','Andres ','Hernandez',
                     'Calderon','Alajuela','San Ramon','Piedades Sur','Profesor');
@@ -1231,7 +1309,7 @@ select eliminarFuncionario('2-321-321');
 
 select p.cedula,p.nombre,p.apellido1,p.apellido2,p.provincia,p.canton,p.distrito,p.detalle,e.carnet,e.id_poliza from personas p inner join estudiantes e on e.cedula=p.cedula
 
-
+-----Estudiantes
 select insertar_Estudiante('2015-110180','2-122-193','8637-4844','landresf12@hotmail.com','Andres ','Hernandez',
 'Calderon','Alajuela','San Ramon','Piedades Sur','Estudiante','1');
 select insertar_Estudiante('2015-111111','2-321-321','8637-4845','landresf12@hotmail.com','Luis','Fernandez',
