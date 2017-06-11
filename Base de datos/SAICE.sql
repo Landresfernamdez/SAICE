@@ -1367,13 +1367,36 @@ exception
 end;
 $$ language plpgsql;
 
-
- 2-Validar que no se pueda asignar a un funcionario más de 3 eventos en un año, pero sí en diferentes años
+/*
+ 2-Validar que no se pueda asignar a un funcionario más de 3 eventos en un año con el mismo rol, pero sí en diferentes años
+ ->inserta primero para ver si supera el limite establecido
 */
+create  or replace function insertar_EF_T(CEF char(9),IEF char(9),RE varchar(30))
+returns void as 
+$$
+begin
+	insert into EF values (CEF,IEF,RE);
+	if(
+		select E.cant from(select count(*)cant, EF.rol from funcionarios F inner join EF on F.cedula=EF.cedula 
+		and F.cedula=CEF and EF.rol=RE group by rol) as E)>3 
+	then
+			raise exception 'ya tiene los 3 eventos a cargo con el mismo rol ';
+	else
+		raise notice 'se insertó el evento nuevo';
+	end if;
+exception
+	when raise_exception then raise notice 'manejo de la exception';
+end;
+$$ language plpgsql;
 
+
+select insertar_EF_T('1-000-001','Ev-000004','administrador');
+select insertar_EF_T('1-000-001','Ev-000004','ayudante')
+
+select count(*)cant, EF.rol from funcionarios F inner join EF on F.cedula=EF.cedula and F.cedula='1-000-001' and EF.rol='administrador'group by rol;
 
 /*
-3- Validar que dos giras a la misma empresa no sean de la misma sección en un mismo año, pero sí en diferentes años.
+3- insertar un funcionario creandolo si no existe en personas
 */
 
 /*
