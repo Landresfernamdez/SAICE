@@ -76,15 +76,17 @@
                 </td> 
               
               </tr>
+<!--Vista de eliminar-->
               
     </tbody>
 
        
 </table>
 
-
-
-
+</div>
+</div>
+</div>
+</div>
 
     <!--Vista de añadir-->        
 <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add" aria-hidden="true">
@@ -115,9 +117,6 @@
                             </div>
                           </td>
                         </tr>
-
-                      
-                      
                         <tr>
                           <td>
                             <div class="form-group">
@@ -167,7 +166,7 @@
                       </tbody>  
                     </table>
                       <div class="modal-footer " >
-                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putFuncionarios(funcionario);"data-dismiss="modal"><span ng-click="putFuncionarios(funcionario);" class="glyphicon glyphicon-ok-sign"  ></span>add</button>
+                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putFuncionarios(funcionario);"data-dismiss="modal" aria-hidden="true"><span ng-click="putFuncionarios(funcionario);" class="glyphicon glyphicon-ok-sign"  data-dismiss="modal" aria-hidden="true"></span>add</button>
                       </div>
                 </div>
 
@@ -190,8 +189,8 @@
                    
                   </div>
                     <div class="modal-footer ">
-                    <button type="button" class="btn btn-primary"  data-dismiss="modal"ng-click="delete(funcionario.cedula)"><span ng-click="delete(funcionario.cedula)" class="glyphicon glyphicon-ok-sign"data-dismiss="modal"></span> Yes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span> No</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true"ng-click="delete(funcionario.cedula)"><span ng-click="delete(funcionario.cedula)" class="glyphicon glyphicon-ok-sign"data-dismiss="modal" aria-hidden="true"></span> Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"data-dismiss="modal" aria-hidden="true"></span> No</button>
                   </div>
                     </div>
                 <!-- /.modal-content --> 
@@ -281,7 +280,7 @@
                                         </tbody>  
                                       </table>
                                         <div class="modal-footer " >
-                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postFuncionario(funcionario);"data-dismiss="modal"><span ng-click="postFuncionario(funcionario);" class="glyphicon glyphicon-ok-sign"  ></span>edit</button>
+                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postFuncionario(funcionario);"data-dismiss="modal" aria-hidden="true"><span ng-click="postFuncionario(funcionario);" class="glyphicon glyphicon-ok-sign" data-dismiss="modal" aria-hidden="true" ></span>edit</button>
                                         </div>
                                   </div>
 

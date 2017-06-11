@@ -11,9 +11,8 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
-
-
+  <!-- Compiled and minified CSS -->
+    <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'>
     <!-- Bootstrap Core Css -->
     <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
 
@@ -221,7 +220,6 @@
                               <li><a href="#/estudiantes">Estudiantes</a></li>
                               <li><a href="#/funcionarios">Funcionarios</a></li>
                               <li><a href="#/contactos">Contactos</a></li>
-                              <li><A>no mames</A></li>
                             </ul>
                             </a>
                             
@@ -233,39 +231,59 @@
                             <span>Eventos</span>
                         </a>
                     </li>
+
                     <li class="tecTitles">
-<<<<<<< HEAD
-                        <a href="#/Giras" onclick="closeSideBar()">
-=======
-                        <a href="#/Giras" >
->>>>>>> ramasergio
-                            <i class="material-icons">directions_car</i>
-                            <span>Giras</span>
-                        </a>
-                    </li>
-                    <li class="tecTitles">
-                        <a  href="#/users/activities"ng-click="jumpGetevents()" >
-                            <i class="material-icons">payment</i>
-                            <span>Polizas</span>
-                        </a>
-                    </li>
-                    <li class="tecTitles">
-                        <a  href="#/users/activities"ng-click="jumpGetevents()" >
-                            <i class="material-icons">perm_media</i>
-                            <span>Practicas</span>
-                        </a>
-                    </li>
-                    <li class="tecTitles">
-                        <a  href="#/users/activities"ng-click="jumpGetevents()" >
+                        <a  href="#/empresas" >
                             <i class="material-icons">business</i>
                             <span>Empresas</span>
                         </a>
                     </li>
                     <li class="tecTitles">
-                        <a  href="#/estadisticas" >
+                        <a  href="#/polizas" >
+                            <i class="material-icons">payment</i>
+                            <span>Polizas</span>
+                        </a>
+                    </li>
+                    <li class="tecTitles">
+                        <a  href="#/practicas">
+                            <i class="material-icons">perm_media</i>
+                            <span>Practicas</span>
+                        </a>
+                    </li>
+                    
+                    <li class="tecTitles">
+                        <a  href="#/secciones" >
+                            <i class="material-icons">business</i>
+                            <span>Secciones</span>
+                        </a>
+                    </li>
+                    <li class="tecTitles" >
+                        <div class="dropdown">
+                            <a  data-toggle="dropdown">
+                                <i class="material-icons">directions_car</i>
+                                <span>Giras</span>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="#/giras">Giras</a></li>
+                                    <li><a href="#/girass">Secciones de una gira</a></li>
+                                    <li><a href="#/girase">Empresas de una gira</a></li>
+                                </ul>
+                            </a>
+
+                        </div>
+                    </li>
+                    <li class="tecTitles" >
+                        <div class="dropdown">
+                            <a  data-toggle="dropdown">
                             <i class="material-icons">business</i>
                             <span>Estadisticas</span>
-                        </a>
+                            <ul class="dropdown-menu pull-right">
+                              <li><a href="#/estadisticas">Estadisticas 1</a></li>
+                              <li><a href="#/estadisticas1">Estadisticas 2</a></li>
+                                <li><a href="#/estadisticas2">Estadisticas 3</a></li>
+                            </ul>
+                            </a>
+                            
+                        </div>
                     </li>
 
                 </ul>
@@ -296,7 +314,9 @@
     <!-- Dependencias de angular  
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js" ></script>
     -->
-    <script src="plugins/jquery/jquery.min.js"></script>
+
+
+
 
     <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
     <script type="text/javascript" src="bower_components/angular-route/angular-route.min.js"></script>
@@ -306,43 +326,49 @@
     <script src = "https://cdn.zingchart.com/angular/zingchart-angularjs.js" ></script>  
 
 
-
     <!-- Funciones y variables compartidas entre madulos  -->
     <script src="app.js"></script>
     <script src="app/components/estudiantes/estudiantesServices.js"></script>
     <script src="app/components/estudiantes/estudiantesController.js"></script>
-<<<<<<< HEAD
     <script src="app/components/funcionarios/funcionariosServices.js"></script>
     <script src="app/components/funcionarios/funcionariosController.js"></script>
     <script src="app/components/contactos/contactosServices.js"></script>
     <script src="app/components/contactos/contactosController.js"></script>
-<<<<<<< HEAD
-    <script src="app/components/estadisticas/estadisticasController.js"></script>
-     <script src="app/components/estadisticas/estadisticasServices.js"></script>
-     <script src="app/components/eventos/eventosController.js"></script>
-     <script src="app/components/eventos/eventosServices.js"></script>
-=======
-    <script src="app/components/Giras/GirasServices.js"></script>
-    <script src="app/components/Giras/GirasController.js"></script>
-=======
-    <script src="app/components/Giras/GirasServices.js"></script>
-    <script src="app/components/Giras/GirasController.js"></script>
+    <script src="app/components/eventos/eventosController.js"></script>
+    <script src="app/components/eventos/eventosServices.js"></script>
+    <script src="app/components/empresas/empresasController.js"></script>
+    <script src="app/components/empresas/empresasServices.js"></script>
+    <script src="app/components/polizas/polizasController.js"></script>
+    <script src="app/components/polizas/polizasServices.js"></script>
+    <script src="app/components/practicas/practicasController.js"></script>
+    <script src="app/components/practicas/practicasServices.js"></script>
+    <script src="app/components/secciones/seccionesController.js"></script>
+    <script src="app/components/secciones/seccionesServices.js"></script>
+    <script src="app/components/estadisticas/estadisticas1/estadisticasController.js"></script>
+    <script src="app/components/estadisticas/estadisticas1/estadisticasServices.js"></script>
+    <script src="app/components/estadisticas/estadisticas2/estadisticas1Controller.js"></script>
+    <script src="app/components/estadisticas/estadisticas2/estadisticas1Services.js"></script>
+    <script src="app/components/estadisticas/estadisticas3/estadisticas2Controller.js"></script>
+    <script src="app/components/estadisticas/estadisticas3/estadisticas2Services.js"></script>
+     <script src="app/components/giras/girasController.js"></script>
+     <script src="app/components/giras/girasServices.js"></script>
 
->>>>>>> ramasergio
+    <script src="app/components/girassecciones/girasseccionesController.js"></script>
+    <script src="app/components/girassecciones/girasseccionesServices.js"></script>
+
+    <script src="app/components/girasempresas/girasempresasController.js"></script>
+    <script src="app/components/girasempresas/girasempresasServices.js"></script>
     <script src="plugins/jquery/jquery.min.js"></script>
-
->>>>>>> Rama3
     <!-- Bootstrap Core Js -->
     <script src="plugins/bootstrap/js/bootstrap.js"></script>
 
     <!-- Select Plugin Js -->
     <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
 
-    <!-- Slimscroll Plugin Js 
-    <script src="../../../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>-->
+    <!-- Slimscroll Plugin Js -->
+    <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
 
       <!-- JQuery Steps Plugin Js -->
-
 
     <script src="assets/js/pages/forms/form-wizard.js"></script>
 
@@ -352,8 +378,6 @@
 
     <!-- Custom Js -->
     <script src="assets/js/admin.js"></script>
-    <!-- js placed at the end of the document so the pages load faster -->
-    
 
    
 </body>

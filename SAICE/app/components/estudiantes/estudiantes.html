@@ -1,7 +1,6 @@
-                  
-<div ng-controller="estudiantesController">   
-<div ng-repeat="estudiante in listaStudents " class="container-fluid" >
-	<div class="row">
+      
+<div  class="container-fluid" >
+  <div class="row">
         <div class="col-md-12">
         <h4>Estudiantes</h4>
         <div class="table-responsive">
@@ -13,9 +12,9 @@
                    
                    </thead>
 
-    <tbody >
+    <tbody ng-repeat="estudiante in listaStudents ">
         <!--ng-repeat  Se encarga de recorrer la lista de estudiantes que esta en el controller de estudiantes-->
-            <tr>
+            <tr >
               <th id="cedula"><b>cedula</b></th>
               <th id="nombre"><b>nombre</b></th>
               <th id="apellido1"><b>apellido 1</b></th>
@@ -69,10 +68,10 @@
               <tr >
 
               <td>
-                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ng-click="actualizarPersona(estudiante)"><span class="glyphicon glyphicon-pencil" ng-click="actualizarPersona(estudiante)"></span></button></td>
+                <button type="button"class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ng-click="actualizarPersona(estudiante)"><span class="glyphicon glyphicon-pencil" ng-click="actualizarPersona(estudiante)"></span></button></td>
                 
               <td>
-                <button class="btn btn-danger btn-xs" data-target="#delete"data-title="Delete" data-toggle="modal" ng-click="actualizarPersona(estudiante)" ><span class="glyphicon glyphicon-trash" ng-click="actualizarPersona(estudiante)"></span></button></td>
+                <button type="button" class="btn btn-danger btn-xs" data-target="#delete"data-title="Delete" data-toggle="modal" ng-click="actualizarPersona(estudiante)" ><span class="glyphicon glyphicon-trash" ng-click="actualizarPersona(estudiante)"></span></button></td>
                 <td>
                    <button  type="button" class="btn btn-success btn-circle btn-lg" ><span class="glyphicon glyphicon-plus" data-title="Add" data-toggle="modal" data-target="#add"></span></button>
                 </td> 
@@ -85,15 +84,20 @@
        
 </table>
 
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 
-
-
-    <!--Vista de añadir-->        
+    <!--Vista de aï¿½adir-->        
 <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add" aria-hidden="true">
       <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header" ng-controller="estudiantesController">
+                <div class="modal-header" >
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                     
                     <table>
@@ -174,7 +178,7 @@
                       </tbody>  
                     </table>
                       <div class="modal-footer " >
-                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putEstudiante(estudiante);"data-dismiss="modal"><span ng-click="putEstudiante(estudiante);"  class="glyphicon glyphicon-ok-sign"  ></span>add</button>
+                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putEstudiante(estudiante);"data-dismiss="modal" aria-hidden="true"><span ng-click="putEstudiante(estudiante);"  class="glyphicon glyphicon-ok-sign"   data-dismiss="modal" aria-hidden="true"></span>add</button>
                       </div>
                 </div>
 
@@ -197,8 +201,8 @@
                    
                   </div>
                     <div class="modal-footer ">
-                    <button type="button" class="btn btn-primary"  data-dismiss="modal"ng-click="delete(estudiante.cedula)"><span ng-click="delete(estudiante.cedula)" class="glyphicon glyphicon-ok-sign"data-dismiss="modal"></span> Yes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span> No</button>
+                    <button type="button" class="btn btn-primary" aria-hidden="true" data-dismiss="modal"ng-click="delete(estudiante.cedula)"><span ng-click="delete(estudiante.cedula)" class="glyphicon glyphicon-ok-sign" aria-hidden="true"data-dismiss="modal"></span>ï¿½Yes</button>
+                    <button type="button" class="btn btn-default"aria-hidden="true" data-dismiss="modal"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span>ï¿½No</button>
                   </div>
                     </div>
                 <!-- /.modal-content --> 
@@ -292,7 +296,7 @@
                                         </tbody>  
                                       </table>
                                         <div class="modal-footer " >
-                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postEstudiante(estudiante);"data-dismiss="modal"><span ng-click="postEstudiante(estudiante);" class="glyphicon glyphicon-ok-sign"  ></span>edit</button>
+                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postEstudiante(estudiante);"data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-ok-sign" data-dismiss="modal" aria-hidden="true"></span>edit</button>
                                         </div>
                                   </div>
 
@@ -301,4 +305,3 @@
                         <!-- /.modal-dialog --> 
                       </div>
               </div>
-</div>

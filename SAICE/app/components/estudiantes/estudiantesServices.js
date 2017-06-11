@@ -1,7 +1,7 @@
 'use strict'
 angular.module('userModule')
     .factory('OperationsStudents',function($http,$location){
-        var urlp="http://localhost:8080/SAICE/SAICE/server/estudiantes/CRUDestudiantes.php?Funcion=";
+        var urlp="http://localhost:8080/SAICE/server/estudiantes/CRUDestudiantes.php?Funcion=";
         var respuesta={
             getStudents: function(callback){
                 $http.get(
@@ -23,8 +23,6 @@ angular.module('userModule')
                 })// si la insercion fue exitosa entra al succes de lo contrario retorna un error departe del servidor
                     .success(function(data){
                             alert("insercion exitosa");
-                            console.log("service:");
-                            console.log(estudiante);
                             callback({success: true});
                     }).error(function(data) {
                     //En caso de fallo en la peticion entra en esta funcion
@@ -43,8 +41,6 @@ angular.module('userModule')
                             // Showing errors.
                             callback({success: true});
                             alert("se elimino exitosamente ");
-                            console.log(data);
-                            console.log(id);
                         
                     }).error(function(data) {
                     //En caso de fallo en la peticion entra en esta funcion
@@ -60,8 +56,6 @@ angular.module('userModule')
 
                 })// si la insercion fue exitosa entra al succes de lo contrario retorna un error departe del servidor
                     .success(function(data){
-                            console.log("service:");
-                            console.log(estudiante);
                             alert("se actualizo exitosamente "+data);
                             callback({success: true});
                     }).error(function(data) {

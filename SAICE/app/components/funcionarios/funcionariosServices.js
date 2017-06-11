@@ -1,7 +1,7 @@
 'use strict'
 angular.module('userModule')
     .factory('OperationsFuncionarios',function($http,$location){
-        var urlp="http://localhost:8080/SAICE/SAICE/server/funcionarios/CRUDfuncionarios.php?Funcion=";
+        var urlp="http://localhost:8080/SAICE/server/funcionarios/CRUDfuncionarios.php?Funcion=";
         var respuesta={
             getofficials: function(callback){
                 $http.get(
@@ -13,7 +13,7 @@ angular.module('userModule')
                     callback(response);
                 });
             },
-            //Esta funcion se encarga de insertar un funcionario mediante la conexion con el servidor
+            //Esta funcion se encarga de insertar un estudiante mediante la conexion con el servidor
             putofficials:function(funcionario,callback){
                  $http({
                     method  :'POST',

@@ -30,7 +30,6 @@ angular.module('userModule')
 		OperationsFuncionarios.putofficials(funcionario, function(response) {
 
 			if (response.success) {
-				console.log("exito");
 			    $location.path('funcionarios');
 			    $route.reload();
 			}
@@ -51,7 +50,6 @@ angular.module('userModule')
 		OperationsFuncionarios.updateofficials($scope.funcionario, function(response) {
 
 			if (response.success) {
-				console.log("exito");
 			    $location.path('funcionarios');
 			    $route.reload();
 			}

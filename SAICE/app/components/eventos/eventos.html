@@ -1,38 +1,13 @@
-<div class="container-fluid">
-    <div class="block-header">
+<div class="container-fluid" >
+<div class="row" align= "center">
+  <div class="col-md-3">
         <h2><strong>Eventos</strong> </h2>
-    </div>
-    <!-- Basic Example -->
-    <div class="row clearfix">
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-            <div class="card">
-                <div class="header bg-red">
-                    <h2>
-                        Red - Title <small>Description text here...</small>
-                    </h2>
-                    <ul class="header-dropdown m-r--5">
-                        <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <i class="material-icons">more_vert</i>
-                            </a>
-                            <ul class="dropdown-menu pull-right">
-                                <li><a href="javascript:void(0);">Action</a></li>
-                                <li><a href="javascript:void(0);">Another action</a></li>
-                                <li><a href="javascript:void(0);">Something else here</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-                <div class="body">
-                    Quis pharetra a pharetra fames blandit. Risus faucibus velit Risus imperdiet mattis neque volutpat, etiam lacinia netus dictum magnis per facilisi sociosqu. Volutpat. Ridiculus nostra.
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+     <div  ng-repeat="evento in listaEvents">
             <div class="card">
                 <div class="header bg-cyan">
                     <h2>
-                        Cyan - Title <small>Description text here...</small>
+                        {{evento.nombre}}<small>{{evento.descripcion}}</small>
                     </h2>
                     <ul class="header-dropdown m-r--5">
                         
@@ -41,77 +16,102 @@
                                 <i class="material-icons">more_vert</i>
                             </a>
                             <ul class="dropdown-menu pull-right">
-                                <li><a href="javascript:void(0);">Action</a></li>
-                                <li><a href="javascript:void(0);">Another action</a></li>
-                                <li><a href="javascript:void(0);">Something else here</a></li>
+                                <li><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ng-click="actualizarEvento(evento)"><span class="glyphicon glyphicon-pencil" ng-click="actualizarEvento(evento)"> Editar</span></button></li>
+
+                                <li><button class="btn btn-danger btn-xs" data-target="#delete"data-title="Delete" data-toggle="modal" ng-click="actualizarEvento(evento)" ><span class="glyphicon glyphicon-trash" ng-click="actualizarEvento(evento)"></span>Eliminar</button></li>
+                                <li>
+                                  <button  type="button" class="btn btn-success"data-target="#add" ><span class="glyphicon glyphicon-plus" data-title="Add" data-toggle="modal" data-target="#add"></span>Agregar</button></li>
                             </ul>
                         </li>
                     </ul>
                 </div>
+                <table id="mytable" class="table table-striped table-hover table-bordered">
+                  <tbody>
+                      <tr>
+                            <td>
+                            <b>id del evento</b>
+                            </td>
+                            <td>
+                            <b>fecha de inicio</b>
+                            </td>
+                            <td>
+                            <b>fecha de final</b>
+                            </td>
+                      </tr>
+                      <tr>
+                    <td>
+                    {{evento.id_evento}}
+                    </td>
+                    <td>
+                    {{evento.fechainicio}}
+                    </td>
+                    <td>
+                    {{evento.fechafinal}}
+                    </td>
+                    
+                  </tr> 
+                  <tr>
+
+                    <td>
+                      <b>nombre completo</b>
+                    </td>
+                    <td>
+                      <b>rol</b>
+                    </td>
+                    <td>
+                      <b>cedula</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                    {{evento.nombre_completo}}
+                    </td>
+                    <td>
+                    {{evento.rol}}</td>
+                    <td>
+                    {{evento.cedula}}</td>
+                  </tr>   
+                  </tbody>
+                 
+
+                </table>
                 <div class="body">
-                    Quis pharetra a pharetra fames blandit. Risus faucibus velit Risus imperdiet mattis neque volutpat, etiam lacinia netus dictum magnis per facilisi sociosqu. Volutpat. Ridiculus nostra.
                 </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-            <div class="card">
-                <div class="header bg-green">
-                    <h2>
-                        Green - Title <small>Description text here...</small>
-                    </h2>
-                    <ul class="header-dropdown m-r--5">
-                        
-                        <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <i class="material-icons">more_vert</i>
-                            </a>
-                            <ul class="dropdown-menu pull-right">
-                                <li><a href="javascript:void(0);">Action</a></li>
-                                <li><a href="javascript:void(0);">Another action</a></li>
-                                <li><a href="javascript:void(0);">Something else here</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-                <div class="body">
-                    Quis pharetra a pharetra fames blandit. Risus faucibus velit Risus imperdiet mattis neque volutpat, etiam lacinia netus dictum magnis per facilisi sociosqu. Volutpat. Ridiculus nostra.
-                </div>
-            </div>
-        </div>
-    </div>
+          </div>
+
+     </div>
 
 </div>
+</div>
+</div>
+<!--vistas-->
 
-
-
-
-<!------------------------------------------Vistas------------------------------------>
     <!--Vista de añadir-->        
 <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add" aria-hidden="true">
       <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header" ng-controller="estudiantesController">
+                <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                     
                     <table>
                       <thead>
-                          <h4 class="modal-title custom_align" id="Heading">Ingresar estudiante</h4>
+                          <h4 class="modal-title custom_align" id="Heading">Ingresar evento</h4>
                       </thead>
                       <tbody>
                         <tr>
                           <td>
                             <div class="form-group">
-                            <input class="form-control " type="text" placeholder="carnet ####-######" ng-model="estudiante.carnet">
+                            <input class="form-control " type="text" placeholder="id_evento Ev-######" ng-model="evento.id_evento">
                              </div>
                           </td>
                           <td>
                               <div class="form-group">
-                                <input class="form-control " type="text" placeholder="telefono ####-####" ng-model="estudiante.telefono">
+                                <input class="form-control " type="text" placeholder="nombre" ng-model="evento.nombre">
                               </div>
                           </td>
                           <td>
                              <div class="form-group">
-                              <input class="form-control " type="text" placeholder="cedula #-###-###" ng-model="estudiante.cedula">
+                              <input class="form-control " type="text" placeholder="descripcion" ng-model="evento.descripcion">
                             </div>
                           </td>
                         </tr>
@@ -119,59 +119,35 @@
                       
                       
                         <tr>
+                           <td>
+                               <form >
+                                   fecha inicio:
+                                   <input type="date" name="bday" ng-model="evento.fechainicio">
+                               </form>
+                           </td>
+                            <td>
+                                <form >
+                                    fecha final:
+                                    <input type="date" name="bday" ng-model="evento.fechafinal">
+                                </form>
+                            </td>
                           <td>
                             <div class="form-group">
-                              <input class="form-control " type="text" placeholder="correo loquesea@loquesea.loquesea" ng-model="estudiante.correo">
+                            <input class="form-control " type="text" placeholder="rol"ng-model="evento.rol">
                             </div>
                           </td>
+                        </tr>
+                        <tr>
                           <td>
                               <div class="form-group">
-                                <input class="form-control " type="text" placeholder="nombre" ng-model="estudiante.nombre">
+                                  <input class="form-control " type="text" placeholder="cedula del funcionario"ng-model="evento.cedula">
                               </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                            <input class="form-control " type="text" placeholder="primer apellido"ng-model="estudiante.apellido1">
-                            </div>
-                            </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="form-group">
-                            <input class="form-control " type="text" placeholder="segundo apellido"ng-model="estudiante.apellido2">
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input class="form-control " type="text" placeholder="provincia"ng-model="estudiante.provincia">
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input class="form-control " type="text" placeholder="canton"ng-model="estudiante.canton">
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                        <td><div class="form-group">
-                          <input class="form-control " type="text" placeholder="distrito"ng-model="estudiante.distrito">
-                          </div>
-                        </td>
-                        <td>
-                          <div class="form-group">
-                          <input class="form-control " type="text" placeholder="detalle"ng-model="estudiante.detalle">
-                          </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                          <input class="form-control " type="text" placeholder="tipo de poliza"ng-model="estudiante.id_poliza"></div>
-                        </td>
-
+                          </td> 
                         </tr>
                       </tbody>  
                     </table>
-                      <div class="modal-footer " >
-                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putEstudiante(estudiante);"data-dismiss="modal"><span ng-click="putEstudiante(estudiante);"  class="glyphicon glyphicon-ok-sign"  ></span>add</button>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putEvento(evento);"data-dismiss="modal" aria-hidden="true"><span ng-click="putEvento(evento);" class="glyphicon glyphicon-ok-sign"data-dismiss="modal" aria-hidden="true"  ></span>add</button>
                       </div>
                 </div>
 
@@ -181,11 +157,11 @@
     </div>
 </div>
   <!--vista de eliminar-->
-            <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+            <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="delete" aria-hidden="true">
                   <div class="modal-dialog">
                 <div class="modal-content">
                       <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true" ></span></button>
                     <h4 class="modal-title custom_align" id="Heading">Delete this entry</h4>
                   </div>
                       <div class="modal-body">
@@ -194,8 +170,8 @@
                    
                   </div>
                     <div class="modal-footer ">
-                    <button type="button" class="btn btn-primary"  data-dismiss="modal"ng-click="delete(estudiante.cedula)"><span ng-click="delete(estudiante.cedula)" class="glyphicon glyphicon-ok-sign"data-dismiss="modal"></span> Yes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span> No</button>
+                    <button type="button" class="btn btn-primary"  ng-click="delete(evento.id_evento)" data-dismiss="modal"><span  ng-click="delete(evento.id_evento)" class="glyphicon glyphicon-ok-sign" data-dismiss="modal"></span> Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span> No</button>
                   </div>
                     </div>
                 <!-- /.modal-content --> 
@@ -213,83 +189,62 @@
                                       
                                       <table>
                                         <thead>
-                                            <h4 class="modal-title custom_align" id="Heading">Editar estudiante</h4>
+                                            <h4 class="modal-title custom_align" id="Heading">Editar evento</h4>
                                         </thead>
                                         <tbody>
                                           <tr>
                                             <td>
-                                                <div class="form-group">
-                                                  <input class="form-control " type="text" placeholder="estudiante.telefono" ng-model="estudiante.telefono">
-                                                </div>
-                                            </td>
-                                            <td>
                                               <div class="form-group">
-                                                <input class="form-control " type="text" placeholder="estudiante.correo" ng-model="estudiante.correo">
-                                              </div>
+                                              <input class="form-control " type="text" placeholder="evento.id_evento" ng-model="evento.id_evento">
+                                               </div>
                                             </td>
                                             <td>
                                                 <div class="form-group">
-                                                  <input class="form-control " type="text" placeholder="estudiante.nombre" ng-model="estudiante.nombre">
+                                                  <input class="form-control " type="text" placeholder="evento.nombre" ng-model="evento.nombre">
                                                 </div>
+                                            </td>
+                                            <td>
+                                               <div class="form-group">
+                                                <input class="form-control " type="text" placeholder="evento.descripcion" ng-model="evento.descripcion">
+                                              </div>
                                             </td>
 
                                           </tr>
                                         
                                           <tr>
-                                            
-                                            <td>
-                                              <div class="form-group">
-                                              <input class="form-control " type="text" placeholder="estudiante.apellido1"ng-model="estudiante.apellido1">
-                                              </div>
-                                            </td>
-                                            <td style="display:none">
-                                              <div class="form-group">
-                                              <input class="form-control " type="text" placeholder="estudiante.celula"ng-model="estudiante.cedula">
-                                              </div>
-                                            </td >
-                                            <td style="display:none">
-                                              <div class="form-group">
-                                              <input class="form-control " type="text" placeholder="estudiante.apellido1"ng-model="estudiante.carnet">
-                                              </div>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td>
-                                              <div class="form-group">
-                                              <input class="form-control " type="text" placeholder="estudiante.apellido2"ng-model="estudiante.apellido2">
-                                              </div>
-                                            </td>
-                                            <td>
-                                              <div class="form-group">
-                                                <input class="form-control " type="text" placeholder="estudiante.provincia"ng-model="estudiante.provincia">
-                                              </div>
-                                            </td>
-                                            <td>
-                                              <div class="form-group">
-                                                <input class="form-control " type="text" placeholder="estudiante.canton"ng-model="estudiante.canton">
-                                              </div>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                          <td><div class="form-group">
-                                            <input class="form-control " type="text" placeholder="estudiante.distrito"ng-model="estudiante.distrito">
-                                            </div>
-                                          </td>
-                                          <td>
-                                            <div class="form-group">
-                                            <input class="form-control " type="text" placeholder="estudiante.detalle"ng-model="estudiante.detalle">
-                                            </div>
-                                          </td>
-                                          <td>
-                                              <div class="form-group">
-                                            <input class="form-control " type="text" placeholder="estudiante.id_poliza"ng-model="estudiante.id_poliza"></div>
-                                          </td>
 
+
+                                              <td>
+                                                  <form >
+                                                      fecha inicio:
+                                                      <input type="date" name="bday" ng-model="evento.fechainicio">
+                                                  </form>
+                                              </td>
+                                              <td>
+                                                  <form >
+                                                      fecha final:
+                                                      <input type="date" name="bday" ng-model="evento.fechafinal">
+                                                  </form>
+                                              </td>
+
+                                              <td>
+                                                <div class="form-group">
+                                                <input class="form-control " type="text" placeholder="evento.rol"ng-model="evento.rol">
+                                                </div>
+                                              </td>
                                           </tr>
+                                          <tr>
+                                             <td>
+                                              <div class="form-group">
+                                                <input class="form-control " type="text" placeholder="evento.cedula"ng-model="evento.cedula">
+                                              </div>
+                                            </td> 
+                                          </tr>
+                                          
                                         </tbody>  
                                       </table>
                                         <div class="modal-footer " >
-                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postEstudiante(estudiante);"data-dismiss="modal"><span ng-click="postEstudiante(estudiante);" class="glyphicon glyphicon-ok-sign"  ></span>edit</button>
+                                            <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="postEvento(evento);" data-dismiss="modal"><span ng-click="postEvento(evento);" class="glyphicon glyphicon-ok-sign" data-dismiss="modal" ></span>edit</button>
                                         </div>
                                   </div>
 
@@ -298,4 +253,3 @@
                         <!-- /.modal-dialog --> 
                       </div>
               </div>
-</div>

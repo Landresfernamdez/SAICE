@@ -1,94 +1,59 @@
+'use strict'
 angular.module('userModule')
-<<<<<<< HEAD:SAICE/app/components/estudiantes/estudiantesController.js
-.controller('estudiantesController',function($scope,OperationsStudents,$location,$route){
-	$scope.cedula="";
-	$scope.listaStudents = [];
-	$scope.estudiante = {
-		carnet:"",
-		cedula:"",
-		telefono:"",
-		correo:"",
-		nombre:"",
-		apellido1:"",
-		apellido2:"",
-=======
-.controller('GirasController',function($scope,OperationsTours,$location){
-    $scope.listaTours=[];
-	$scope.Tours={
+.controller('girasController',function($scope,OperationsTours,$location,$route){
+	$scope.listaTours = [];
+	$scope.gira = {
 		id_gira:"",
 		fecha_inicio:"",
 		fecha_final:"",
 		costo:"",
 		duracion:"",
->>>>>>> ramasergio:SAICE/app/components/Giras/GirasController.js
 		provincia:"",
 		canton:"",
 		distrito:"",
 		detalle:""
 	};
-<<<<<<< HEAD:SAICE/app/components/estudiantes/estudiantesController.js
-	console.log("entro a comprobacion");
-	$scope.getEstudiantes = function getEstudiantes() {
-
-		OperationsStudents.getStudents( function(res) {
-			$scope.listaStudents = res;
-			console.log($scope.listaStudents)
+	$scope.getGiras = function getGiras() {
+		OperationsTours.getTours( function(res) {
+			$scope.listaTours = res;
 		});
-=======
-	console.log("entro");
-    $scope.getTours=function getTours(){
-        OperationsTours.getTours(function(res){
-		  $scope.listaTours=res;
-	});
-	}
-
-	$scope.getTours();
-});
-
-
-/*'use strict'
->>>>>>> ramasergio:SAICE/app/components/Giras/GirasController.js
 
 	};
-	
-	$scope.getEstudiantes();
-	$scope.putEstudiante = function putEstudiante(estudiante) {
+	$scope.getGiras();
+	$scope.putGira = function putGira(gira) {
 
-		OperationsStudents.putStudents(estudiante, function(response) {
+		OperationsTours.putTours(gira, function(response) {
 
 			if (response.success) {
-				console.log("exito");
-			    $location.path('estudiantes');
+			    $location.path('giras');
 			    $route.reload();
 			}
 
 		});
 	};
-	$scope.delete=function deleteEstudiantes(id){
-		console.log("imprime:"+$scope.estudiante.cedula);
-		OperationsStudents.deleteStudents($scope.estudiante.cedula,function(response){
+	$scope.delete=function deleteGiras(id){
+		console.log("imprime:"+$scope.gira.id_gira);
+		OperationsTours.deleteTours($scope.gira.id_gira,function(response){
 				if(response.success){
-				    $location.path('estudiantes');
+				    $location.path('giras');
 				    $route.reload();
 				}
 		});
 
 	};
-	$scope.postEstudiante = function postEstudiante(estudiante) {
-		OperationsStudents.updateStudents($scope.estudiante, function(response) {
-
+	$scope.postGira = function postGira(gira) {
+		OperationsTours.updateTours($scope.gira, function(response) {
 			if (response.success) {
 				console.log("exito");
-			    $location.path('estudiantes');
+			    $location.path('giras');
 			    $route.reload();
 			}
 		});
 	};
-	$scope.actualizarPersona=function actualizarPersona(estudiante){
-		$scope.estudiante=estudiante;
+	$scope.actualizarGira=function actualizarGira(gira){
+		$scope.gira=gira;
 		console.log("actualiza:");
-		console.log($scope.estudiante);
+		console.log($scope.gira);
 
 	}
-
-});*/
+});

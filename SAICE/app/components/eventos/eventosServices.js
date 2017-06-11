@@ -1,11 +1,11 @@
 'use strict'
 angular.module('userModule')
     .factory('OperationsEvents',function($http,$location){
-        var urlp="http://localhost:8080/SAICE/server/estudiantes/CRUDestudiantes.php?Funcion=";
+        var urlp="http://localhost:8080/SAICE/server/eventos/CRUDeventos.php?Funcion=";
         var respuesta={
             getEvents: function(callback){
                 $http.get(
-                    urlp+"ObtenertodosStudents"
+                    urlp+"ObtenertodosEvents"
                 ).success(function successCallback(response){
                     callback(response);
                 }).error(function errorCallback(response) {
@@ -26,7 +26,7 @@ angular.module('userModule')
                             console.log("service:");
                             console.log(evento);
                             callback({success: true});
-                    }).error(function(data) {
+                    }).error(function(data){
                     //En caso de fallo en la peticion entra en esta funcion
                             alert("Se ha producido un error en la insercion"+data);
                             callback({success: false});

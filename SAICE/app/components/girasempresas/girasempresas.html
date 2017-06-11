@@ -1,0 +1,88 @@
+<div class="container-fluid" >
+    <div class="row" align= "center">
+        <div class="col-md-3">
+            <h2><strong>Giras a una empresa</strong> </h2>
+
+            <div  ng-repeat="giraempresas in listaCoorporations">
+                <div class="card">
+                    <div class="header bg-cyan">
+                        <h2>
+                            {{giraempresas.id_gira}}
+                        </h2>
+                        <ul class="header-dropdown m-r--5">
+
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="material-icons">more_vert</i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li>
+                                        <button  type="button" class="btn btn-success"data-target="#add" ><span class="glyphicon glyphicon-plus" data-title="Add" data-toggle="modal" data-target="#add"></span>Agregar</button></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <table id="mytable" class="table table-striped table-hover table-bordered">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <b>id de la empresa</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{giraempresas.id_empresa}}
+                            </td>
+
+                        </tr>
+                        </tbody>
+
+
+                    </table>
+                    <div class="body">
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--vistas-->
+
+<!--Vista de añadir-->
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+
+                <table>
+                    <thead>
+                    <h4 class="modal-title custom_align" id="Heading">Ingresar Empresa a una gira</h4>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                <input class="form-control " type="text" placeholder="id de la gira" ng-model="giraempresas.id_gira">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input class="form-control " type="text" placeholder="id de la empresa" ng-model="giraempresas.id_empresa">
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putGiraEmpresas(giraempresas);"data-dismiss="modal" aria-hidden="true"><span ng-click="putGiraEmpresas(giraempresas);" class="glyphicon glyphicon-ok-sign"data-dismiss="modal" aria-hidden="true"  ></span>add</button>
+                </div>
+            </div>
+
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>

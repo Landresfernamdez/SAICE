@@ -17,7 +17,6 @@ angular.module('userModule')
 		detalle:"",
 		id_empresa:""
 	};
-	console.log("entro a comprobacion");
 	$scope.getContactos = function getContactos() {
 
 		OperationsContacts.getContacts( function(res) {
@@ -32,7 +31,6 @@ angular.module('userModule')
 		OperationsContacts.putContacts(contacto, function(response) {
 
 			if (response.success) {
-				console.log("exito");
 			    $location.path('contactos');
 			    $route.reload();
 			}
@@ -53,7 +51,6 @@ angular.module('userModule')
 		OperationsContacts.updateContacts($scope.contacto, function(response) {
 
 			if (response.success) {
-				console.log("exito");
 			    $location.path('contactos');
 			    $route.reload();
 			}

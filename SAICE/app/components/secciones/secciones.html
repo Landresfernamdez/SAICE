@@ -1,0 +1,90 @@
+<div class="container-fluid" >
+<div class="row" align= "center">
+  <div class="col-md-3">
+        <h2><strong>Secciones</strong> </h2>
+
+     <div  ng-repeat="seccion in listaSections">
+            <div class="card">
+                <div class="header bg-cyan">
+                    <h2>
+                        seccion
+                    </h2>
+                    <ul class="header-dropdown m-r--5">
+                        
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">more_vert</i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><button class="btn btn-danger btn-xs" data-target="#delete"data-title="Delete" data-toggle="modal" ng-click="actualizarSeccion(seccion)" ><span class="glyphicon glyphicon-trash" ng-click="actualizarSeccion(seccion)"></span>Eliminar</button></li>
+                                <li>
+                                  <button  type="button" class="btn btn-success"data-target="#add" ><span class="glyphicon glyphicon-plus" data-title="Add" data-toggle="modal" data-target="#add"></span>Agregar</button></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="body">
+                  <small>{{seccion.id_secciones}}</small>
+                </div>
+          </div>
+
+     </div>
+
+</div>
+</div>
+</div>
+
+    <!--Vista de añadir-->        
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add" aria-hidden="true">
+      <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                    
+                    <table>
+                      <thead>
+                          <h4 class="modal-title custom_align" id="Heading">Ingresar seccion</h4>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <div class="form-group">
+                            <input class="form-control " type="text" placeholder="id de seccion ##-##" ng-model="seccion.id_secciones">
+                             </div>
+                          </td>
+                          
+                        </tr>
+                      </tbody>  
+                    </table>
+                      <div class="modal-footer " >
+                          <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"ng-click="putSeccion(seccion);"data-dismiss="modal" aria-hidden="true"><span ng-click="putSeccion(seccion);"  class="glyphicon glyphicon-ok-sign"   data-dismiss="modal" aria-hidden="true"></span>add</button>
+                      </div>
+                </div>
+
+    <!-- /.modal-content --> 
+        </div>
+      <!-- /.modal-dialog --> 
+    </div>
+</div>
+  <!--vista de eliminar-->
+            <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+                  <div class="modal-dialog">
+                <div class="modal-content">
+                      <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                    <h4 class="modal-title custom_align" id="Heading">Delete this entry</h4>
+                  </div>
+                      <div class="modal-body">
+                   
+                   <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Record?</div>
+                   
+                  </div>
+                    <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" aria-hidden="true" data-dismiss="modal"ng-click="delete(seccion.id_secciones)"><span ng-click="delete(seccion.id_secciones)" class="glyphicon glyphicon-ok-sign" aria-hidden="true"data-dismiss="modal"></span> Yes</button>
+                    <button type="button" class="btn btn-default"aria-hidden="true" data-dismiss="modal"><span class="glyphicon glyphicon-remove"data-dismiss="modal"></span> No</button>
+                  </div>
+                    </div>
+                <!-- /.modal-content --> 
+                </div>
+                  <!-- /.modal-dialog --> 
+                </div>

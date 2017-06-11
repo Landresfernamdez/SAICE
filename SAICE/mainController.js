@@ -1,6 +1,6 @@
 'use strict'
 angular.module('userModule')
-.controller('mainController',function($scope,$location){
-
-
+.controller('mainController',function($scope,$location,$route){
+    
 });
+

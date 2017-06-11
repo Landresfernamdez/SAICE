@@ -1,27 +1,23 @@
 'use strict'
 angular.module('userModule')
 .controller('eventosController',function($scope,OperationsEvents,$location,$route){
-	$scope.Id_evento="";
+	$scope.id_evento="";
 	$scope.listaEvents = [];
 	$scope.evento = {
-		carnet:"",
-		cedula:"",
-		telefono:"",
-		correo:"",
+		id_evento:"",
 		nombre:"",
-		apellido1:"",
-		apellido2:"",
-		provincia:"",
-		canton:"",
-		distrito:"",
-		detalle:"",
-		id_poliza:""
+		descripcion:"",
+		fechainicio:"",
+		fechafinal:"",
+		nombre_completo:"",
+		rol:"",
+		cedula:""
 	};
-	console.log("entro a comprobacion");
 	$scope.getEventos = function getEventos() {
-
+		console.log("entro");
 		OperationsEvents.getEvents( function(res) {
 			$scope.listaEvents = res;
+			console.log($scope.listaEvents);
 		});
 
 	};
@@ -31,8 +27,8 @@ angular.module('userModule')
 
 		OperationsEvents.putEvents(evento, function(response) {
 
-			if (response.success) {
-				console.log("exito");
+			if (response.success){
+				console.log(response);
 			    $location.path('eventos');
 			    $route.reload();
 			}
@@ -40,8 +36,8 @@ angular.module('userModule')
 		});
 	};
 	$scope.delete=function deleteEventos(id){
-		console.log("imprime:"+$scope.evento.Id_evento);
-		OperationsEvents.deleteEvents($scope.evento.Id_evento,function(response){
+		console.log("imprime:"+$scope.evento.id_evento);
+		OperationsEvents.deleteEvents($scope.evento.id_evento,function(response){
 				if(response.success){
 				    $location.path('eventos');
 				    $route.reload();
@@ -53,7 +49,6 @@ angular.module('userModule')
 		OperationsEvents.updateEvents($scope.evento, function(response) {
 
 			if (response.success) {
-				console.log("exito");
 			    $location.path('eventos');
 			    $route.reload();
 			}

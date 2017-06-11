@@ -653,11 +653,11 @@ language plpgsql;
 
 --obtener practicas
 <<<<<<< HEAD
-select ES.nombre, ES.apellido1, ES.apellido2, ES.carnet, PR.cedula,PR.id_practicas,PR.estado,PR.nota, PR.nombre,PR.fecha_inicio,PR.fecha_final from 
+select ES.nombre, ES.apellido1, ES.apellido2, ES.carnet, PR.cedula,PR.id_practicas,PR.estado,PR.nota, PR.nombre,PR.id_empresa,PR.fecha_inicio,PR.fecha_final from 
 			(select P.nombre, P.apellido1, P.apellido2, P.cedula, E.carnet 
 			from personas P inner join estudiantes E on P.cedula=E.cedula) as ES
 			inner join 
-			(select P.cedula,P.id_practicas,E.nombre,P.nota,P.fecha_inicio,P.estado,P.fecha_final
+			(select P.cedula,P.id_practicas,E.nombre,E.id_empresa,P.nota,P.fecha_inicio,P.estado,P.fecha_final
 			from practicas P inner join empresas E on P.id_empresa = E.id_empresa) as PR
 			on ES.cedula=PR.cedula;
 )
@@ -1027,21 +1027,31 @@ language plpgsql;
 ----Selecciona todas las giras
 select * from giras
 ----Selecciona todas las secciones ligadas a una gira x
-select s.id_secciones from giras g inner join sg s on 3=s.id_gira
+select g.id_gira,s.id_secciones from giras g inner join sg s on g.id_gira=s.id_gira order by id_gira
 ----Selecciona todas las empresas ligadas a una gira x
-select e.id_empresa from giras g inner join ge e on 3=e.id_giras
+select g.id_gira,e.id_empresa from giras g inner join ge e on g.id_gira=e.id_giras order by id_gira
 -----------------------------pruebas giras--------------------------------------------
 select insertar_Giras('12-01-2018','12-01-2018','150000','16:0:0','Alajuela','San Carlos','Quesada','gira con fines didacticos')
+select insertar_Giras('10-01-2018','10-01-2018','150000','16:0:0','Alajuela','San Carlos','Quesada','gira con fines didacticos')
+select insertar_Giras('09-01-2018','09-01-2018','150000','16:0:0','Alajuela','San Carlos','Quesada','gira con fines didacticos')
+
+select modificar_giras('3','12-01-2018','12-01-2018','150000','16:0:0','Alajuela','San Carlos','Quesada','gira con fines de mierda tuanis')
 select insertar_Giras_secciones('3','07-03/2017')
 select insertar_Giras_secciones('3','07-02/2017')
+select insertar_Giras_secciones('4','07-04/2017')
+select insertar_Giras_secciones('4','07-05/2017')
+select insertar_Giras_empresa('4','Em-000000')
+select insertar_Giras_empresa('4','Em-000003')
 select insertar_Giras_empresa('3','Em-000000')
 select insertar_Giras_empresa('3','Em-000003')
+select insertar_Giras_empresa('5','Em-000000')
+select insertar_Giras_empresa('5','Em-000003')
+
 select modificar_giras('3','12-01-2018','12-01-2018','150000','16:0:0','Alajuela','San Carlos','Quesada','gira con fines didacticas')
 select borrar_giras('3');
 
 
 
-sele
 
 select * from ge
 select * from sg
@@ -2051,12 +2061,13 @@ select * from promedio_practicas;
 (/*2. Sacar el promedio de estudiantes que obtuvieron 
 una nota entre 0 y 70, 70 y 80, 80 y 90,90 y 100 con respecto
 a la cantidad de practicas.*/
-
+---vista para llamar esta consulta desde php
+create or replace view promediodeconcurrencianotas as
 select 
 (select * from Cantidad_practicas) as Total_Practicas,
 ((select count(id_practicas) as nota from practicas  where nota <= 70)*100/
 (select * from Cantidad_practicas))||'%' as "promedio <= 70",
-(select count(id_practicas) as nota from practicas  where nota >=70) as Cantidad_menor_70,
+(select count(id_practicas) as nota from practicas  where nota <=70) as Cantidad_menor_70,
 ((select count(id_practicas) as nota from practicas  where nota >70 and nota <= 80)*100/
 (select * from Cantidad_practicas))||'%' as ">70 <=80",
 (select count(id_practicas) as nota from practicas  where nota >70 and nota <= 80) as Cantidad_70_80,
@@ -2067,7 +2078,7 @@ select
 (select * from Cantidad_practicas))||'%' as ">90 <=100",
 (select count(id_practicas) as nota from practicas  where nota >90 and nota <= 100) as Cantidad_90_100;
 )
-
+select * from promediodeconcurrencianotas
 
 
 (/*3Porcentaje de estudiantes que utilizan un tipo de póliza con respecto
