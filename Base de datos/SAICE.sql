@@ -1078,6 +1078,7 @@ create or replace view Promedio_Aprobacion_Practica_Empresa as
 )
 
 ----------------------------------------------CONSULTAS-------------------------------
+
 (/*1. Sacar el promedio de aprobacion de practicas de un año
 con respecto a la cantidad de practicas, la mejor nota 
 y la peor.*/
@@ -1112,6 +1113,7 @@ select * from promedio_practicas;
 )
 
 ---------Revizar cual es la consulta 2 que funciona o lo que le falta
+
 
 (/*2. Sacar el promedio de estudiantes que obtuvieron 
 una nota entre 0 y 70, 70 y 80, 80 y 90,90 y 100 con respecto
@@ -1257,6 +1259,10 @@ select f,te*100/total,cedula, total as Eventos_durante_el_año from
 	on ev.y=t.f
 
 )
+
+
+
+
 
 ------------------------------------------------------ Un par de pruebas
 (
