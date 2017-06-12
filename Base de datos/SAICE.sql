@@ -1121,8 +1121,6 @@ language plpgsql
 --
 create trigger trigger_validaGiraSeccion before insert on SG
 FOR EACH ROW EXECUTE PROCEDURE validaGiraSeccion();
--------------------------------------------------
-
 
 ----------------------------------------CURSORES-----------------------
 (--CURSOR_POLIZAS------------
@@ -1431,6 +1429,50 @@ $$ language plpgsql;
 
 --select insertar_Evento_Funcionario_T('1-000-006','Ev-000005','coordinador')
 
+/*
+4-Validar que un funcionario solo realiza 5 giras por año (tómese en cuenta que el 
+funcionario puede estar a cargo de más de una sección).
+-> se asocia una gira con una secciom. Esta seccion ya esta asociada a un funcionario
+*/
 
+create  or replace function insertar_SG_T(ID_S int,IG int)
+returns void as 
+$$
+declare 
+	ced char(9); -- se debe cambiar el tipo de dato
+	año int;
+begin
+	insert into SG values (ID_S,IG);
+	ced=(select F.cedula from Funcionarios F inner join SF S on F.cedula=S.cedula and id_secciones=ID_S); -- devielve el 
+	año=(select extract(year from fecha_inicio) from giras where id_gira =IG);
+	
+	if
+	(select count(*) as cantidad from 
+	(
+	select G.fecha_inicio,G.detalle,F.id_secciones,F.cedula from 
+	(select * from giras G inner join SG S on G.id_gira=S.id_gira and extract(year from fecha_inicio)=año) as G
+	inner join
+	(select F.cedula,S.id_secciones from funcionarios F inner join SF S on F.cedula=S.cedula and F.cedula=ced) as F
+	on G.id_secciones =F.id_secciones
+	) as A group by cedula)>5	
+	then
+			raise exception 'exede el limite de 5 giras anuales ';
+	else
+		raise notice 'se inserto la gira a la seccion';
+	end if;
+exception
+	when raise_exception then raise notice 'manejo de la exception';
+end;
+$$ language plpgsql;
 
+select insertar_SG_T(3,9);
+insert into SG values (1,6);
+
+------------
+select * from funcionarios --cedula, carnet
+select * from SF   --id_secciones,cedula
+select * from SG where id_secciones=1   --id_secciones,id_gira
+select * from giras  --id_gira
+
+--delete from SG where id_secciones=1 and id_gira=6;
 
