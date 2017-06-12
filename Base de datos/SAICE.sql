@@ -1374,11 +1374,15 @@ $$ language plpgsql;
 create  or replace function insertar_EF_T(CEF char(9),IEF char(9),RE varchar(30))
 returns void as 
 $$
+declare año int;
 begin
 	insert into EF values (CEF,IEF,RE);
+	año=(select  extract(year from fechainicio)año from eventos where id_evento=IEF);
 	if(
-		select E.cant from(select count(*)cant, EF.rol from funcionarios F inner join EF on F.cedula=EF.cedula 
-		and F.cedula=CEF and EF.rol=RE group by rol) as E)>3 
+		select count(*) cantidad from
+		(select * from eventos E inner join EF F on E.id_evento=F.id_evento) as A 
+		inner join funcionarios F on A.cedula=F.cedula and A.cedula=CEF and A.rol=RE 
+		and extract(year from A.fechainicio)=año)>3 
 	then
 			raise exception 'ya tiene los 3 eventos a cargo con el mismo rol ';
 	else
@@ -1390,10 +1394,8 @@ end;
 $$ language plpgsql;
 
 
-select insertar_EF_T('1-000-001','Ev-000004','administrador');
-select insertar_EF_T('1-000-001','Ev-000004','ayudante')
-
-select count(*)cant, EF.rol from funcionarios F inner join EF on F.cedula=EF.cedula and F.cedula='1-000-001' and EF.rol='administrador'group by rol;
+--select insertar_EF_T('1-000-001','Ev-000004','administrador');
+--select insertar_EF_T('1-000-001','Ev-000004','ayudante')
 
 /*
 3-al insertar un evento validar que un funcionario no puede coordinar una gira y un evento en la misma fecha.
